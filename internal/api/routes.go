@@ -1,29 +1,31 @@
 package api
 
 import (
-	"context"
+	ping_api "messenger/internal/api/ping"
 
-	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
 )
 
-func RegisterRoutes(lc fx.Lifecycle, ping *PingController) {
-	r := gin.Default()
+var Module = fx.Options(
+	fx.Provide(NewRoutes),
+)
 
-	r.GET("/ping", ping.Ping)
-
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
-			go r.Run(":5005")
-			return nil
-		},
-		OnStop: func(ctx context.Context) error {
-			return nil
-		},
-	})
+type Route interface {
+	Setup()
 }
 
-var Module = fx.Options(
-	fx.Provide(NewPingController),
-	fx.Invoke(RegisterRoutes),
-)
+type Routes []Route
+
+func NewRoutes(
+	pingRoutes ping_api.PingRoutes,
+) Routes {
+	return Routes{
+		pingRoutes,
+	}
+}
+
+func (r Routes) Setup() {
+	for _, route := range r {
+		route.Setup()
+	}
+}
