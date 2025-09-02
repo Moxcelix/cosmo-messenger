@@ -1,7 +1,7 @@
 package api
 
 import (
-	ping_api "messenger/internal/api/ping"
+	ping_api "main/internal/api/ping"
 
 	"go.uber.org/fx"
 )

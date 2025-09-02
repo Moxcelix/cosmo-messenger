@@ -1,10 +1,10 @@
 package bootstrap
 
 import (
-	"messenger/internal/api"
-	ping_api "messenger/internal/api/ping"
-	"messenger/internal/config"
-	"messenger/pkg"
+	"main/internal/api"
+	ping_api "main/internal/api/ping"
+	"main/internal/config"
+	"main/pkg"
 
 	"go.uber.org/fx"
 )

@@ -1,7 +1,7 @@
 package ping_api
 
 import (
-	"messenger/pkg"
+	"main/pkg"
 )
 
 type PingRoutes struct {

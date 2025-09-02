@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"messenger/internal/config"
+	"main/internal/config"
 
 	"go.uber.org/fx/fxevent"
 	"go.uber.org/zap"

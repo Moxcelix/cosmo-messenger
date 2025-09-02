@@ -1,16 +1,16 @@
 package cmd
 
 import (
-	"messenger/bootstrap"
+	"main/bootstrap"
 
 	"context"
 
 	"go.uber.org/fx"
 
-	"messenger/pkg"
+	"main/pkg"
 
-	route "messenger/internal/api"
-	"messenger/internal/config"
+	route "main/internal/api"
+	"main/internal/config"
 )
 
 func Run() any {
