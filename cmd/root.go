@@ -21,7 +21,7 @@ func Run() any {
 		route route.Routes,
 	) {
 		route.Setup()
-		err := handler.Gin.Run(env.ApiURL + ":" + env.Port)
+		err := handler.Gin.Run(":" + env.Port)
 
 		if err != nil {
 			logger.Error(err)
