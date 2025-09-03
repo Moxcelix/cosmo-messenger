@@ -10,11 +10,11 @@ type UserServiceRoutes struct {
 }
 
 func NewUserServiceRoutes(
-	userRegisterRegister *UserRegisterController,
+	userRegisterController *UserRegisterController,
 	handler pkg.RequestHandler,
 ) *UserServiceRoutes {
 	return &UserServiceRoutes{
-		userRegisterController: userRegisterRegister,
+		userRegisterController: userRegisterController,
 		handler:                handler,
 	}
 }
