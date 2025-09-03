@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"messenger/cmd"
+	"main/cmd"
 )
 
 func main() {

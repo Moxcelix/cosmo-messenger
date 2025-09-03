@@ -1,12 +1,11 @@
 package userservice
 
-import (
-	"time"
-)
+import "time"
 
 type User struct {
 	ID           string
 	Name         string
+	Username     string
 	PasswordHash string
 	Bio          string
 	CreatedAt    time.Time
