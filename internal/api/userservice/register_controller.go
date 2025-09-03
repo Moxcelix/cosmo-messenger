@@ -28,6 +28,16 @@ type registerResponse struct {
 	Message string `json:"message"`
 }
 
+// Register godoc
+// @Summary Регистрация пользователя
+// @Description Создаёт нового пользователя в системе
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input body registerRequest true "Данные пользователя"
+// @Success 201 {object} registerResponse
+// @Failure 400 {object} map[string]string
+// @Router /api/v1/users/register [post]
 func (c *UserRegisterController) Register(ctx *gin.Context) {
 	var req registerRequest
 

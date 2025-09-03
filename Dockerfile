@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine as BUILDER
+FROM golang:1.23-alpine as BUILDER
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
@@ -11,10 +11,11 @@ RUN go mod download
 COPY . .
 
 # Собираем приложение
-RUN go build -o main .
+#RUN go build -o main .
 
 # Открываем порт (если приложение использует сеть)
 EXPOSE 8080
 
 # Запускаем приложение
-CMD ["./main"]
+#CMD ["./main"]
+CMD ["go", "run", "main.go"]

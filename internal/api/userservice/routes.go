@@ -12,15 +12,15 @@ type UserServiceRoutes struct {
 func NewUserServiceRoutes(
 	userRegisterRegister *UserRegisterController,
 	handler pkg.RequestHandler,
-) UserServiceRoutes {
-	return UserServiceRoutes{
+) *UserServiceRoutes {
+	return &UserServiceRoutes{
 		userRegisterController: userRegisterRegister,
 		handler:                handler,
 	}
 }
 
-func (r UserServiceRoutes) Setup() {
-	group := r.handler.Gin.Group("/api/v1/user")
+func (r *UserServiceRoutes) Setup() {
+	group := r.handler.Gin.Group("/api/v1/users")
 
-	group.GET("/register", r.userRegisterController.Register)
+	group.POST("/register", r.userRegisterController.Register)
 }

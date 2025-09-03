@@ -2,6 +2,8 @@ package api
 
 import (
 	ping_api "main/internal/api/ping"
+	swagger_api "main/internal/api/swagger"
+	userservice_api "main/internal/api/userservice"
 
 	"go.uber.org/fx"
 )
@@ -17,10 +19,14 @@ type Route interface {
 type Routes []Route
 
 func NewRoutes(
-	pingRoutes ping_api.PingRoutes,
+	swaggerRoutes *swagger_api.SwaggerRoutes,
+	pingRoutes *ping_api.PingRoutes,
+	userRoutes *userservice_api.UserServiceRoutes,
 ) Routes {
 	return Routes{
+		swaggerRoutes,
 		pingRoutes,
+		userRoutes,
 	}
 }
 
