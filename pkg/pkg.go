@@ -9,4 +9,5 @@ var Module = fx.Options(
 	fx.Provide(GetLogger),
 	fx.Provide(NewHasher),
 	fx.Provide(NewMongoDatabase),
+	fx.Provide(NewJwt),
 )

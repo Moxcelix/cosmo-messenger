@@ -8,7 +8,7 @@ import (
 	"go.uber.org/fx"
 )
 
-type Env struct{
+type Env struct {
 	AppEnv string `mapstructure:"APP_ENV"`
 	Port   string `mapstructure:"PORT"`
 
@@ -18,8 +18,9 @@ type Env struct{
 	DBPass string `mapstructure:"DB_PASS"`
 	DBName string `mapstructure:"DB_NAME"`
 
-	ApiURL string `mapstructure:"API_URL"`
-}	
+	ApiURL     string `mapstructure:"API_URL"`
+	JwtSecreet string `mapstructure:"JWT_SECRET"`
+}
 
 func NewEnv() Env {
 	env := Env{}
@@ -62,6 +63,8 @@ func (e *Env) bindEnv() {
 	e.DBUser = os.Getenv("DB_USER")
 	e.DBPass = os.Getenv("DB_PASS")
 	e.DBName = os.Getenv("DB_NAME")
+
+	e.JwtSecreet = os.Getenv("JWT_SECRET")
 }
 
 var Module = fx.Options(
