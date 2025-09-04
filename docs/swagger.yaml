@@ -1,4 +1,13 @@
 definitions:
+  userservice_api.infoResponse:
+    properties:
+      bio:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
   userservice_api.registerRequest:
     properties:
       bio:
@@ -22,13 +31,38 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/users/get_info:
+    get:
+      description: Returns information about a user by username
+      parameters:
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.infoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get info about user
+      tags:
+      - users
   /api/v1/users/register:
     post:
       consumes:
       - application/json
-      description: Создаёт нового пользователя в системе
+      description: Creates a new user in system
       parameters:
-      - description: Данные пользователя
+      - description: User data
         in: body
         name: input
         required: true
@@ -47,7 +81,7 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Регистрация пользователя
+      summary: User registration
       tags:
       - users
 swagger: "2.0"

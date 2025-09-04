@@ -1,8 +1,11 @@
 package userservice_application
 
 import (
+	"errors"
 	userservice "main/internal/domain/userservice"
 )
+
+var ErrUserNotFound = errors.New("user not found")
 
 type UserInfo struct {
 	Name     string `json:"name"`
@@ -24,6 +27,10 @@ func (uc *GetInfoUseCase) Execute(username string) (*UserInfo, error) {
 	user, err := uc.repository.GetUserByUsername(username)
 	if err != nil {
 		return nil, err
+	}
+
+	if user == nil {
+		return nil, ErrUserNotFound
 	}
 
 	return &UserInfo{

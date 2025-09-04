@@ -15,9 +15,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/users/get_info": {
+            "get": {
+                "description": "Returns information about a user by username",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get info about user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userservice_api.infoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/register": {
             "post": {
-                "description": "Создаёт нового пользователя в системе",
+                "description": "Creates a new user in system",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,10 +65,10 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Регистрация пользователя",
+                "summary": "User registration",
                 "parameters": [
                     {
-                        "description": "Данные пользователя",
+                        "description": "User data",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -60,6 +98,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "userservice_api.infoResponse": {
+            "type": "object",
+            "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "userservice_api.registerRequest": {
             "type": "object",
             "required": [

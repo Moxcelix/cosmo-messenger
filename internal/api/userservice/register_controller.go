@@ -29,12 +29,12 @@ type registerResponse struct {
 }
 
 // Register godoc
-// @Summary Регистрация пользователя
-// @Description Создаёт нового пользователя в системе
+// @Summary User registration
+// @Description Creates a new user in system
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param input body registerRequest true "Данные пользователя"
+// @Param input body registerRequest true "User data"
 // @Success 201 {object} registerResponse
 // @Failure 400 {object} map[string]string
 // @Router /api/v1/users/register [post]
