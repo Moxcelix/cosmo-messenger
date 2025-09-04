@@ -5,15 +5,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	userservice_application "main/internal/application/userservice"
+	"main/pkg"
 )
 
 type UserRegisterController struct {
 	registerUseCase *userservice_application.RegisterUseCase
+	logger          pkg.Logger
 }
 
-func NewUserRegisterController(registerUseCase *userservice_application.RegisterUseCase) *UserRegisterController {
+func NewUserRegisterController(registerUseCase *userservice_application.RegisterUseCase, logger pkg.Logger) *UserRegisterController {
 	return &UserRegisterController{
 		registerUseCase: registerUseCase,
+		logger:          logger,
 	}
 }
 
@@ -55,4 +58,9 @@ func (c *UserRegisterController) Register(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, registerResponse{
 		Message: "user registered successfully",
 	})
+
+	c.logger.Infow("user registered successfully",
+		"name", req.Name,
+		"username", req.Username,
+	)
 }
