@@ -13,26 +13,26 @@ type Jwt struct {
 
 func NewJwt(env config.Env) *Jwt {
 	return &Jwt{
-		secret : env.JwtSecreet
+		secret: env.JwtSecreet,
 	}
 }
 
-func (j *Jwt) GenerateToken(userId string, minutes int32) (string, error){
+func (j *Jwt) GenerateToken(userId string, refresh_time time.Duration) (string, error) {
 	claims := jwt.MapClaims{
 		"userID": userId,
-		"exp": time.Now().Add(minutes * time.Minute).Unix()
+		"exp":    time.Now().Add(refresh_time).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(j.secret))
 }
 
-func (j *Jwt) ValidateToken (tokenStr string) (string, error){
-	token, err:= jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error){
+func (j *Jwt) ValidateToken(tokenStr string) (string, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		return []byte(j.secret), nil
 	})
 
-	if err != nil || !token.Valid{
+	if err != nil || !token.Valid {
 		return "", err
 	}
 

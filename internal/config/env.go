@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
@@ -18,8 +19,10 @@ type Env struct {
 	DBPass string `mapstructure:"DB_PASS"`
 	DBName string `mapstructure:"DB_NAME"`
 
-	ApiURL     string `mapstructure:"API_URL"`
-	JwtSecreet string `mapstructure:"JWT_SECRET"`
+	ApiURL        string        `mapstructure:"API_URL"`
+	JwtSecreet    string        `mapstructure:"JWT_SECRET"`
+	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
+	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
 }
 
 func NewEnv() Env {
@@ -65,6 +68,22 @@ func (e *Env) bindEnv() {
 	e.DBName = os.Getenv("DB_NAME")
 
 	e.JwtSecreet = os.Getenv("JWT_SECRET")
+
+	if val := os.Getenv("JWT_ACCESS_TTL"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err != nil {
+			log.Fatalf("Invalid JWT_ACCESS_TTL format: %v", err)
+		}
+		e.JwtAccessTTL = d
+	}
+
+	if val := os.Getenv("JWT_REFRESH_TTL"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err != nil {
+			log.Fatalf("Invalid JWT_REFRESH_TTL format: %v", err)
+		}
+		e.JwtRefreshTTL = d
+	}
 }
 
 var Module = fx.Options(
