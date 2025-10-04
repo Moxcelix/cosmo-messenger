@@ -1,4 +1,26 @@
 definitions:
+  authservice_api.loginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  authservice_api.loginResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  authservice_api.refreshRequest:
+    type: object
+  authservice_api.refreshResponse:
+    type: object
+  authservice_api.validateRequest:
+    type: object
+  authservice_api.validateResponse:
+    type: object
   userservice_api.infoResponse:
     properties:
       bio:
@@ -31,6 +53,108 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates user and returns JWT tokens
+      parameters:
+      - description: User credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/authservice_api.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authservice_api.loginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User login
+      tags:
+      - auth
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Returns new access token by refresh token
+      parameters:
+      - description: Refresh credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/authservice_api.refreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authservice_api.refreshResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User refresh token
+      tags:
+      - auth
+  /api/v1/auth/validate:
+    post:
+      consumes:
+      - application/json
+      description: Returns userID if access token is valid
+      parameters:
+      - description: Access credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/authservice_api.validateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authservice_api.validateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Validates users access token
+      tags:
+      - auth
   /api/v1/users/get_info:
     get:
       description: Returns information about a user by username
@@ -49,6 +173,12 @@ paths:
             $ref: '#/definitions/userservice_api.infoResponse'
         "400":
           description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
           schema:
             additionalProperties:
               type: string
