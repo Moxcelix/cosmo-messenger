@@ -1,7 +1,7 @@
 package authservice_application
 
 import (
-	authservice "main/internal/domain/authservice"
+	"main/internal/domain/authservice"
 )
 
 type RefreshUsecase struct {
