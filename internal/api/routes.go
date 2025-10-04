@@ -1,6 +1,7 @@
 package api
 
 import (
+	authservice_api "main/internal/api/authservice"
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
 	userservice_api "main/internal/api/userservice"
@@ -22,11 +23,13 @@ func NewRoutes(
 	swaggerRoutes *swagger_api.SwaggerRoutes,
 	pingRoutes *ping_api.PingRoutes,
 	userRoutes *userservice_api.UserServiceRoutes,
+	authRoutes *authservice_api.AuthServiceRoutes,
 ) Routes {
 	return Routes{
 		swaggerRoutes,
 		pingRoutes,
 		userRoutes,
+		authRoutes,
 	}
 }
 

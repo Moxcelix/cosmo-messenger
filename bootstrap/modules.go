@@ -2,12 +2,15 @@ package bootstrap
 
 import (
 	"main/internal/api"
+	"main/internal/api/authservice"
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
 	userservice_api "main/internal/api/userservice"
+	"main/internal/application/authservice"
 	userservice_application "main/internal/application/userservice"
 	"main/internal/config"
 	userservice "main/internal/domain/userservice"
+	"main/internal/infrastructure/authservice"
 	userservice_infrastructure "main/internal/infrastructure/userservice"
 	"main/pkg"
 
@@ -24,4 +27,7 @@ var CommonModules = fx.Options(
 	swagger_api.Module,
 	userservice_api.Module,
 	userservice.Module,
+	authservice_infrastructure.Module,
+	authservice_application.Module,
+	authservice_api.Module,
 )

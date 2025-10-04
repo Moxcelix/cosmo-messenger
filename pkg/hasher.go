@@ -20,3 +20,7 @@ func (h *Hasher) Hash(bytes []byte) ([]byte, error) {
 
 	return hash, nil
 }
+
+func (h *Hasher) Compare(password []byte, hash []byte) error {
+	return bcrypt.CompareHashAndPassword(hash, password)
+}

@@ -2,7 +2,6 @@ package userservice
 
 import (
 	"errors"
-	"fmt"
 	"main/pkg"
 )
 
@@ -31,14 +30,9 @@ func (p *PasswordHasher) HashPassword(password string) (string, error) {
 }
 
 func (p *PasswordHasher) ValidatePassword(password string, user *User) error {
-	computedHash, err := p.hasher.Hash([]byte(password))
+	err := p.hasher.Compare([]byte(password), []byte(user.PasswordHash))
 	if err != nil {
-		return fmt.Errorf("%w: %v", ErrHashingFailed, err)
-	}
-
-	if string(computedHash) != user.PasswordHash {
 		return ErrInvalidPassword
 	}
-
 	return nil
 }

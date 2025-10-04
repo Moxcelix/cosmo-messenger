@@ -11,6 +11,7 @@ type UserInfo struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Bio      string `json:"bio"`
+	ID       string `json:"id"`
 }
 
 type GetInfoUseCase struct {
@@ -37,5 +38,6 @@ func (uc *GetInfoUseCase) Execute(username string) (*UserInfo, error) {
 		Name:     user.Name,
 		Username: user.Username,
 		Bio:      user.Bio,
+		ID:       user.ID,
 	}, nil
 }

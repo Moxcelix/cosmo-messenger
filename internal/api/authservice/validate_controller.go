@@ -17,11 +17,11 @@ func NewValidateController(usecase *authservice_application.ValidateUsecase) *Va
 }
 
 type validateRequest struct {
-	accessToken string `json:"accsess_token"`
+	AccessToken string `json:"access_token"`
 }
 
 type validateResponse struct {
-	userID string `json:"user_id"`
+	UserID string `json:"user_id"`
 }
 
 // Refresh godoc
@@ -43,13 +43,13 @@ func (c *ValidateController) Validate(ctx *gin.Context) {
 		return
 	}
 
-	userID, err := c.usecase.Execute(req.accessToken)
+	userID, err := c.usecase.Execute(req.AccessToken)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, validateResponse{
-		userID: userID,
+		UserID: userID,
 	})
 }

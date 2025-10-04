@@ -3,12 +3,13 @@ package authservice_infrastructure
 import (
 	"errors"
 	"main/internal/config"
+	"main/internal/domain/authservice"
 	"main/internal/domain/userservice"
 	"main/pkg"
 	"time"
 )
 
-type AuthService struct {
+type InternalAuthService struct {
 	jwt            *pkg.Jwt
 	accessTTL      time.Duration
 	refreshTTL     time.Duration
@@ -22,8 +23,8 @@ type User struct {
 	Password string
 }
 
-func NewAuthService(jwt *pkg.Jwt, env config.Env, userRepo userservice.UserRepository, passwordHasher *userservice.PasswordHasher) *AuthService {
-	return &AuthService{
+func NewInternalAuthService(jwt *pkg.Jwt, env config.Env, userRepo userservice.UserRepository, passwordHasher *userservice.PasswordHasher) authservice.AuthService {
+	return &InternalAuthService{
 		jwt:            jwt,
 		accessTTL:      env.JwtAccessTTL,
 		refreshTTL:     env.JwtRefreshTTL,
@@ -32,14 +33,14 @@ func NewAuthService(jwt *pkg.Jwt, env config.Env, userRepo userservice.UserRepos
 	}
 }
 
-func (a *AuthService) Login(username, password string) (string, string, error) {
+func (a *InternalAuthService) Login(username, password string) (string, string, error) {
 	user, err := a.userRepo.GetUserByUsername(username)
 	if err != nil {
 		return "", "", errors.New("user not found")
 	}
 
 	if err := a.passwordHasher.ValidatePassword(password, user); err != nil {
-		return "", "", errors.New("invalid credentials")
+		return "", "", errors.New("invalid credentials aboba")
 	}
 
 	accessToken, err := a.jwt.GenerateToken(user.ID, a.accessTTL)
@@ -55,7 +56,7 @@ func (a *AuthService) Login(username, password string) (string, string, error) {
 	return accessToken, refreshToken, nil
 }
 
-func (a *AuthService) Refresh(refreshToken string) (string, error) {
+func (a *InternalAuthService) Refresh(refreshToken string) (string, error) {
 	userID, err := a.jwt.ValidateToken(refreshToken)
 	if err != nil {
 		return "", errors.New("invalid refresh token")
@@ -69,6 +70,6 @@ func (a *AuthService) Refresh(refreshToken string) (string, error) {
 	return newAccessToken, nil
 }
 
-func (a *AuthService) ValidateAccessToken(accessToken string) (string, error) {
+func (a *InternalAuthService) ValidateAccessToken(accessToken string) (string, error) {
 	return a.jwt.ValidateToken(accessToken)
 }

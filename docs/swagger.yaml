@@ -14,12 +14,24 @@ definitions:
         type: string
     type: object
   authservice_api.refreshRequest:
+    properties:
+      refresh_token:
+        type: string
     type: object
   authservice_api.refreshResponse:
+    properties:
+      access_token:
+        type: string
     type: object
   authservice_api.validateRequest:
+    properties:
+      access_token:
+        type: string
     type: object
   authservice_api.validateResponse:
+    properties:
+      user_id:
+        type: string
     type: object
   userservice_api.infoResponse:
     properties:

@@ -286,16 +286,36 @@ const docTemplate = `{
             }
         },
         "authservice_api.refreshRequest": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
         },
         "authservice_api.refreshResponse": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
         },
         "authservice_api.validateRequest": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
         },
         "authservice_api.validateResponse": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                }
+            }
         },
         "userservice_api.infoResponse": {
             "type": "object",

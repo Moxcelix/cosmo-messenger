@@ -21,6 +21,7 @@ type infoResponse struct {
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Bio      string `json:"bio"`
+	ID       string `json:"id"`
 }
 
 // Get info godoc
@@ -50,5 +51,6 @@ func (c *UserGetInfoController) GetInfo(ctx *gin.Context) {
 		Name:     info.Name,
 		Username: info.Username,
 		Bio:      info.Bio,
+		ID:       info.ID,
 	})
 }

@@ -17,11 +17,11 @@ func NewRefreshController(usecase *authservice_application.RefreshUsecase) *Refr
 }
 
 type refreshRequest struct {
-	refreshToken string `json:"refersh_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type refreshResponse struct {
-	accessToken string `json:"access_token"`
+	AccessToken string `json:"access_token"`
 }
 
 // Refresh godoc
@@ -43,13 +43,13 @@ func (c *RefreshController) Refresh(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := c.usecase.Execute(req.refreshToken)
+	accessToken, err := c.usecase.Execute(req.RefreshToken)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, refreshResponse{
-		accessToken: accessToken,
+		AccessToken: accessToken,
 	})
 }
