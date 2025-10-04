@@ -1,11 +1,8 @@
 package userservice_application
 
 import (
-	"errors"
 	userservice "main/internal/domain/userservice"
 )
-
-var ErrUserNotFound = errors.New("user not found")
 
 type UserInfo struct {
 	Name     string `json:"name"`
