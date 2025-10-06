@@ -32,7 +32,7 @@ type deleteResponse struct {
 
 // @Summary      Delete user
 // @Description  Deletes a user by username.
-// @Tags         Users
+// @Tags         users
 // @Accept       json
 // @Produce      json
 // @Param        body  body      deleteRequest  true  "Username of the user to delete"
@@ -40,6 +40,7 @@ type deleteResponse struct {
 // @Failure      400   {object}  map[string]string
 // @Failure      401   {object}  map[string]string
 // @Failure      403   {object}  map[string]string
+// @Security     BearerAuth
 // @Router       /api/v1/users/delete [delete]
 func (c *UserDeleteController) Delete(ctx *gin.Context) {
 	var req deleteRequest

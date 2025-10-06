@@ -28,7 +28,7 @@ func (uc *GetInfoUseCase) Execute(username string) (*UserInfo, error) {
 	}
 
 	if user == nil {
-		return nil, ErrUserNotFound
+		return nil, userservice.ErrUserNotFound
 	}
 
 	return &UserInfo{

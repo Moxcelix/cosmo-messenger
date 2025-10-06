@@ -25,7 +25,7 @@ func (r *RegisterUseCase) Execute(name string, username string, password string,
 		return err
 	}
 	if existing != nil {
-		return ErrUsernameAlreadyTaken
+		return userservice.ErrUsernameAlreadyTaken
 	}
 
 	hash, err := r.hasher.Hash([]byte(password))

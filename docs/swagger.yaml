@@ -78,6 +78,8 @@ definitions:
     type: object
 info:
   contact: {}
+  title: Cosmo Messenger API
+  version: "1.0"
 paths:
   /api/v1/auth/login:
     post:
@@ -218,9 +220,11 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Delete user
       tags:
-      - Users
+      - users
   /api/v1/users/get_info:
     get:
       description: Returns information about a user by username
@@ -280,4 +284,9 @@ paths:
       summary: User registration
       tags:
       - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

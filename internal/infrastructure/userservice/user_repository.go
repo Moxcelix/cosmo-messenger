@@ -35,13 +35,8 @@ func NewUserRepository(db pkg.MongoDatabase, logger pkg.Logger) userservice.User
 }
 
 func (r *UserRepository) GetUserById(userId string) (*userservice.User, error) {
-	objID, err := primitive.ObjectIDFromHex(userId)
-	if err != nil {
-		return nil, err
-	}
-
 	var schema User
-	err = r.collection.FindOne(context.Background(), bson.M{"_id": objID}).Decode(&schema)
+	err := r.collection.FindOne(context.Background(), bson.M{"_id": userId}).Decode(&schema)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, nil
@@ -85,20 +80,11 @@ func (r *UserRepository) DeleteUserByUsername(username string) error {
 }
 
 func (r *UserRepository) DeleteUserById(userId string) error {
-	objID, err := primitive.ObjectIDFromHex(userId)
-	if err != nil {
-		return err
-	}
-	_, err = r.collection.DeleteOne(context.Background(), bson.M{"_id": objID})
+	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": userId})
 	return err
 }
 
 func (r *UserRepository) UpdateUser(user *userservice.User) error {
-	objID, err := primitive.ObjectIDFromHex(user.ID)
-	if err != nil {
-		return err
-	}
-
 	user.UpdatedAt = time.Now()
 	update := bson.M{
 		"$set": bson.M{
@@ -109,7 +95,7 @@ func (r *UserRepository) UpdateUser(user *userservice.User) error {
 			"updated_at":    user.UpdatedAt,
 		},
 	}
-	_, err = r.collection.UpdateByID(context.Background(), objID, update)
+	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": user.ID}, update)
 	return err
 }
 
