@@ -5,12 +5,16 @@ import (
 )
 
 type DeleteUserUsecase struct {
-	repository userservice.UserRepository
+	repository       userservice.UserRepository
+	deleteUserPolicy userservice.DeleteUserPolicy
 }
 
-func NewDeleteUserUsecase(repository userservice.UserRepository) *DeleteUserUsecase {
+func NewDeleteUserUsecase(
+	repository userservice.UserRepository,
+	deleteUserPolicy userservice.DeleteUserPolicy) *DeleteUserUsecase {
 	return &DeleteUserUsecase{
-		repository: repository,
+		repository:       repository,
+		deleteUserPolicy: deleteUserPolicy,
 	}
 }
 
@@ -33,7 +37,9 @@ func (uc *DeleteUserUsecase) Execute(requestingUsername, targetUsername string) 
 		return ErrUserNotFound
 	}
 
-
+	if !uc.deleteUserPolicy.Resolve(requestingUser, targetUser) {
+		return ErrNoPermission
+	}
 
 	if err := uc.repository.DeleteUser(requestingUsername); err != nil {
 		return err
