@@ -1,7 +1,6 @@
 package userservice_application
 
 import (
-	"errors"
 	"time"
 
 	userservice "main/internal/domain/userservice"
@@ -26,7 +25,7 @@ func (r *RegisterUseCase) Execute(name string, username string, password string,
 		return err
 	}
 	if existing != nil {
-		return errors.New("username already taken")
+		return ErrUsernameAlreadyTaken
 	}
 
 	hash, err := r.hasher.Hash([]byte(password))
