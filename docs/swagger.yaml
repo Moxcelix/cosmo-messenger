@@ -33,9 +33,23 @@ definitions:
       user_id:
         type: string
     type: object
+  userservice_api.deleteRequest:
+    properties:
+      username:
+        type: string
+    required:
+    - username
+    type: object
+  userservice_api.deleteResponse:
+    properties:
+      message:
+        type: string
+    type: object
   userservice_api.infoResponse:
     properties:
       bio:
+        type: string
+      id:
         type: string
       name:
         type: string
@@ -167,6 +181,46 @@ paths:
       summary: Validates users access token
       tags:
       - auth
+  /api/v1/users/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a user by username.
+      parameters:
+      - description: Username of the user to delete
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/userservice_api.deleteRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete user
+      tags:
+      - Users
   /api/v1/users/get_info:
     get:
       description: Returns information about a user by username

@@ -25,7 +25,7 @@ func (uc *DeleteUserUsecase) Execute(requestingUsername, targetUsername string) 
 	}
 
 	if targetUser == nil {
-		return ErrUserNotFound
+		return ErrTargetUserNotFound
 	}
 
 	requestingUser, err := uc.repository.GetUserByUsername(requestingUsername)
@@ -34,14 +34,14 @@ func (uc *DeleteUserUsecase) Execute(requestingUsername, targetUsername string) 
 	}
 
 	if requestingUser == nil {
-		return ErrUserNotFound
+		return ErrRequestingUserNotFound
 	}
 
 	if !uc.deleteUserPolicy.Resolve(requestingUser, targetUser) {
 		return ErrNoPermission
 	}
 
-	if err := uc.repository.DeleteUser(requestingUsername); err != nil {
+	if err := uc.repository.DeleteUserByUsername(requestingUsername); err != nil {
 		return err
 	}
 

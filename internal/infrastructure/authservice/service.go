@@ -40,7 +40,7 @@ func (a *InternalAuthService) Login(username, password string) (string, string, 
 	}
 
 	if err := a.passwordHasher.ValidatePassword(password, user); err != nil {
-		return "", "", errors.New("invalid credentials aboba")
+		return "", "", errors.New("invalid credentials")
 	}
 
 	accessToken, err := a.jwt.GenerateToken(user.ID, a.accessTTL)

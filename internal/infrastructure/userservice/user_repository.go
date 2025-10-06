@@ -79,7 +79,12 @@ func (r *UserRepository) CreateUser(user *userservice.User) error {
 	return err
 }
 
-func (r *UserRepository) DeleteUser(userId string) error {
+func (r *UserRepository) DeleteUserByUsername(username string) error {
+	_, err := r.collection.DeleteOne(context.Background(), bson.M{"username": username})
+	return err
+}
+
+func (r *UserRepository) DeleteUserById(userId string) error {
 	objID, err := primitive.ObjectIDFromHex(userId)
 	if err != nil {
 		return err
