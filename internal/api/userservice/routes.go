@@ -11,6 +11,7 @@ type UserServiceRoutes struct {
 	userGetInfoController  *UserGetInfoController
 	userDeleteController   *UserDeleteController
 	authMiddleware         *authservice_api.AuthMiddleware
+	adminAuthMiddleware    *authservice_api.AdminAuthMiddleware
 }
 
 func NewUserServiceRoutes(
@@ -18,6 +19,7 @@ func NewUserServiceRoutes(
 	userGetInfoController *UserGetInfoController,
 	userDeleteController *UserDeleteController,
 	authMiddleware *authservice_api.AuthMiddleware,
+	adminAuthMiddleware *authservice_api.AdminAuthMiddleware,
 	handler pkg.RequestHandler,
 ) *UserServiceRoutes {
 	return &UserServiceRoutes{
@@ -25,16 +27,29 @@ func NewUserServiceRoutes(
 		userRegisterController: userRegisterController,
 		userDeleteController:   userDeleteController,
 		authMiddleware:         authMiddleware,
+		adminAuthMiddleware:    adminAuthMiddleware,
 		handler:                handler,
 	}
 }
 
 func (r *UserServiceRoutes) Setup() {
-	group := r.handler.Gin.Group("/api/v1/users")
+	base := r.handler.Gin.Group("/api/v1/users")
 
-	group.POST("/register", r.userRegisterController.Register)
-	group.GET("/get_info", r.userGetInfoController.GetInfo)
+	baseGroup := base.Group("")
+	{
+		baseGroup.POST("/register", r.userRegisterController.Register)
+		baseGroup.GET("/get_info", r.userGetInfoController.GetInfo)
+	}
 
-	protected := group.Use(r.authMiddleware.Handler())
-	protected.DELETE("/delete", r.userDeleteController.Delete).Use()
+	authGroup := base.Group("")
+	authGroup.Use(r.authMiddleware.Handler())
+	{
+		authGroup.DELETE("/delete", r.userDeleteController.Delete)
+	}
+
+	adminGroup := base.Group("/admin")
+	adminGroup.Use(r.adminAuthMiddleware.Handler())
+	{
+		adminGroup.DELETE("/delete/:username", r.userDeleteController.Delete)
+	}
 }

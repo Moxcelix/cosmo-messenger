@@ -7,5 +7,6 @@ var Module = fx.Options(
 	fx.Provide(NewRefreshController),
 	fx.Provide(NewValidateController),
 	fx.Provide(NewAuthMiddleware),
+	fx.Provide(NewAdminAuthMiddleware),
 	fx.Provide(NewAuthServiceRoutes),
 )

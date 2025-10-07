@@ -33,13 +33,6 @@ definitions:
       user_id:
         type: string
     type: object
-  userservice_api.deleteRequest:
-    properties:
-      username:
-        type: string
-    required:
-    - username
-    type: object
   userservice_api.deleteResponse:
     properties:
       message:
@@ -183,18 +176,17 @@ paths:
       summary: Validates users access token
       tags:
       - auth
-  /api/v1/users/delete:
+  /api/v1/users/admin/delete/{username}:
     delete:
       consumes:
       - application/json
-      description: Deletes a user by username.
+      description: Deletes a user by username. Admin access required.
       parameters:
       - description: Username of the user to delete
-        in: body
-        name: body
+        in: path
+        name: username
         required: true
-        schema:
-          $ref: '#/definitions/userservice_api.deleteRequest'
+        type: string
       produces:
       - application/json
       responses:
@@ -222,7 +214,42 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Delete user
+      summary: Delete user by username (Admin only)
+      tags:
+      - admin
+  /api/v1/users/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the currently authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete current user
       tags:
       - users
   /api/v1/users/get_info:

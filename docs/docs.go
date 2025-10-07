@@ -171,6 +171,70 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/users/admin/delete/{username}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes a user by username. Admin access required.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "admin"
+                ],
+                "summary": "Delete user by username (Admin only)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username of the user to delete",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/userservice_api.deleteResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/delete": {
             "delete": {
                 "security": [
@@ -178,7 +242,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes a user by username.",
+                "description": "Deletes the currently authenticated user",
                 "consumes": [
                     "application/json"
                 ],
@@ -188,18 +252,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Delete user",
-                "parameters": [
-                    {
-                        "description": "Username of the user to delete",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/userservice_api.deleteRequest"
-                        }
-                    }
-                ],
+                "summary": "Delete current user",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -379,17 +432,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "userservice_api.deleteRequest": {
-            "type": "object",
-            "required": [
-                "username"
-            ],
-            "properties": {
-                "username": {
                     "type": "string"
                 }
             }

@@ -22,20 +22,29 @@ func NewUserDeleteController(
 	}
 }
 
-type deleteRequest struct {
-	Username string `json:"username" binding:"required"`
-}
-
 type deleteResponse struct {
 	Message string `json:"message"`
 }
 
-// @Summary      Delete user
-// @Description  Deletes a user by username.
+// @Summary      Delete user by username (Admin only)
+// @Description  Deletes a user by username. Admin access required.
+// @Tags         admin
+// @Accept       json
+// @Produce      json
+// @Param        username  path  string  true  "Username of the user to delete"
+// @Success      200   {object}  deleteResponse
+// @Failure      400   {object}  map[string]string
+// @Failure      401   {object}  map[string]string
+// @Failure      403   {object}  map[string]string
+// @Security     BearerAuth
+// @Router       /api/v1/users/admin/delete/{username} [delete]
+func _() {}
+
+// @Summary      Delete current user
+// @Description  Deletes the currently authenticated user
 // @Tags         users
 // @Accept       json
 // @Produce      json
-// @Param        body  body      deleteRequest  true  "Username of the user to delete"
 // @Success      200   {object}  deleteResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      401   {object}  map[string]string
@@ -43,17 +52,9 @@ type deleteResponse struct {
 // @Security     BearerAuth
 // @Router       /api/v1/users/delete [delete]
 func (c *UserDeleteController) Delete(ctx *gin.Context) {
-	var req deleteRequest
+	username := ctx.GetString("Username")
 
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	requestingUsername := ctx.GetString("Username")
-	targetUsername := req.Username
-
-	if err := c.deleteUserUsecase.Execute(requestingUsername, targetUsername); err != nil {
+	if err := c.deleteUserUsecase.Execute(username); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -63,6 +64,6 @@ func (c *UserDeleteController) Delete(ctx *gin.Context) {
 	})
 
 	c.logger.Infow("user deleted successfully",
-		"username", req.Username,
+		"username", username,
 	)
 }

@@ -10,8 +10,10 @@ import (
 )
 
 type Env struct {
-	AppEnv string `mapstructure:"APP_ENV"`
-	Port   string `mapstructure:"PORT"`
+	AppEnv     string `mapstructure:"APP_ENV"`
+	Port       string `mapstructure:"PORT"`
+	Domain     string `mapstructure:"DOMAIN"`
+	AdminToken string `mapstructure:"ADMIN_TOKEN"`
 
 	DBHost string `mapstructure:"DB_HOST"`
 	DBPort string `mapstructure:"DB_PORT"`
@@ -60,6 +62,7 @@ func (e *Env) bindEnv() {
 	e.ApiURL = os.Getenv("API_URL")
 	e.AppEnv = os.Getenv("APP_ENV")
 	e.Port = os.Getenv("PORT")
+	e.Domain = os.Getenv("DOMAIN")
 
 	e.DBHost = os.Getenv("DB_HOST")
 	e.DBPort = os.Getenv("DB_PORT")

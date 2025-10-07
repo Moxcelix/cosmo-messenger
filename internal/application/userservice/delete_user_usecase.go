@@ -5,43 +5,27 @@ import (
 )
 
 type DeleteUserUsecase struct {
-	repository       userservice.UserRepository
-	deleteUserPolicy userservice.DeleteUserPolicy
+	repository userservice.UserRepository
 }
 
 func NewDeleteUserUsecase(
-	repository userservice.UserRepository,
-	deleteUserPolicy userservice.DeleteUserPolicy) *DeleteUserUsecase {
+	repository userservice.UserRepository) *DeleteUserUsecase {
 	return &DeleteUserUsecase{
-		repository:       repository,
-		deleteUserPolicy: deleteUserPolicy,
+		repository: repository,
 	}
 }
 
-func (uc *DeleteUserUsecase) Execute(requestingUsername, targetUsername string) error {
-	targetUser, err := uc.repository.GetUserByUsername(targetUsername)
+func (uc *DeleteUserUsecase) Execute(username string) error {
+	user, err := uc.repository.GetUserByUsername(username)
 	if err != nil {
 		return err
 	}
 
-	if targetUser == nil {
-		return userservice.ErrTargetUserNotFound
+	if user == nil {
+		return userservice.ErrUserNotFound
 	}
 
-	requestingUser, err := uc.repository.GetUserByUsername(requestingUsername)
-	if err != nil {
-		return err
-	}
-
-	if requestingUser == nil {
-		return userservice.ErrRequestingUserNotFound
-	}
-
-	if !uc.deleteUserPolicy.Resolve(requestingUser, targetUser) {
-		return userservice.ErrNoPermission
-	}
-
-	if err := uc.repository.DeleteUserByUsername(targetUsername); err != nil {
+	if err := uc.repository.DeleteUserByUsername(username); err != nil {
 		return err
 	}
 
