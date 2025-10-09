@@ -99,6 +99,43 @@ func (r *UserRepository) UpdateUser(user *userservice.User) error {
 	return err
 }
 
+func (r *UserRepository) GetUsersByRange(offset, limit int) (*userservice.UsersList, error) {
+	total, err := r.collection.CountDocuments(context.Background(), bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	opts := options.Find().
+		SetSkip(int64(offset)).
+		SetLimit(int64(limit)).
+		SetSort(bson.D{{"created_at", -1}})
+
+	cursor, err := r.collection.Find(context.Background(), bson.M{}, opts)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	var schemas []User
+	if err := cursor.All(context.Background(), &schemas); err != nil {
+		return nil, err
+	}
+
+	var users []*userservice.User
+	for _, schema := range schemas {
+		user := mapSchemaToDomain(schema)
+		users = append(users, &user)
+	}
+
+	return &userservice.UsersList{
+		Users:  users,
+		Total:  int(total),
+		Offset: offset,
+		Limit:  limit,
+	}, nil
+}
+
 func mapSchemaToDomain(schema User) userservice.User {
 	return userservice.User{
 		ID:           schema.ID,
