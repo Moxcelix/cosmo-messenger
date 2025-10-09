@@ -38,7 +38,22 @@ type deleteResponse struct {
 // @Failure      403   {object}  map[string]string
 // @Security     BearerAuth
 // @Router       /api/v1/users/admin/delete/{username} [delete]
-func _() {}
+func (c *UserDeleteController) DeleteByPath(ctx *gin.Context) {
+	username := ctx.Param("Username")
+
+	if err := c.deleteUserUsecase.Execute(username); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, deleteResponse{
+		Message: "user deleted successfully",
+	})
+
+	c.logger.Infow("user deleted successfully",
+		"username", username,
+	)
+}
 
 // @Summary      Delete current user
 // @Description  Deletes the currently authenticated user
@@ -51,7 +66,7 @@ func _() {}
 // @Failure      403   {object}  map[string]string
 // @Security     BearerAuth
 // @Router       /api/v1/users/delete [delete]
-func (c *UserDeleteController) Delete(ctx *gin.Context) {
+func (c *UserDeleteController) DeleteByContext(ctx *gin.Context) {
 	username := ctx.GetString("Username")
 
 	if err := c.deleteUserUsecase.Execute(username); err != nil {

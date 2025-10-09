@@ -38,10 +38,6 @@ func (m *AdminAuthMiddleware) Handler() gin.HandlerFunc {
 			return
 		}
 
-		username := ctx.Param("username")
-
-		ctx.Set("Username", username)
-
 		ctx.Next()
 	}
 }
