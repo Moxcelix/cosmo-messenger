@@ -11,3 +11,10 @@ type User struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
+
+type UsersList struct {
+	Users  []*User
+	Total  int
+	Offset int
+	Limit  int
+}

@@ -7,4 +7,5 @@ type UserRepository interface {
 	DeleteUserById(userId string) error
 	DeleteUserByUsername(userId string) error
 	UpdateUser(user *User) error
+	GetUsersByRange(offset, ligimt int) (*UsersList, error)
 }
