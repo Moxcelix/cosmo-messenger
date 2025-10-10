@@ -49,6 +49,19 @@ definitions:
       username:
         type: string
     type: object
+  userservice_api.listResponse:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      total:
+        type: integer
+      usernames:
+        items:
+          type: string
+        type: array
+    type: object
   userservice_api.registerRequest:
     properties:
       bio:
@@ -281,6 +294,44 @@ paths:
               type: string
             type: object
       summary: Get info about user
+      tags:
+      - users
+  /api/v1/users/get_usernames_list:
+    get:
+      consumes:
+      - application/json
+      description: Returns paginated usernames list
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.listResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get usernames list
       tags:
       - users
   /api/v1/users/register:

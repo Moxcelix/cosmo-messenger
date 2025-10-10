@@ -1,4 +1,4 @@
-package userservice_infrastructure
+package userservice_application
 
 import (
 	userservice "main/internal/domain/userservice"
@@ -10,6 +10,13 @@ const (
 	maxPageSize  = 100
 )
 
+type usernamesList struct {
+	Usernames []string
+	Total     int
+	Offset    int
+	Limit     int
+}
+
 type GetUsernamesListUsecase struct {
 	repository userservice.UserRepository
 }
@@ -20,7 +27,7 @@ func NewGetUsernamesListUsecase(repository userservice.UserRepository) *GetUsern
 	}
 }
 
-func (uc *GetUsernamesListUsecase) Execute(page, count int) (*userservice.UsersList, error) {
+func (uc *GetUsernamesListUsecase) Execute(page, count int) (*usernamesList, error) {
 	if page < 1 {
 		page = defaultPage
 	}
@@ -31,5 +38,22 @@ func (uc *GetUsernamesListUsecase) Execute(page, count int) (*userservice.UsersL
 		count = maxPageSize
 	}
 
-	return uc.repository.GetUsersByRange((page-1)*count, count)
+	userList, err := uc.repository.GetUsersByRange((page-1)*count, count)
+
+	if err != nil {
+		return nil, err
+	}
+	usernames := make([]string, len(userList.Users))
+	for i, user := range userList.Users {
+		usernames[i] = user.Username
+	}
+
+	result := &usernamesList{
+		Usernames: usernames,
+		Total:     userList.Total,
+		Limit:     userList.Limit,
+		Offset:    userList.Offset,
+	}
+
+	return result, nil
 }
