@@ -1,10 +1,10 @@
 package api
 
 import (
-	authservice_api "main/internal/api/authservice"
+	auth_api "main/internal/api/auth"
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
-	userservice_api "main/internal/api/userservice"
+	user_api "main/internal/api/user"
 
 	"go.uber.org/fx"
 )
@@ -22,8 +22,8 @@ type Routes []Route
 func NewRoutes(
 	swaggerRoutes *swagger_api.SwaggerRoutes,
 	pingRoutes *ping_api.PingRoutes,
-	userRoutes *userservice_api.UserServiceRoutes,
-	authRoutes *authservice_api.AuthServiceRoutes,
+	userRoutes *user_api.UserServiceRoutes,
+	authRoutes *auth_api.AuthServiceRoutes,
 ) Routes {
 	return Routes{
 		swaggerRoutes,
