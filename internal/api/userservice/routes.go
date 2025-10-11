@@ -6,32 +6,32 @@ import (
 )
 
 type UserServiceRoutes struct {
-	handler                    pkg.RequestHandler
-	userRegisterController     *UserRegisterController
-	userGetInfoController      *UserGetInfoController
-	userDeleteController       *UserDeleteController
-	getUsernamesListController *GetUsernamesListController
-	authMiddleware             *authservice_api.AuthMiddleware
-	adminAuthMiddleware        *authservice_api.AdminAuthMiddleware
+	handler                pkg.RequestHandler
+	userRegisterController *UserRegisterController
+	userGetInfoController  *UserGetInfoController
+	userDeleteController   *UserDeleteController
+	getUsersListController *GetUsersListController
+	authMiddleware         *authservice_api.AuthMiddleware
+	adminAuthMiddleware    *authservice_api.AdminAuthMiddleware
 }
 
 func NewUserServiceRoutes(
 	userRegisterController *UserRegisterController,
 	userGetInfoController *UserGetInfoController,
 	userDeleteController *UserDeleteController,
-	getUsernamesListController *GetUsernamesListController,
+	getUsersListController *GetUsersListController,
 	authMiddleware *authservice_api.AuthMiddleware,
 	adminAuthMiddleware *authservice_api.AdminAuthMiddleware,
 	handler pkg.RequestHandler,
 ) *UserServiceRoutes {
 	return &UserServiceRoutes{
-		userGetInfoController:      userGetInfoController,
-		userRegisterController:     userRegisterController,
-		userDeleteController:       userDeleteController,
-		getUsernamesListController: getUsernamesListController,
-		authMiddleware:             authMiddleware,
-		adminAuthMiddleware:        adminAuthMiddleware,
-		handler:                    handler,
+		userGetInfoController:  userGetInfoController,
+		userRegisterController: userRegisterController,
+		userDeleteController:   userDeleteController,
+		getUsersListController: getUsersListController,
+		authMiddleware:         authMiddleware,
+		adminAuthMiddleware:    adminAuthMiddleware,
+		handler:                handler,
 	}
 }
 
@@ -42,7 +42,7 @@ func (r *UserServiceRoutes) Setup() {
 	{
 		baseGroup.POST("/register", r.userRegisterController.Register)
 		baseGroup.GET("/get_info", r.userGetInfoController.GetInfo)
-		baseGroup.GET("/get_usernames_list", r.getUsernamesListController.GetList)
+		baseGroup.GET("/get_usernames_list", r.getUsersListController.GetUsernameList)
 	}
 
 	authGroup := base.Group("")

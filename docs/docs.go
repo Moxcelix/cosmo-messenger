@@ -171,14 +171,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/admin/delete/{username}": {
+        "/api/v1/users/delete": {
             "delete": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes a user by username. Admin access required.",
+                "description": "Deletes the currently authenticated user",
                 "consumes": [
                     "application/json"
                 ],
@@ -186,18 +186,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "admin"
+                    "users"
                 ],
-                "summary": "Delete user by username (Admin only)",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Username of the user to delete",
-                        "name": "username",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
+                "summary": "Delete current user",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -235,14 +226,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/delete": {
+        "/api/v1/users/delete/{username}": {
             "delete": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes the currently authenticated user",
+                "description": "Deletes a user by username. Admin access required.",
                 "consumes": [
                     "application/json"
                 ],
@@ -252,7 +243,16 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Delete current user",
+                "summary": "Delete user by username (Admin only)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username of the user to delete",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -370,7 +370,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.listResponse"
+                            "$ref": "#/definitions/userservice_api.usernamesListResponse"
                         }
                     },
                     "400": {
@@ -518,23 +518,23 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.listResponse": {
+        "userservice_api.paginationMeta": {
             "type": "object",
             "properties": {
-                "limit": {
-                    "type": "integer"
+                "has_next": {
+                    "type": "boolean"
                 },
-                "offset": {
+                "has_prev": {
+                    "type": "boolean"
+                },
+                "page": {
                     "type": "integer"
                 },
                 "total": {
                     "type": "integer"
                 },
-                "usernames": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
+                "total_pages": {
+                    "type": "integer"
                 }
             }
         },
@@ -565,6 +565,20 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "userservice_api.usernamesListResponse": {
+            "type": "object",
+            "properties": {
+                "meta": {
+                    "$ref": "#/definitions/userservice_api.paginationMeta"
+                },
+                "usernames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }

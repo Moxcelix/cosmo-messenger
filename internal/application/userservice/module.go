@@ -6,5 +6,5 @@ var Module = fx.Options(
 	fx.Provide(NewRegisterUseCase),
 	fx.Provide(NewGetInfoUseCase),
 	fx.Provide(NewDeleteUserUsecase),
-	fx.Provide(NewGetUsernamesListUsecase),
+	fx.Provide(NewGetUsersListUsecase),
 )

@@ -6,6 +6,6 @@ var Module = fx.Options(
 	fx.Provide(NewUserRegisterController),
 	fx.Provide(NewUserGetInfoController),
 	fx.Provide(NewUserDeleteController),
-	fx.Provide(NewGetUsernamesListController),
+	fx.Provide(NewGetUsersListController),
 	fx.Provide(NewUserServiceRoutes),
 )

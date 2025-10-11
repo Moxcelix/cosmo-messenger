@@ -49,18 +49,18 @@ definitions:
       username:
         type: string
     type: object
-  userservice_api.listResponse:
+  userservice_api.paginationMeta:
     properties:
-      limit:
-        type: integer
-      offset:
+      has_next:
+        type: boolean
+      has_prev:
+        type: boolean
+      page:
         type: integer
       total:
         type: integer
-      usernames:
-        items:
-          type: string
-        type: array
+      total_pages:
+        type: integer
     type: object
   userservice_api.registerRequest:
     properties:
@@ -81,6 +81,15 @@ definitions:
     properties:
       message:
         type: string
+    type: object
+  userservice_api.usernamesListResponse:
+    properties:
+      meta:
+        $ref: '#/definitions/userservice_api.paginationMeta'
+      usernames:
+        items:
+          type: string
+        type: array
     type: object
 info:
   contact: {}
@@ -189,7 +198,42 @@ paths:
       summary: Validates users access token
       tags:
       - auth
-  /api/v1/users/admin/delete/{username}:
+  /api/v1/users/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the currently authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete current user
+      tags:
+      - users
+  /api/v1/users/delete/{username}:
     delete:
       consumes:
       - application/json
@@ -228,41 +272,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Delete user by username (Admin only)
-      tags:
-      - admin
-  /api/v1/users/delete:
-    delete:
-      consumes:
-      - application/json
-      description: Deletes the currently authenticated user
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/userservice_api.deleteResponse'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "401":
-          description: Unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "403":
-          description: Forbidden
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Delete current user
       tags:
       - users
   /api/v1/users/get_info:
@@ -318,7 +327,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userservice_api.listResponse'
+            $ref: '#/definitions/userservice_api.usernamesListResponse'
         "400":
           description: Bad Request
           schema:

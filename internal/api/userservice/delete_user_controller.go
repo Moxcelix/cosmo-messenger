@@ -28,7 +28,7 @@ type deleteResponse struct {
 
 // @Summary      Delete user by username (Admin only)
 // @Description  Deletes a user by username. Admin access required.
-// @Tags         admin
+// @Tags         users
 // @Accept       json
 // @Produce      json
 // @Param        username  path  string  true  "Username of the user to delete"
@@ -37,7 +37,7 @@ type deleteResponse struct {
 // @Failure      401   {object}  map[string]string
 // @Failure      403   {object}  map[string]string
 // @Security     BearerAuth
-// @Router       /api/v1/users/admin/delete/{username} [delete]
+// @Router       /api/v1/users/delete/{username} [delete]
 func (c *UserDeleteController) DeleteByPath(ctx *gin.Context) {
 	username := ctx.Param("Username")
 
