@@ -1,0 +1,379 @@
+definitions:
+  authservice_api.loginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  authservice_api.loginResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  authservice_api.refreshRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  authservice_api.refreshResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  authservice_api.validateRequest:
+    properties:
+      access_token:
+        type: string
+    type: object
+  authservice_api.validateResponse:
+    properties:
+      user_id:
+        type: string
+    type: object
+  userservice_api.deleteResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  userservice_api.infoResponse:
+    properties:
+      bio:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  userservice_api.paginationMeta:
+    properties:
+      has_next:
+        type: boolean
+      has_prev:
+        type: boolean
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  userservice_api.registerRequest:
+    properties:
+      bio:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - name
+    - password
+    - username
+    type: object
+  userservice_api.registerResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  userservice_api.usernamesListResponse:
+    properties:
+      meta:
+        $ref: '#/definitions/userservice_api.paginationMeta'
+      usernames:
+        items:
+          type: string
+        type: array
+    type: object
+info:
+  contact: {}
+  title: Cosmo Messenger API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates user and returns JWT tokens
+      parameters:
+      - description: User credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/authservice_api.loginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authservice_api.loginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User login
+      tags:
+      - auth
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Returns new access token by refresh token
+      parameters:
+      - description: Refresh credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/authservice_api.refreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authservice_api.refreshResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User refresh token
+      tags:
+      - auth
+  /api/v1/auth/validate:
+    post:
+      consumes:
+      - application/json
+      description: Returns userID if access token is valid
+      parameters:
+      - description: Access credentials
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/authservice_api.validateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/authservice_api.validateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Validates users access token
+      tags:
+      - auth
+  /api/v1/users/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes the currently authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete current user
+      tags:
+      - users
+  /api/v1/users/delete/{username}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a user by username. Admin access required.
+      parameters:
+      - description: Username of the user to delete
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.deleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete user by username (Admin only)
+      tags:
+      - users
+  /api/v1/users/get_info:
+    get:
+      description: Returns information about a user by username
+      parameters:
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.infoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get info about user
+      tags:
+      - users
+  /api/v1/users/get_usernames_list:
+    get:
+      consumes:
+      - application/json
+      description: Returns paginated usernames list
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/userservice_api.usernamesListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get usernames list
+      tags:
+      - users
+  /api/v1/users/register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user in system
+      parameters:
+      - description: User data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/userservice_api.registerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/userservice_api.registerResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User registration
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

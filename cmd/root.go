@@ -1,16 +1,16 @@
 package cmd
 
 import (
-	"messenger/bootstrap"
+	"main/bootstrap"
 
 	"context"
 
 	"go.uber.org/fx"
 
-	"messenger/pkg"
+	"main/pkg"
 
-	route "messenger/internal/api"
-	"messenger/internal/config"
+	route "main/internal/api"
+	"main/internal/config"
 )
 
 func Run() any {
@@ -21,7 +21,7 @@ func Run() any {
 		route route.Routes,
 	) {
 		route.Setup()
-		err := handler.Gin.Run(env.ApiURL + ":" + env.Port)
+		err := handler.Gin.Run(":" + env.Port)
 
 		if err != nil {
 			logger.Error(err)

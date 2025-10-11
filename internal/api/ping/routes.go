@@ -1,7 +1,7 @@
 package ping_api
 
 import (
-	"messenger/pkg"
+	"main/pkg"
 )
 
 type PingRoutes struct {
@@ -12,14 +12,14 @@ type PingRoutes struct {
 func NewPingRoutes(
 	pingController PingController,
 	handler pkg.RequestHandler,
-) PingRoutes {
-	return PingRoutes{
+) *PingRoutes {
+	return &PingRoutes{
 		pingController: pingController,
 		handler:        handler,
 	}
 }
 
-func (r PingRoutes) Setup() {
+func (r *PingRoutes) Setup() {
 	group := r.handler.Gin.Group("/api/v1")
 
 	group.GET("/ping", r.pingController.Ping)
