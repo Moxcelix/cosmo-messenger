@@ -1,10 +1,10 @@
-package authservice_infrastructure
+package auth_infrastructure
 
 import (
 	"errors"
 	"main/internal/config"
-	"main/internal/domain/authservice"
-	"main/internal/domain/userservice"
+	"main/internal/domain/auth"
+	"main/internal/domain/user"
 	"main/pkg"
 	"time"
 )
@@ -13,8 +13,8 @@ type InternalAuthService struct {
 	jwt            *pkg.Jwt
 	accessTTL      time.Duration
 	refreshTTL     time.Duration
-	userRepo       userservice.UserRepository
-	passwordHasher *userservice.PasswordHasher
+	userRepo       user_domain.UserRepository
+	passwordHasher *user_domain.PasswordHasher
 }
 
 type User struct {
@@ -23,7 +23,11 @@ type User struct {
 	Password string
 }
 
-func NewInternalAuthService(jwt *pkg.Jwt, env config.Env, userRepo userservice.UserRepository, passwordHasher *userservice.PasswordHasher) authservice.AuthService {
+func NewInternalAuthService(
+	jwt *pkg.Jwt,
+	env config.Env,
+	userRepo user_domain.UserRepository, 
+	passwordHasher *user_domain.PasswordHasher) auth_domain.AuthService {
 	return &InternalAuthService{
 		jwt:            jwt,
 		accessTTL:      env.JwtAccessTTL,

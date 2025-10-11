@@ -1,14 +1,14 @@
-package authservice_application
+package auth_application
 
 import (
-	"main/internal/domain/authservice"
+	auth "main/internal/domain/auth"
 )
 
 type RefreshUsecase struct {
-	authservice authservice.AuthService
+	authservice auth.AuthService
 }
 
-func NewRefreshUsecase(authservice authservice.AuthService) *RefreshUsecase {
+func NewRefreshUsecase(authservice auth.AuthService) *RefreshUsecase {
 	return &RefreshUsecase{
 		authservice: authservice,
 	}

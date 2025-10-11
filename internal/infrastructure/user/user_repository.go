@@ -1,11 +1,11 @@
-package userservice_infrastructure
+package user_infrastructure
 
 import (
 	"context"
 	"errors"
 	"time"
 
-	"main/internal/domain/userservice"
+	"main/internal/domain/user"
 	"main/pkg"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -19,7 +19,7 @@ type UserRepository struct {
 	logger     pkg.Logger
 }
 
-func NewUserRepository(db pkg.MongoDatabase, logger pkg.Logger) userservice.UserRepository {
+func NewUserRepository(db pkg.MongoDatabase, logger pkg.Logger) user_domain.UserRepository {
 	_, err := db.Collection("users").Indexes().CreateOne(context.Background(), mongo.IndexModel{
 		Keys:    bson.M{"username": 1},
 		Options: options.Index().SetUnique(true),
@@ -34,7 +34,7 @@ func NewUserRepository(db pkg.MongoDatabase, logger pkg.Logger) userservice.User
 	}
 }
 
-func (r *UserRepository) GetUserById(userId string) (*userservice.User, error) {
+func (r *UserRepository) GetUserById(userId string) (*user_domain.User, error) {
 	var schema User
 	err := r.collection.FindOne(context.Background(), bson.M{"_id": userId}).Decode(&schema)
 	if err != nil {
@@ -48,7 +48,7 @@ func (r *UserRepository) GetUserById(userId string) (*userservice.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) GetUserByUsername(username string) (*userservice.User, error) {
+func (r *UserRepository) GetUserByUsername(username string) (*user_domain.User, error) {
 	var schema User
 	err := r.collection.FindOne(context.Background(), bson.M{"username": username}).Decode(&schema)
 	if err != nil {
@@ -61,7 +61,7 @@ func (r *UserRepository) GetUserByUsername(username string) (*userservice.User, 
 	return &user, nil
 }
 
-func (r *UserRepository) CreateUser(user *userservice.User) error {
+func (r *UserRepository) CreateUser(user *user_domain.User) error {
 	if user.ID == "" {
 		user.ID = primitive.NewObjectID().Hex()
 	}
@@ -84,7 +84,7 @@ func (r *UserRepository) DeleteUserById(userId string) error {
 	return err
 }
 
-func (r *UserRepository) UpdateUser(user *userservice.User) error {
+func (r *UserRepository) UpdateUser(user *user_domain.User) error {
 	user.UpdatedAt = time.Now()
 	update := bson.M{
 		"$set": bson.M{
@@ -99,7 +99,7 @@ func (r *UserRepository) UpdateUser(user *userservice.User) error {
 	return err
 }
 
-func (r *UserRepository) GetUsersByRange(offset, limit int) (*userservice.UsersList, error) {
+func (r *UserRepository) GetUsersByRange(offset, limit int) (*user_domain.UsersList, error) {
 	total, err := r.collection.CountDocuments(context.Background(), bson.M{})
 
 	if err != nil {
@@ -122,13 +122,13 @@ func (r *UserRepository) GetUsersByRange(offset, limit int) (*userservice.UsersL
 		return nil, err
 	}
 
-	var users []*userservice.User
+	var users []*user_domain.User
 	for _, schema := range schemas {
 		user := mapSchemaToDomain(schema)
 		users = append(users, &user)
 	}
 
-	return &userservice.UsersList{
+	return &user_domain.UsersList{
 		Users:  users,
 		Total:  int(total),
 		Offset: offset,
@@ -136,8 +136,8 @@ func (r *UserRepository) GetUsersByRange(offset, limit int) (*userservice.UsersL
 	}, nil
 }
 
-func mapSchemaToDomain(schema User) userservice.User {
-	return userservice.User{
+func mapSchemaToDomain(schema User) user_domain.User {
+	return user_domain.User{
 		ID:           schema.ID,
 		Name:         schema.Name,
 		Username:     schema.Username,
@@ -148,7 +148,7 @@ func mapSchemaToDomain(schema User) userservice.User {
 	}
 }
 
-func mapDomainToSchema(user userservice.User) User {
+func mapDomainToSchema(user user_domain.User) User {
 	return User{
 		ID:           user.ID,
 		Name:         user.Name,

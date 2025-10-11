@@ -1,7 +1,7 @@
-package userservice_api
+package user_api
 
 import (
-	"main/internal/api/authservice"
+	"main/internal/api/auth"
 	"main/pkg"
 )
 
@@ -11,8 +11,8 @@ type UserServiceRoutes struct {
 	userGetInfoController  *UserGetInfoController
 	userDeleteController   *UserDeleteController
 	getUsersListController *GetUsersListController
-	authMiddleware         *authservice_api.AuthMiddleware
-	adminAuthMiddleware    *authservice_api.AdminAuthMiddleware
+	authMiddleware         *auth_api.AuthMiddleware
+	adminAuthMiddleware    *auth_api.AdminAuthMiddleware
 }
 
 func NewUserServiceRoutes(
@@ -20,8 +20,8 @@ func NewUserServiceRoutes(
 	userGetInfoController *UserGetInfoController,
 	userDeleteController *UserDeleteController,
 	getUsersListController *GetUsersListController,
-	authMiddleware *authservice_api.AuthMiddleware,
-	adminAuthMiddleware *authservice_api.AdminAuthMiddleware,
+	authMiddleware *auth_api.AuthMiddleware,
+	adminAuthMiddleware *auth_api.AdminAuthMiddleware,
 	handler pkg.RequestHandler,
 ) *UserServiceRoutes {
 	return &UserServiceRoutes{

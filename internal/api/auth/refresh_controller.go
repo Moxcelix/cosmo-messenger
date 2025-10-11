@@ -1,16 +1,16 @@
-package authservice_api
+package auth_api
 
 import (
 	"github.com/gin-gonic/gin"
-	"main/internal/application/authservice"
+	"main/internal/application/auth"
 	"net/http"
 )
 
 type RefreshController struct {
-	usecase *authservice_application.RefreshUsecase
+	usecase *auth_application.RefreshUsecase
 }
 
-func NewRefreshController(usecase *authservice_application.RefreshUsecase) *RefreshController {
+func NewRefreshController(usecase *auth_application.RefreshUsecase) *RefreshController {
 	return &RefreshController{
 		usecase: usecase,
 	}

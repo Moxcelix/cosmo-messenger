@@ -2,16 +2,16 @@ package bootstrap
 
 import (
 	"main/internal/api"
-	"main/internal/api/authservice"
+	"main/internal/api/auth"
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
-	userservice_api "main/internal/api/userservice"
-	"main/internal/application/authservice"
-	userservice_application "main/internal/application/userservice"
+	user_api "main/internal/api/user"
+	"main/internal/application/auth"
+	user_application "main/internal/application/user"
 	"main/internal/config"
-	userservice "main/internal/domain/userservice"
-	"main/internal/infrastructure/authservice"
-	userservice_infrastructure "main/internal/infrastructure/userservice"
+	user "main/internal/domain/user"
+	"main/internal/infrastructure/auth"
+	user_infrastructure "main/internal/infrastructure/user"
 	"main/pkg"
 
 	"go.uber.org/fx"
@@ -22,12 +22,12 @@ var CommonModules = fx.Options(
 	config.Module,
 	pkg.Module,
 	ping_api.Module,
-	userservice_infrastructure.Module,
-	userservice_application.Module,
+	user_infrastructure.Module,
+	user_application.Module,
 	swagger_api.Module,
-	userservice_api.Module,
-	userservice.Module,
-	authservice_infrastructure.Module,
-	authservice_application.Module,
-	authservice_api.Module,
+	user_api.Module,
+	user.Module,
+	auth_infrastructure.Module,
+	auth_application.Module,
+	auth_api.Module,
 )

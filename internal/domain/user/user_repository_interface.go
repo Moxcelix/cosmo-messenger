@@ -1,4 +1,4 @@
-package userservice
+package user_domain
 
 type UserRepository interface {
 	GetUserById(userId string) (*User, error)

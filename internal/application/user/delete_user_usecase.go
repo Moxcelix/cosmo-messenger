@@ -1,15 +1,15 @@
-package userservice_application
+package user_application
 
 import (
-	userservice "main/internal/domain/userservice"
+	"main/internal/domain/user"
 )
 
 type DeleteUserUsecase struct {
-	repository userservice.UserRepository
+	repository user_domain.UserRepository
 }
 
 func NewDeleteUserUsecase(
-	repository userservice.UserRepository) *DeleteUserUsecase {
+	repository user_domain.UserRepository) *DeleteUserUsecase {
 	return &DeleteUserUsecase{
 		repository: repository,
 	}
@@ -22,7 +22,7 @@ func (uc *DeleteUserUsecase) Execute(username string) error {
 	}
 
 	if user == nil {
-		return userservice.ErrUserNotFound
+		return user_domain.ErrUserNotFound
 	}
 
 	if err := uc.repository.DeleteUserByUsername(username); err != nil {

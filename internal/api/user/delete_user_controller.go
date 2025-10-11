@@ -1,20 +1,20 @@
-package userservice_api
+package user_api
 
 import (
 	"main/pkg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"main/internal/application/userservice"
+	"main/internal/application/user"
 )
 
 type UserDeleteController struct {
-	deleteUserUsecase *userservice_application.DeleteUserUsecase
+	deleteUserUsecase *user_application.DeleteUserUsecase
 	logger            pkg.Logger
 }
 
 func NewUserDeleteController(
-	deleteUserUsecase *userservice_application.DeleteUserUsecase,
+	deleteUserUsecase *user_application.DeleteUserUsecase,
 	logger pkg.Logger) *UserDeleteController {
 	return &UserDeleteController{
 		deleteUserUsecase: deleteUserUsecase,

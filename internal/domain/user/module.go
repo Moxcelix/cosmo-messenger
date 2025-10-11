@@ -1,4 +1,4 @@
-package userservice
+package user_domain
 
 import (
 	"go.uber.org/fx"

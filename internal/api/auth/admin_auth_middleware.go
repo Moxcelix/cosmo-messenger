@@ -1,4 +1,4 @@
-package authservice_api
+package auth_api
 
 import (
 	"errors"

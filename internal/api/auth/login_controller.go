@@ -1,17 +1,17 @@
-package authservice_api
+package auth_api
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"main/internal/application/authservice"
+	"main/internal/application/auth"
 )
 
 type LoginController struct {
-	usecase *authservice_application.LoginUsecase
+	usecase *auth_application.LoginUsecase
 }
 
-func NewLoginController(usecase *authservice_application.LoginUsecase) *LoginController {
+func NewLoginController(usecase *auth_application.LoginUsecase) *LoginController {
 	return &LoginController{
 		usecase: usecase,
 	}

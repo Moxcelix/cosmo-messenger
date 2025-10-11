@@ -1,7 +1,7 @@
-package userservice_application
+package user_application
 
 import (
-	userservice "main/internal/domain/userservice"
+	user "main/internal/domain/user"
 )
 
 const (
@@ -11,16 +11,16 @@ const (
 )
 
 type GetUsersListUsecase struct {
-	repository userservice.UserRepository
+	repository user.UserRepository
 }
 
-func NewGetUsersListUsecase(repository userservice.UserRepository) *GetUsersListUsecase {
+func NewGetUsersListUsecase(repository user.UserRepository) *GetUsersListUsecase {
 	return &GetUsersListUsecase{
 		repository: repository,
 	}
 }
 
-func (uc *GetUsersListUsecase) Execute(page, count int) (*userservice.UsersList, error) {
+func (uc *GetUsersListUsecase) Execute(page, count int) (*user.UsersList, error) {
 	if page < 1 {
 		page = defaultPage
 	}

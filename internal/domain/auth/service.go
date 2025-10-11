@@ -1,4 +1,4 @@
-package authservice
+package auth_domain
 
 type AuthService interface {
 	Login(username, password string) (accessToken, refreshToken string, err error)

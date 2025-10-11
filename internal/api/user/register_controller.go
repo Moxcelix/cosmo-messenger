@@ -1,19 +1,19 @@
-package userservice_api
+package user_api
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	userservice_application "main/internal/application/userservice"
+	user_application "main/internal/application/user"
 	"main/pkg"
 )
 
 type UserRegisterController struct {
-	registerUseCase *userservice_application.RegisterUseCase
+	registerUseCase *user_application.RegisterUseCase
 	logger          pkg.Logger
 }
 
-func NewUserRegisterController(registerUseCase *userservice_application.RegisterUseCase, logger pkg.Logger) *UserRegisterController {
+func NewUserRegisterController(registerUseCase *user_application.RegisterUseCase, logger pkg.Logger) *UserRegisterController {
 	return &UserRegisterController{
 		registerUseCase: registerUseCase,
 		logger:          logger,

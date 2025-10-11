@@ -1,7 +1,7 @@
-package userservice_application
+package user_application
 
 import (
-	userservice "main/internal/domain/userservice"
+	"main/internal/domain/user"
 )
 
 type UserInfo struct {
@@ -12,10 +12,10 @@ type UserInfo struct {
 }
 
 type GetInfoUseCase struct {
-	repository userservice.UserRepository
+	repository user_domain.UserRepository
 }
 
-func NewGetInfoUseCase(repository userservice.UserRepository) *GetInfoUseCase {
+func NewGetInfoUseCase(repository user_domain.UserRepository) *GetInfoUseCase {
 	return &GetInfoUseCase{
 		repository: repository,
 	}
@@ -28,7 +28,7 @@ func (uc *GetInfoUseCase) Execute(username string) (*UserInfo, error) {
 	}
 
 	if user == nil {
-		return nil, userservice.ErrUserNotFound
+		return nil, user_domain.ErrUserNotFound
 	}
 
 	return &UserInfo{

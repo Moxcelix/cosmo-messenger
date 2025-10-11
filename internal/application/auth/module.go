@@ -1,4 +1,4 @@
-package authservice_application
+package auth_application
 
 import "go.uber.org/fx"
 

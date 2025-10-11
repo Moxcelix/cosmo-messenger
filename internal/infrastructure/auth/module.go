@@ -1,4 +1,4 @@
-package authservice_infrastructure
+package auth_infrastructure
 
 import (
 	"go.uber.org/fx"

@@ -1,4 +1,4 @@
-package userservice_api
+package user_api
 
 import "go.uber.org/fx"
 

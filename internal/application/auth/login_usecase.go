@@ -1,16 +1,16 @@
-package authservice_application
+package auth_application
 
 import (
-	"main/internal/domain/authservice"
-	"main/internal/domain/userservice"
+	"main/internal/domain/auth"
+	"main/internal/domain/user"
 )
 
 type LoginUsecase struct {
-	authservice   authservice.AuthService
-	userReposiory userservice.UserRepository
+	authservice   auth_domain.AuthService
+	userReposiory user_domain.UserRepository
 }
 
-func NewLoginUsecase(authservice authservice.AuthService, userReposiory userservice.UserRepository) *LoginUsecase {
+func NewLoginUsecase(authservice auth_domain.AuthService, userReposiory user_domain.UserRepository) *LoginUsecase {
 	return &LoginUsecase{
 		authservice:   authservice,
 		userReposiory: userReposiory,
@@ -19,7 +19,7 @@ func NewLoginUsecase(authservice authservice.AuthService, userReposiory userserv
 
 func (uc *LoginUsecase) Execute(username, password string) (string, string, error) {
 	if user, _ := uc.userReposiory.GetUserByUsername(username); user == nil {
-		return "", "", userservice.ErrUserNotFound
+		return "", "", user_domain.ErrUserNotFound
 	}
 
 	return uc.authservice.Login(username, password)

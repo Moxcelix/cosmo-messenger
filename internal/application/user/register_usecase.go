@@ -1,18 +1,18 @@
-package userservice_application
+package user_application
 
 import (
 	"time"
 
-	userservice "main/internal/domain/userservice"
+	user "main/internal/domain/user"
 	"main/pkg"
 )
 
 type RegisterUseCase struct {
-	repository userservice.UserRepository
+	repository user.UserRepository
 	hasher     *pkg.Hasher
 }
 
-func NewRegisterUseCase(repository userservice.UserRepository, hasher *pkg.Hasher) *RegisterUseCase {
+func NewRegisterUseCase(repository user.UserRepository, hasher *pkg.Hasher) *RegisterUseCase {
 	return &RegisterUseCase{
 		repository: repository,
 		hasher:     hasher,
@@ -25,7 +25,7 @@ func (r *RegisterUseCase) Execute(name string, username string, password string,
 		return err
 	}
 	if existing != nil {
-		return userservice.ErrUsernameAlreadyTaken
+		return user.ErrUsernameAlreadyTaken
 	}
 
 	hash, err := r.hasher.Hash([]byte(password))
@@ -34,7 +34,7 @@ func (r *RegisterUseCase) Execute(name string, username string, password string,
 	}
 
 	now := time.Now()
-	user := &userservice.User{
+	user := &user.User{
 		Name:         name,
 		Username:     username,
 		PasswordHash: string(hash),

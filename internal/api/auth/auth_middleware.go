@@ -1,11 +1,11 @@
-package authservice_api
+package auth_api
 
 import (
 	"main/pkg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	authapp "main/internal/application/authservice"
+	authapp "main/internal/application/auth"
 )
 
 type AuthMiddleware struct {

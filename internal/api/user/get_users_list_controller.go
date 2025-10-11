@@ -1,19 +1,19 @@
-package userservice_api
+package user_api
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	userservice_application "main/internal/application/userservice"
+	user_application "main/internal/application/user"
 )
 
 type GetUsersListController struct {
-	getUsersListUsecase *userservice_application.GetUsersListUsecase
+	getUsersListUsecase *user_application.GetUsersListUsecase
 }
 
 func NewGetUsersListController(
-	getUsersListUsecase *userservice_application.GetUsersListUsecase) *GetUsersListController {
+	getUsersListUsecase *user_application.GetUsersListUsecase) *GetUsersListController {
 	return &GetUsersListController{
 		getUsersListUsecase: getUsersListUsecase,
 	}

@@ -1,4 +1,4 @@
-package userservice_infrastructure
+package user_infrastructure
 
 import (
 	"go.uber.org/fx"

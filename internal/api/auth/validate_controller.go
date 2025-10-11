@@ -1,16 +1,16 @@
-package authservice_api
+package auth_api
 
 import (
 	"github.com/gin-gonic/gin"
-	"main/internal/application/authservice"
+	"main/internal/application/auth"
 	"net/http"
 )
 
 type ValidateController struct {
-	usecase *authservice_application.ValidateUsecase
+	usecase *auth_application.ValidateUsecase
 }
 
-func NewValidateController(usecase *authservice_application.ValidateUsecase) *ValidateController {
+func NewValidateController(usecase *auth_application.ValidateUsecase) *ValidateController {
 	return &ValidateController{
 		usecase: usecase,
 	}
@@ -21,7 +21,7 @@ type validateRequest struct {
 }
 
 type validateResponse struct {
-	UserID string `json:"user_id"`
+	Username string `json:"username"`
 }
 
 // Refresh godoc
@@ -43,13 +43,13 @@ func (c *ValidateController) Validate(ctx *gin.Context) {
 		return
 	}
 
-	userID, err := c.usecase.Execute(req.AccessToken)
+	username, err := c.usecase.Execute(req.AccessToken)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, validateResponse{
-		UserID: userID,
+		Username: username,
 	})
 }

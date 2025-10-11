@@ -1,17 +1,17 @@
-package userservice_api
+package user_api
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	userservice_application "main/internal/application/userservice"
+	user_application "main/internal/application/user"
 )
 
 type UserGetInfoController struct {
-	getInfoUseCase *userservice_application.GetInfoUseCase
+	getInfoUseCase *user_application.GetInfoUseCase
 }
 
-func NewUserGetInfoController(getInfoUseCase *userservice_application.GetInfoUseCase) *UserGetInfoController {
+func NewUserGetInfoController(getInfoUseCase *user_application.GetInfoUseCase) *UserGetInfoController {
 	return &UserGetInfoController{
 		getInfoUseCase: getInfoUseCase,
 	}
