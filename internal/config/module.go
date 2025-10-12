@@ -6,5 +6,5 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(NewEnv),
-	fx.Provide(NewPolicyConfig),
+	fx.Provide(NewConfig),
 )

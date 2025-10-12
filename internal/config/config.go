@@ -25,14 +25,18 @@ type PolicyConfig struct {
 	Chat    ChatPolicyConfig    `yaml:"chat"`
 }
 
-func NewPolicyConfig() *PolicyConfig {
+type Config struct {
+	Policies PolicyConfig `yaml:"policies"`
+}
+
+func NewConfig() *Config {
 	data, err := os.ReadFile("config.yaml")
 	if err != nil {
 		log.Fatal("Can't read the config.yaml file: ", err)
 		return nil
 	}
 
-	var config PolicyConfig
+	var config Config
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		log.Fatal("Can't unmarshal the config.yaml file: ", err)
 		return nil
