@@ -50,8 +50,15 @@ func (r *ChatRepository) GetByID(id string) (*chat_domain.Chat, error) {
 	return &chat, nil
 }
 
-func (r *ChatRepository) GetByMember(userID string, offset, limit int) ([]*chat_domain.Chat, error) {
+func (r *ChatRepository) GetByMember(userID string, offset, limit int) (*chat_domain.ChatList, error) {
+	ctx := context.Background()
+
 	filter := bson.M{"members": userID}
+
+	total, err := r.collection.CountDocuments(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
 
 	opts := options.Find().
 		SetSkip(int64(offset)).
@@ -60,18 +67,23 @@ func (r *ChatRepository) GetByMember(userID string, offset, limit int) ([]*chat_
 			{Key: "updated_at", Value: -1},
 		})
 
-	cursor, err := r.collection.Find(context.Background(), filter, opts)
+	cursor, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.Background())
+	defer cursor.Close(ctx)
 
 	var chats []*chat_domain.Chat
-	if err := cursor.All(context.Background(), &chats); err != nil {
+	if err := cursor.All(ctx, &chats); err != nil {
 		return nil, err
 	}
 
-	return chats, nil
+	return &chat_domain.ChatList{
+		Chats:  chats,
+		Total:  int(total),
+		Offset: offset,
+		Limit:  limit,
+	}, nil
 }
 
 func (r *ChatRepository) Update(chat *chat_domain.Chat) error {
