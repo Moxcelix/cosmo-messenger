@@ -1,4 +1,4 @@
-package policy_domain
+package chat_domain
 
 import (
 	"errors"

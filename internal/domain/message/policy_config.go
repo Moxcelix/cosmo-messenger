@@ -1,4 +1,4 @@
-package policy_domain
+package message_domain
 
 import "time"
 
@@ -7,10 +7,4 @@ type MessagePolicyConfig interface {
 	DeleteDuration() time.Duration
 	MaxLength() int
 	MinLength() int
-}
-
-type ChatPolicyConfig interface {
-	MaxGroupMembers() int
-	MaxChatNameLength() int
-	MinChatNameLength() int
 }

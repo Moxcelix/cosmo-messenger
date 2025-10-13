@@ -1,8 +1,8 @@
-package policy_infrastructure
+package chat_infrastructure
 
 import (
 	"main/internal/config"
-	"main/internal/domain/policy"
+	"main/internal/domain/chat"
 )
 
 type ChatPolicyConfig struct {
@@ -11,7 +11,7 @@ type ChatPolicyConfig struct {
 	minChatNameLength int
 }
 
-func NewChatPolicyConfig(cfg *config.Config) policy_domain.ChatPolicyConfig {
+func NewChatPolicyConfig(cfg *config.Config) chat_domain.ChatPolicyConfig {
 	return &ChatPolicyConfig{
 		maxGroupMembers:   cfg.Policies.Chat.MaxGroupMembers,
 		maxChatNameLength: cfg.Policies.Chat.MaxChatNameLength,

@@ -1,8 +1,8 @@
-package policy_infrastructure
+package message_infrastructure
 
 import (
 	"main/internal/config"
-	"main/internal/domain/policy"
+	"main/internal/domain/message"
 	"time"
 )
 
@@ -13,7 +13,7 @@ type MessagePolicyConfig struct {
 	minLength      int
 }
 
-func NewMessagePolicyConfig(cfg *config.Config) policy_domain.MessagePolicyConfig {
+func NewMessagePolicyConfig(cfg *config.Config) message_domain.MessagePolicyConfig {
 	return &MessagePolicyConfig{
 		editDuration:   cfg.Policies.Message.EditDuration,
 		deleteDuration: cfg.Policies.Message.DeleteDuration,
