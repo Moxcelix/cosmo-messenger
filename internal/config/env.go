@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"go.uber.org/fx"
 )
 
 type Env struct {
@@ -88,7 +87,3 @@ func (e *Env) bindEnv() {
 		e.JwtRefreshTTL = d
 	}
 }
-
-var Module = fx.Options(
-	fx.Provide(NewEnv),
-)

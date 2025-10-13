@@ -9,8 +9,12 @@ import (
 	"main/internal/application/auth"
 	user_application "main/internal/application/user"
 	"main/internal/config"
+	"main/internal/domain/chat"
+	"main/internal/domain/message"
 	user "main/internal/domain/user"
 	"main/internal/infrastructure/auth"
+	"main/internal/infrastructure/chat"
+	"main/internal/infrastructure/message"
 	user_infrastructure "main/internal/infrastructure/user"
 	"main/pkg"
 
@@ -30,4 +34,8 @@ var CommonModules = fx.Options(
 	auth_infrastructure.Module,
 	auth_application.Module,
 	auth_api.Module,
+	message_domain.Module,
+	message_infrastructure.Module,
+	chat_domain.Module,
+	chat_infrastructure.Module,
 )

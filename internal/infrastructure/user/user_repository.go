@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"main/internal/domain/user"
+	user_domain "main/internal/domain/user"
 	"main/pkg"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -109,7 +109,9 @@ func (r *UserRepository) GetUsersByRange(offset, limit int) (*user_domain.UsersL
 	opts := options.Find().
 		SetSkip(int64(offset)).
 		SetLimit(int64(limit)).
-		SetSort(bson.D{{"created_at", -1}})
+		SetSort(bson.D{
+			{Key: "created_at", Value: -1},
+		})
 
 	cursor, err := r.collection.Find(context.Background(), bson.M{}, opts)
 	if err != nil {
