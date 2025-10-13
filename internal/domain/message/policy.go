@@ -2,7 +2,6 @@ package message_domain
 
 import (
 	"errors"
-	"main/internal/domain/message"
 	"time"
 )
 
@@ -35,14 +34,14 @@ func (p *MessagePolicy) ValidateMessageContent(message string) error {
 	return nil
 }
 
-func (p *MessagePolicy) ValidateDelete(msg message_domain.Message, now time.Time) error {
+func (p *MessagePolicy) ValidateDelete(msg Message, now time.Time) error {
 	if now.Sub(msg.CreatedAt) > p.cfg.DeleteDuration() {
 		return ErrDeleteDurationExpired
 	}
 	return nil
 }
 
-func (p *MessagePolicy) ValidateEdit(msg message_domain.Message, now time.Time) error {
+func (p *MessagePolicy) ValidateEdit(msg Message, now time.Time) error {
 	if now.Sub(msg.CreatedAt) > p.cfg.EditDuration() {
 		return ErrEditDurationExpired
 	}

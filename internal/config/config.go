@@ -1,10 +1,10 @@
 package config
 
 import (
-	"gopkg.in/yaml.v3"
-	"log"
 	"os"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
 type MessagePolicyConfig struct {
@@ -29,18 +29,22 @@ type Config struct {
 	Policies PolicyConfig `yaml:"policies"`
 }
 
-func NewConfig() *Config {
-	data, err := os.ReadFile("config.yaml")
+func NewConfig() (*Config, error) {
+	path := os.Getenv("CONFIG_PATH")
+	if path == "" {
+		path = "config.yaml"
+	}
+
+	data, err := os.ReadFile(path)
+
 	if err != nil {
-		log.Fatal("Can't read the config.yaml file: ", err)
-		return nil
+		return nil, err
 	}
 
-	var config Config
-	if err := yaml.Unmarshal(data, &config); err != nil {
-		log.Fatal("Can't unmarshal the config.yaml file: ", err)
-		return nil
+	var cfg Config
+	if err := yaml.Unmarshal(data, &cfg); err != nil {
+		return nil, err
 	}
 
-	return &config
+	return &cfg, nil
 }

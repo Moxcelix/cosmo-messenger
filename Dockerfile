@@ -7,6 +7,9 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
+# ENV переменная для пути к конфигу
+ENV CONFIG_PATH=./config.yaml
+
 # Копируем исходный код
 COPY . .
 
