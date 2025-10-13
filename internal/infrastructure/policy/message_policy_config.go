@@ -15,10 +15,10 @@ type MessagePolicyConfig struct {
 
 func NewMessagePolicyConfig(cfg *config.Config) policy_domain.MessagePolicyConfig {
 	return &MessagePolicyConfig{
-		editDuration:   cfg.Policies.MessagePolicyConfig.EditDuration,
-		deleteDuration: cfg.Policies.MessagePolicyConfig.DeleteDuration,
-		maxLength:      cfg.Policies.MessagePolicyConfig.MaxLength,
-		minLength:      cfg.Policies.MessagePolicyConfig.MinLength,
+		editDuration:   cfg.Policies.Message.EditDuration,
+		deleteDuration: cfg.Policies.Message.DeleteDuration,
+		maxLength:      cfg.Policies.Message.MaxLength,
+		minLength:      cfg.Policies.Message.MinLength,
 	}
 }
 

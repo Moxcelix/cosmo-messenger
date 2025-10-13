@@ -13,9 +13,9 @@ type ChatPolicyConfig struct {
 
 func NewChatPolicyConfig(cfg *config.Config) policy_domain.ChatPolicyConfig {
 	return &ChatPolicyConfig{
-		maxGroupMembers:   cfg.Policies.ChatPolicyConfig.MaxGroupMembers,
-		maxChatNameLength: cfg.Policies.ChatPolicyConfig.MaxChatNameLength,
-		minChatNameLength: cfg.Policies.ChatPolicyConfig.MinChatNameLength,
+		maxGroupMembers:   cfg.Policies.Chat.MaxGroupMembers,
+		maxChatNameLength: cfg.Policies.Chat.MaxChatNameLength,
+		minChatNameLength: cfg.Policies.Chat.MinChatNameLength,
 	}
 }
 
