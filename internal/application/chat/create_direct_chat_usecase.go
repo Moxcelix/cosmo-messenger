@@ -23,54 +23,45 @@ func NewCreateDirectChatUsecase(
 }
 
 func (uc *CreateDirectChatUsecase) Execute(firstMemberId, secondMemberId string) error {
-	firstUser, err := uc.userRepo.GetUserById(firstMemberId)
-	if err != nil {
+	if err := uc.checkUserExists(firstMemberId); err != nil {
 		return err
-	}
-
-	if firstUser == nil {
-		return user_domain.ErrUserNotFound
 	}
 
 	if firstMemberId == secondMemberId {
 		return chat_domain.ErrCannotCreateChatWithSelf
 	}
 
-	secondUser, err := uc.userRepo.GetUserById(secondMemberId)
-	if err != nil {
+	if err := uc.checkUserExists(secondMemberId); err != nil {
 		return err
-	}
-
-	if secondUser == nil {
-		return user_domain.ErrUserNotFound
 	}
 
 	directChat, err := uc.chatRepo.GetDirectChat(firstMemberId, secondMemberId)
-
 	if err != nil {
 		return err
 	}
-
 	if directChat != nil {
 		return chat_domain.ErrChatAlreadyExsists
 	}
 
-	firstMember := chat_domain.ChatMember{
-		UserID: firstUser.ID,
-		Role:   chat_domain.RoleMember,
-	}
-	secondMember := chat_domain.ChatMember{
-		UserID: secondUser.ID,
-		Role:   chat_domain.RoleMember,
-	}
-
 	chat := &chat_domain.Chat{
-		Type:    chat_domain.ChatTypeDirect,
-		Members: []chat_domain.ChatMember{firstMember, secondMember},
+		Type: chat_domain.ChatTypeDirect,
+		Members: []chat_domain.ChatMember{
+			{UserID: firstMemberId, Role: chat_domain.RoleMember},
+			{UserID: secondMemberId, Role: chat_domain.RoleMember},
+		},
 	}
 
-	if err := uc.chatRepo.Create(chat); err != nil {
+	return uc.chatRepo.Create(chat)
+}
+
+func (uc *CreateDirectChatUsecase) checkUserExists(userId string) error {
+	result, err := uc.userRepo.UserExists(userId)
+	if err != nil {
 		return err
+	}
+
+	if !result {
+		return user_domain.ErrUserNotFound
 	}
 
 	return nil

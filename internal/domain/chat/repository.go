@@ -11,4 +11,6 @@ type ChatRepository interface {
 	Update(chat *Chat) error
 	Delete(id string) error
 	MarkUpdated(chatID string, updateTime time.Time) error
+	ChatExists(chatId string) (bool, error)
+	DirectChatExists(firstUserID, secondUserID string) (bool, error)
 }

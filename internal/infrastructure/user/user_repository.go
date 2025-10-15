@@ -257,6 +257,18 @@ func (r *UserRepository) GetUsersByRange(offset, limit int) (*user_domain.UsersL
 	}, nil
 }
 
+func (r *UserRepository) UserExists(userId string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)`
+
+	var exists bool
+	err := r.db.QueryRow(query, userId).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
 func generateID() string {
 	return fmt.Sprintf("user_%d", time.Now().UnixNano())
 }

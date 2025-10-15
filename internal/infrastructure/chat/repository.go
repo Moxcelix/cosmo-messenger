@@ -89,12 +89,13 @@ func (r *ChatRepository) Create(chat *chat_domain.Chat) error {
 			VALUES ($1, $2, $3, $4)
 		`
 		for _, member := range chat.Members {
+			member.JoinedAt = now
 			_, err := tx.Exec(
 				memberQuery,
 				chat.ID,
 				member.UserID,
 				member.Role,
-				now,
+				member.JoinedAt,
 			)
 			if err != nil {
 				return err
@@ -439,6 +440,37 @@ func (r *ChatRepository) getChatMembers(chatID string) ([]chat_domain.ChatMember
 	}
 
 	return members, nil
+}
+
+func (r *ChatRepository) ChatExists(chatId string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM chats WHERE id = $1)`
+
+	var exists bool
+	err := r.db.QueryRow(query, chatId).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func (r *ChatRepository) DirectChatExists(firstUserID, secondUserID string) (bool, error) {
+	query := `
+        SELECT EXISTS(
+            SELECT 1 FROM chats c
+            INNER JOIN members m1 ON c.id = m1.chat_id AND m1.user_id = $1
+            INNER JOIN members m2 ON c.id = m2.chat_id AND m2.user_id = $2
+            WHERE c.type = 'direct'
+        )
+    `
+
+	var exists bool
+	err := r.db.QueryRow(query, firstUserID, secondUserID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
 }
 
 func generateID() string {

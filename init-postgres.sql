@@ -29,7 +29,21 @@ CREATE TABLE IF NOT EXISTS members (
     PRIMARY KEY (chat_id, user_id)
 );
 
+CREATE TABLE IF NOT EXISTS messages (
+    id VARCHAR PRIMARY KEY,
+    chat_id VARCHAR NOT NULL REFERENCES chats(id) ON DELETE CASCADE,
+    sender_id VARCHAR NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    reply_to VARCHAR DEFAULT '',
+    content TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_chats_type ON chats(type);
 CREATE INDEX IF NOT EXISTS idx_chats_updated ON chats(updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_members_user_id ON members(user_id);
 CREATE INDEX IF NOT EXISTS idx_members_chat_id ON members(chat_id);
+CREATE INDEX IF NOT EXISTS idx_messages_chat_id ON messages(chat_id);
+CREATE INDEX IF NOT EXISTS idx_messages_sender_id ON messages(sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created_at ON messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_messages_reply_to ON messages(reply_to);
