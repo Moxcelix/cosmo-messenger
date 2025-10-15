@@ -1,4 +1,3 @@
-// pkg/postgres.go
 package pkg
 
 import (

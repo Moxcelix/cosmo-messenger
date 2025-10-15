@@ -1,44 +1,44 @@
 definitions:
-  authservice_api.loginRequest:
+  auth_api.loginRequest:
     properties:
       password:
         type: string
       username:
         type: string
     type: object
-  authservice_api.loginResponse:
+  auth_api.loginResponse:
     properties:
       access_token:
         type: string
       refresh_token:
         type: string
     type: object
-  authservice_api.refreshRequest:
+  auth_api.refreshRequest:
     properties:
       refresh_token:
         type: string
     type: object
-  authservice_api.refreshResponse:
+  auth_api.refreshResponse:
     properties:
       access_token:
         type: string
     type: object
-  authservice_api.validateRequest:
+  auth_api.validateRequest:
     properties:
       access_token:
         type: string
     type: object
-  authservice_api.validateResponse:
+  auth_api.validateResponse:
     properties:
-      user_id:
+      username:
         type: string
     type: object
-  userservice_api.deleteResponse:
+  user_api.deleteResponse:
     properties:
       message:
         type: string
     type: object
-  userservice_api.infoResponse:
+  user_api.infoResponse:
     properties:
       bio:
         type: string
@@ -49,7 +49,7 @@ definitions:
       username:
         type: string
     type: object
-  userservice_api.paginationMeta:
+  user_api.paginationMeta:
     properties:
       has_next:
         type: boolean
@@ -62,7 +62,7 @@ definitions:
       total_pages:
         type: integer
     type: object
-  userservice_api.registerRequest:
+  user_api.registerRequest:
     properties:
       bio:
         type: string
@@ -77,15 +77,15 @@ definitions:
     - password
     - username
     type: object
-  userservice_api.registerResponse:
+  user_api.registerResponse:
     properties:
       message:
         type: string
     type: object
-  userservice_api.usernamesListResponse:
+  user_api.usernamesListResponse:
     properties:
       meta:
-        $ref: '#/definitions/userservice_api.paginationMeta'
+        $ref: '#/definitions/user_api.paginationMeta'
       usernames:
         items:
           type: string
@@ -107,14 +107,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/authservice_api.loginRequest'
+          $ref: '#/definitions/auth_api.loginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authservice_api.loginResponse'
+            $ref: '#/definitions/auth_api.loginResponse'
         "400":
           description: Bad Request
           schema:
@@ -141,14 +141,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/authservice_api.refreshRequest'
+          $ref: '#/definitions/auth_api.refreshRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authservice_api.refreshResponse'
+            $ref: '#/definitions/auth_api.refreshResponse'
         "400":
           description: Bad Request
           schema:
@@ -175,14 +175,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/authservice_api.validateRequest'
+          $ref: '#/definitions/auth_api.validateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/authservice_api.validateResponse'
+            $ref: '#/definitions/auth_api.validateResponse'
         "400":
           description: Bad Request
           schema:
@@ -209,7 +209,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userservice_api.deleteResponse'
+            $ref: '#/definitions/user_api.deleteResponse'
         "400":
           description: Bad Request
           schema:
@@ -250,7 +250,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userservice_api.deleteResponse'
+            $ref: '#/definitions/user_api.deleteResponse'
         "400":
           description: Bad Request
           schema:
@@ -289,7 +289,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userservice_api.infoResponse'
+            $ref: '#/definitions/user_api.infoResponse'
         "400":
           description: Bad Request
           schema:
@@ -327,7 +327,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/userservice_api.usernamesListResponse'
+            $ref: '#/definitions/user_api.usernamesListResponse'
         "400":
           description: Bad Request
           schema:
@@ -354,14 +354,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/userservice_api.registerRequest'
+          $ref: '#/definitions/user_api.registerRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/userservice_api.registerResponse'
+            $ref: '#/definitions/user_api.registerResponse'
         "400":
           description: Bad Request
           schema:
