@@ -5,25 +5,25 @@ import (
 	message_domain "main/internal/domain/message"
 )
 
-type SendDirectMessageUsecase struct {
+type DirectMessageUsecase struct {
 	chatProvider  *chat_domain.DirectChatProvider
 	messagePolicy *message_domain.MessagePolicy
 	messageRepo   message_domain.MessageRepository
 }
 
-func NewSendDirectMessageUsecase(
+func NewDirectMessageUsecase(
 	chatProvider *chat_domain.DirectChatProvider,
 	messagePolicy *message_domain.MessagePolicy,
 	messageRepo message_domain.MessageRepository,
-) *SendDirectMessageUsecase {
-	return &SendDirectMessageUsecase{
+) *DirectMessageUsecase {
+	return &DirectMessageUsecase{
 		chatProvider:  chatProvider,
 		messageRepo:   messageRepo,
 		messagePolicy: messagePolicy,
 	}
 }
 
-func (uc *SendDirectMessageUsecase) Execute(senderId, receiverId, content string) error {
+func (uc *DirectMessageUsecase) Execute(senderId, receiverId, content string) error {
 	chat, err := uc.chatProvider.Provide(senderId, receiverId)
 	if err != nil {
 		return err

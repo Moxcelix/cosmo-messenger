@@ -54,6 +54,6 @@ func (r *UserServiceRoutes) Setup() {
 	adminGroup := base.Group("")
 	adminGroup.Use(r.adminAuthMiddleware.Handler())
 	{
-		adminGroup.DELETE("/delete/:username", r.userDeleteController.DeleteByPath)
+		adminGroup.DELETE("/delete/:user_id", r.userDeleteController.DeleteByPath)
 	}
 }

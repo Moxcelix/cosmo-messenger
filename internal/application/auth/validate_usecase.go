@@ -1,8 +1,8 @@
 package auth_application
 
 import (
-	"main/internal/domain/auth"
-	"main/internal/domain/user"
+	auth_domain "main/internal/domain/auth"
+	user_domain "main/internal/domain/user"
 )
 
 type ValidateUsecase struct {
@@ -25,14 +25,14 @@ func (uc *ValidateUsecase) Execute(accessToken string) (string, error) {
 		return "", err
 	}
 
-	user, err := uc.userReposiory.GetUserById(userId)
+	exists, err := uc.userReposiory.UserExists(userId)
 	if err != nil {
 		return "", err
 	}
 
-	if user == nil {
+	if !exists {
 		return "", user_domain.ErrUserNotFound
 	}
 
-	return user.Username, nil
+	return userId, nil
 }

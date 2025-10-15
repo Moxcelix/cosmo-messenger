@@ -171,6 +171,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/messages/direct": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Send direct message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Message sending",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/message_api.msgRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/message_api.msgResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/delete": {
             "delete": {
                 "security": [
@@ -226,7 +274,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/delete/{username}": {
+        "/api/v1/users/delete/{user_id}": {
             "delete": {
                 "security": [
                     {
@@ -493,6 +541,29 @@ const docTemplate = `{
                 }
             }
         },
+        "message_api.msgRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "receiver_id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "receiver_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_api.msgResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "user_api.deleteResponse": {
             "type": "object",
             "properties": {
@@ -568,17 +639,28 @@ const docTemplate = `{
                 }
             }
         },
+        "user_api.usernameData": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "user_api.usernamesListResponse": {
             "type": "object",
             "properties": {
-                "meta": {
-                    "$ref": "#/definitions/user_api.paginationMeta"
-                },
-                "usernames": {
+                "data": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/user_api.usernameData"
                     }
+                },
+                "meta": {
+                    "$ref": "#/definitions/user_api.paginationMeta"
                 }
             }
         }

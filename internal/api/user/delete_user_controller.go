@@ -38,11 +38,11 @@ type deleteResponse struct {
 // @Failure      401   {object}  map[string]string
 // @Failure      403   {object}  map[string]string
 // @Security     BearerAuth
-// @Router       /api/v1/users/delete/{username} [delete]
+// @Router       /api/v1/users/delete/{user_id} [delete]
 func (c *UserDeleteController) DeleteByPath(ctx *gin.Context) {
-	username := ctx.Param("username")
+	userId := ctx.Param("user_id")
 
-	if err := c.deleteUserUsecase.Execute(username); err != nil {
+	if err := c.deleteUserUsecase.Execute(userId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -52,7 +52,7 @@ func (c *UserDeleteController) DeleteByPath(ctx *gin.Context) {
 	})
 
 	c.logger.Infow("user deleted successfully",
-		"username", username,
+		"user_id", userId,
 	)
 }
 
@@ -68,9 +68,9 @@ func (c *UserDeleteController) DeleteByPath(ctx *gin.Context) {
 // @Security     BearerAuth
 // @Router       /api/v1/users/delete [delete]
 func (c *UserDeleteController) DeleteByContext(ctx *gin.Context) {
-	username := ctx.GetString("Username")
+	userId := ctx.GetString("UserID")
 
-	if err := c.deleteUserUsecase.Execute(username); err != nil {
+	if err := c.deleteUserUsecase.Execute(userId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -80,6 +80,6 @@ func (c *UserDeleteController) DeleteByContext(ctx *gin.Context) {
 	})
 
 	c.logger.Infow("user deleted successfully",
-		"username", username,
+		"user_id", userId,
 	)
 }

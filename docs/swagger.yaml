@@ -33,6 +33,21 @@ definitions:
       username:
         type: string
     type: object
+  message_api.msgRequest:
+    properties:
+      content:
+        type: string
+      receiver_id:
+        type: string
+    required:
+    - content
+    - receiver_id
+    type: object
+  message_api.msgResponse:
+    properties:
+      message:
+        type: string
+    type: object
   user_api.deleteResponse:
     properties:
       message:
@@ -82,14 +97,21 @@ definitions:
       message:
         type: string
     type: object
+  user_api.usernameData:
+    properties:
+      id:
+        type: string
+      username:
+        type: string
+    type: object
   user_api.usernamesListResponse:
     properties:
+      data:
+        items:
+          $ref: '#/definitions/user_api.usernameData'
+        type: array
       meta:
         $ref: '#/definitions/user_api.paginationMeta'
-      usernames:
-        items:
-          type: string
-        type: array
     type: object
 info:
   contact: {}
@@ -198,6 +220,36 @@ paths:
       summary: Validates users access token
       tags:
       - auth
+  /api/v1/messages/direct:
+    post:
+      consumes:
+      - application/json
+      description: Send direct message
+      parameters:
+      - description: User data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/message_api.msgRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/message_api.msgResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Message sending
+      tags:
+      - messages
   /api/v1/users/delete:
     delete:
       consumes:
@@ -233,7 +285,7 @@ paths:
       summary: Delete current user
       tags:
       - users
-  /api/v1/users/delete/{username}:
+  /api/v1/users/delete/{user_id}:
     delete:
       consumes:
       - application/json

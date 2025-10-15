@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
 	user_application "main/internal/application/user"
+
+	"github.com/gin-gonic/gin"
 )
 
 type GetUsersListController struct {
@@ -20,8 +21,13 @@ func NewGetUsersListController(
 }
 
 type usernamesListResponse struct {
-	Usernames []string       `json:"usernames"`
-	Meta      paginationMeta `json:"meta"`
+	Data []usernameData `json:"data"`
+	Meta paginationMeta `json:"meta"`
+}
+
+type usernameData struct {
+	Username string `json:"username"`
+	ID       string `json:"id"`
 }
 
 type paginationMeta struct {
@@ -63,15 +69,18 @@ func (c *GetUsersListController) GetUsernameList(ctx *gin.Context) {
 		return
 	}
 
-	usernames := make([]string, len(list.Users))
+	usernamesData := make([]usernameData, len(list.Users))
 	for i, user := range list.Users {
-		usernames[i] = user.Username
+		usernamesData[i] = usernameData{
+			Username: user.Username,
+			ID:       user.ID,
+		}
 	}
 
 	totalPages := (list.Total + list.Limit - 1) / list.Limit
 
 	response := usernamesListResponse{
-		Usernames: usernames,
+		Data: usernamesData,
 		Meta: paginationMeta{
 			HasPrev:    page > 1,
 			HasNext:    page < totalPages,
