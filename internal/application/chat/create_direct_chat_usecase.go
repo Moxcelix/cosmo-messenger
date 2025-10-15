@@ -41,5 +41,7 @@ func (uc *CreateDirectChatUsecase) Execute(firstMemberId, secondMemberId string)
 		return user_domain.ErrUserNotFound
 	}
 
+	//directChat, err := uc.chatRepo.GetDirectChat(firstMemberId, secondMemberId)
+
 	return nil
 }
