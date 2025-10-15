@@ -473,6 +473,23 @@ func (r *ChatRepository) DirectChatExists(firstUserID, secondUserID string) (boo
 	return exists, nil
 }
 
+func (r *ChatRepository) UserInChat(userId, chatId string) (bool, error) {
+	query := `
+        SELECT EXISTS(
+            SELECT 1 FROM members 
+            WHERE chat_id = $1 AND user_id = $2
+        )
+    `
+
+	var exists bool
+	err := r.db.QueryRow(query, chatId, userId).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
 func generateID() string {
 	return fmt.Sprintf("chat_%d", time.Now().UnixNano())
 }

@@ -13,4 +13,5 @@ type ChatRepository interface {
 	MarkUpdated(chatID string, updateTime time.Time) error
 	ChatExists(chatId string) (bool, error)
 	DirectChatExists(firstUserID, secondUserID string) (bool, error)
+	UserInChat(userId, chatId string) (bool, error)
 }
