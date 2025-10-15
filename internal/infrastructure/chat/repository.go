@@ -50,7 +50,7 @@ func (r *ChatRepository) GetByID(id string) (*chat_domain.Chat, error) {
 	return &chat, nil
 }
 
-func (r *ChatRepository) GetByMember(userID string, offset, limit int) (*chat_domain.ChatList, error) {
+func (r *ChatRepository) GetMemberChats(userID string, offset, limit int) (*chat_domain.ChatList, error) {
 	ctx := context.Background()
 
 	filter := bson.M{"members": userID}
@@ -101,5 +101,104 @@ func (r *ChatRepository) Update(chat *chat_domain.Chat) error {
 
 func (r *ChatRepository) Delete(id string) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
+	return err
+}
+
+func (r *ChatRepository) FindMemberChat(userID, keyWord string, offset, limit int) (*chat_domain.ChatList, error) {
+	ctx := context.Background()
+
+	filter := bson.M{
+		"members.user_id": userID,
+		"$or": []bson.M{
+			{
+				"type": chat_domain.ChatTypeGroup,
+				"name": bson.M{
+					"$regex": primitive.Regex{
+						Pattern: keyWord,
+						Options: "i",
+					},
+				},
+			},
+			{
+				"type": chat_domain.ChatTypeDirect,
+				"members.user_id": bson.M{
+					"$ne": userID,
+				},
+				"members.username": bson.M{
+					"$regex": primitive.Regex{
+						Pattern: keyWord,
+						Options: "i",
+					},
+				},
+			},
+		},
+	}
+
+	total, err := r.collection.CountDocuments(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	opts := options.Find().
+		SetSkip(int64(offset)).
+		SetLimit(int64(limit)).
+		SetSort(bson.D{
+			{Key: "updated_at", Value: -1},
+		})
+
+	cursor, err := r.collection.Find(ctx, filter, opts)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var chats []*chat_domain.Chat
+	if err := cursor.All(ctx, &chats); err != nil {
+		return nil, err
+	}
+
+	return &chat_domain.ChatList{
+		Chats:  chats,
+		Total:  int(total),
+		Offset: offset,
+		Limit:  limit,
+	}, nil
+}
+
+func (r *ChatRepository) GetDirectChat(firstUserID, secondUserID string) (*chat_domain.Chat, error) {
+	var chat chat_domain.Chat
+
+	err := r.collection.FindOne(context.Background(), bson.M{
+		"type": chat_domain.ChatTypeDirect,
+		"members.user_id": bson.M{
+			"$all": []string{firstUserID, secondUserID},
+		},
+		"members": bson.M{
+			"$size": 2,
+		},
+	}).Decode(&chat)
+
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &chat, nil
+}
+
+func (r *ChatRepository) MarkUpdated(chatID string, updateTime time.Time) error {
+	update := bson.M{
+		"$set": bson.M{
+			"updated_at": updateTime,
+		},
+	}
+
+	_, err := r.collection.UpdateOne(
+		context.Background(),
+		bson.M{"_id": chatID},
+		update,
+	)
 	return err
 }

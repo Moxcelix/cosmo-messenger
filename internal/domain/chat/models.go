@@ -2,6 +2,13 @@ package chat_domain
 
 import "time"
 
+type ChatType string
+
+const (
+	ChatTypeDirect ChatType = "direct"
+	ChatTypeGroup  ChatType = "group"
+)
+
 type ChatMember struct {
 	UserID string `json:"user_id" bson:"user_id"`
 	Role   string `json:"role" bson:"role"`
@@ -12,6 +19,7 @@ type Chat struct {
 	Name      string       `json:"name" bson:"name"`
 	OwnerID   string       `json:"owner_id" bson:"owner_id"`
 	Members   []ChatMember `json:"members" bson:"members"`
+	Type      ChatType     `json:"type" bson:"type"`
 	CreatedAt time.Time    `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time    `bson:"updated_at" json:"updated_at"`
 }
