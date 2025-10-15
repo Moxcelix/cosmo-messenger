@@ -4,8 +4,9 @@ import (
 	"main/pkg"
 	"net/http"
 
+	user_application "main/internal/application/user"
+
 	"github.com/gin-gonic/gin"
-	"main/internal/application/user"
 )
 
 type UserDeleteController struct {
@@ -39,7 +40,7 @@ type deleteResponse struct {
 // @Security     BearerAuth
 // @Router       /api/v1/users/delete/{username} [delete]
 func (c *UserDeleteController) DeleteByPath(ctx *gin.Context) {
-	username := ctx.Param("Username")
+	username := ctx.Param("username")
 
 	if err := c.deleteUserUsecase.Execute(username); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

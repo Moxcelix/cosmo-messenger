@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.loginRequest"
+                            "$ref": "#/definitions/auth_api.loginRequest"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.loginResponse"
+                            "$ref": "#/definitions/auth_api.loginResponse"
                         }
                     },
                     "400": {
@@ -87,7 +87,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.refreshRequest"
+                            "$ref": "#/definitions/auth_api.refreshRequest"
                         }
                     }
                 ],
@@ -95,7 +95,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.refreshResponse"
+                            "$ref": "#/definitions/auth_api.refreshResponse"
                         }
                     },
                     "400": {
@@ -139,7 +139,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.validateRequest"
+                            "$ref": "#/definitions/auth_api.validateRequest"
                         }
                     }
                 ],
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.validateResponse"
+                            "$ref": "#/definitions/auth_api.validateResponse"
                         }
                     },
                     "400": {
@@ -193,7 +193,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.deleteResponse"
+                            "$ref": "#/definitions/user_api.deleteResponse"
                         }
                     },
                     "400": {
@@ -257,7 +257,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.deleteResponse"
+                            "$ref": "#/definitions/user_api.deleteResponse"
                         }
                     },
                     "400": {
@@ -313,7 +313,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.infoResponse"
+                            "$ref": "#/definitions/user_api.infoResponse"
                         }
                     },
                     "400": {
@@ -370,7 +370,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.usernamesListResponse"
+                            "$ref": "#/definitions/user_api.usernamesListResponse"
                         }
                     },
                     "400": {
@@ -414,7 +414,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.registerRequest"
+                            "$ref": "#/definitions/user_api.registerRequest"
                         }
                     }
                 ],
@@ -422,7 +422,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.registerResponse"
+                            "$ref": "#/definitions/user_api.registerResponse"
                         }
                     },
                     "400": {
@@ -439,7 +439,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "authservice_api.loginRequest": {
+        "auth_api.loginRequest": {
             "type": "object",
             "properties": {
                 "password": {
@@ -450,7 +450,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.loginResponse": {
+        "auth_api.loginResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -461,7 +461,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.refreshRequest": {
+        "auth_api.refreshRequest": {
             "type": "object",
             "properties": {
                 "refresh_token": {
@@ -469,7 +469,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.refreshResponse": {
+        "auth_api.refreshResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -477,7 +477,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.validateRequest": {
+        "auth_api.validateRequest": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -485,15 +485,15 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.validateResponse": {
+        "auth_api.validateResponse": {
             "type": "object",
             "properties": {
-                "user_id": {
+                "username": {
                     "type": "string"
                 }
             }
         },
-        "userservice_api.deleteResponse": {
+        "user_api.deleteResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -501,7 +501,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.infoResponse": {
+        "user_api.infoResponse": {
             "type": "object",
             "properties": {
                 "bio": {
@@ -518,7 +518,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.paginationMeta": {
+        "user_api.paginationMeta": {
             "type": "object",
             "properties": {
                 "has_next": {
@@ -538,7 +538,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.registerRequest": {
+        "user_api.registerRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -560,7 +560,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.registerResponse": {
+        "user_api.registerResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -568,11 +568,11 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.usernamesListResponse": {
+        "user_api.usernamesListResponse": {
             "type": "object",
             "properties": {
                 "meta": {
-                    "$ref": "#/definitions/userservice_api.paginationMeta"
+                    "$ref": "#/definitions/user_api.paginationMeta"
                 },
                 "usernames": {
                     "type": "array",

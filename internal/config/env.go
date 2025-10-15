@@ -20,6 +20,12 @@ type Env struct {
 	DBPass string `mapstructure:"DB_PASS"`
 	DBName string `mapstructure:"DB_NAME"`
 
+	PGHost string `mapstructure:"PG_HOST"`
+	PGPort string `mapstructure:"PG_PORT"`
+	PGUser string `mapstructure:"PG_USER"`
+	PGPass string `mapstructure:"PG_PASS"`
+	PGName string `mapstructure:"PG_NAME"`
+
 	ApiURL        string        `mapstructure:"API_URL"`
 	JwtSecreet    string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
@@ -68,6 +74,12 @@ func (e *Env) bindEnv() {
 	e.DBUser = os.Getenv("DB_USER")
 	e.DBPass = os.Getenv("DB_PASS")
 	e.DBName = os.Getenv("DB_NAME")
+
+	e.PGHost = os.Getenv("PG_HOST")
+	e.PGPort = os.Getenv("PG_PORT")
+	e.PGUser = os.Getenv("PG_USER")
+	e.PGPass = os.Getenv("PG_PASS")
+	e.PGName = os.Getenv("PG_NAME")
 
 	e.JwtSecreet = os.Getenv("JWT_SECRET")
 
