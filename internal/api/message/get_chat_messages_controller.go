@@ -2,7 +2,6 @@ package message_api
 
 import (
 	message_application "main/internal/application/message"
-	message_domain "main/internal/domain/message"
 	"main/pkg"
 	"net/http"
 	"strconv"
@@ -26,12 +25,8 @@ func NewGetChatMessagesController(
 }
 
 type chatMessagesResponse struct {
-	Data []messageData  `json:"data"`
+	Data []*messageView `json:"data"`
 	Meta paginationMeta `json:"meta"`
-}
-
-type messageData struct {
-	message_domain.Message
 }
 
 type paginationMeta struct {
@@ -82,11 +77,7 @@ func (c *GetChatMessagesController) GetChatMessages(ctx *gin.Context) {
 		return
 	}
 
-	messageDatas := make([]messageData, len(messages.Messages))
-	for i, msg := range messages.Messages {
-		messageDatas[i] = messageData{*msg}
-	}
-
+	messageDatas := ToMessageViews(messages.Messages)
 	totalPages := (messages.Total + count - 1) / count
 	if totalPages == 0 {
 		totalPages = 1

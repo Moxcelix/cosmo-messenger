@@ -37,26 +37,26 @@ definitions:
     properties:
       data:
         items:
-          $ref: '#/definitions/message_api.messageData'
+          $ref: '#/definitions/message_api.messageView'
         type: array
       meta:
         $ref: '#/definitions/message_api.paginationMeta'
     type: object
-  message_api.messageData:
+  message_api.messageView:
     properties:
       chat_id:
         type: string
       content:
         type: string
-      created_at:
-        type: string
+      edited:
+        type: boolean
       id:
         type: string
       reply_to:
         type: string
       sender_id:
         type: string
-      updated_at:
+      timestamp:
         type: string
     type: object
   message_api.msgRequest:

@@ -643,7 +643,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/message_api.messageData"
+                        "$ref": "#/definitions/message_api.messageView"
                     }
                 },
                 "meta": {
@@ -651,7 +651,7 @@ const docTemplate = `{
                 }
             }
         },
-        "message_api.messageData": {
+        "message_api.messageView": {
             "type": "object",
             "properties": {
                 "chat_id": {
@@ -660,8 +660,8 @@ const docTemplate = `{
                 "content": {
                     "type": "string"
                 },
-                "created_at": {
-                    "type": "string"
+                "edited": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "string"
@@ -672,7 +672,7 @@ const docTemplate = `{
                 "sender_id": {
                     "type": "string"
                 },
-                "updated_at": {
+                "timestamp": {
                     "type": "string"
                 }
             }
