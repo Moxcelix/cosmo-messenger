@@ -161,7 +161,7 @@ func (r *ChatRepository) GetByID(id string) (*chat_domain.Chat, error) {
 	return &chat, nil
 }
 
-func (r *ChatRepository) GetMemberChats(userID string, offset, limit int) (*chat_domain.ChatList, error) {
+func (r *ChatRepository) GetUserChats(userID string, offset, limit int) (*chat_domain.ChatList, error) {
 	ctx := context.Background()
 
 	var total int
@@ -266,7 +266,7 @@ func (r *ChatRepository) Delete(id string) error {
 	return nil
 }
 
-func (r *ChatRepository) FindMemberChat(userID, keyWord string, offset, limit int) (*chat_domain.ChatList, error) {
+func (r *ChatRepository) FindUserChat(userID, keyWord string, offset, limit int) (*chat_domain.ChatList, error) {
 	ctx := context.Background()
 
 	query := `

@@ -5,8 +5,8 @@ import "time"
 type ChatRepository interface {
 	Create(chat *Chat) error
 	GetByID(id string) (*Chat, error)
-	GetMemberChats(userID string, offset, limit int) (*ChatList, error)
-	FindMemberChat(userID, keyWord string, offset, limit int) (*ChatList, error)
+	GetUserChats(userID string, offset, limit int) (*ChatList, error)
+	FindUserChat(userID, keyWord string, offset, limit int) (*ChatList, error)
 	GetDirectChat(firstUserID, secondUserID string) (*Chat, error)
 	Update(chat *Chat) error
 	Delete(id string) error

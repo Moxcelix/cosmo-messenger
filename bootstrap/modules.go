@@ -8,6 +8,7 @@ import (
 	swagger_api "main/internal/api/swagger"
 	user_api "main/internal/api/user"
 	auth_application "main/internal/application/auth"
+	chat_application "main/internal/application/chat"
 	message_application "main/internal/application/message"
 	user_application "main/internal/application/user"
 	"main/internal/config"
@@ -46,5 +47,6 @@ var CommonModules = fx.Options(
 	message_api.Module,
 
 	chat_domain.Module,
+	chat_application.Module,
 	chat_infrastructure.Module,
 )
