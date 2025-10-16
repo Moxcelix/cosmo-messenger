@@ -3,7 +3,6 @@ package message_application
 import (
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
-	user_domain "main/internal/domain/user"
 )
 
 const (
@@ -13,16 +12,15 @@ const (
 )
 
 type GetChatMessagesUsecase struct {
-	userRepo user_domain.UserRepository
 	chatRepo chat_domain.ChatRepository
 	msgRepo  message_domain.MessageRepository
 }
 
 func NewGetChatMessagesUsecase(
-	userRepo user_domain.UserRepository,
+	msgRepo message_domain.MessageRepository,
 	chatRepo chat_domain.ChatRepository) *GetChatMessagesUsecase {
 	return &GetChatMessagesUsecase{
-		userRepo: userRepo,
+		msgRepo:  msgRepo,
 		chatRepo: chatRepo,
 	}
 }

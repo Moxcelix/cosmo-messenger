@@ -6,20 +6,23 @@ import (
 )
 
 type MessageRoutes struct {
-	handler                 pkg.RequestHandler
-	directMessageController *DirectMessageController
-	authMiddleware          *auth_api.AuthMiddleware
+	handler                   pkg.RequestHandler
+	directMessageController   *DirectMessageController
+	getChatMessagesController *GetChatMessagesController
+	authMiddleware            *auth_api.AuthMiddleware
 }
 
 func NewMessageRoutes(
 	handler pkg.RequestHandler,
 	directMessageController *DirectMessageController,
+	getChatMessagesController *GetChatMessagesController,
 	authMiddleware *auth_api.AuthMiddleware,
 ) *MessageRoutes {
 	return &MessageRoutes{
-		directMessageController: directMessageController,
-		authMiddleware:          authMiddleware,
-		handler:                 handler,
+		directMessageController:   directMessageController,
+		getChatMessagesController: getChatMessagesController,
+		authMiddleware:            authMiddleware,
+		handler:                   handler,
 	}
 }
 
@@ -28,4 +31,5 @@ func (r *MessageRoutes) Setup() {
 		Use(r.authMiddleware.Handler())
 
 	group.POST("/direct", r.directMessageController.DirectMessage)
+	group.GET("/chat/:chat_id", r.getChatMessagesController.GetChatMessages)
 }

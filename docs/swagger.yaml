@@ -33,6 +33,32 @@ definitions:
       username:
         type: string
     type: object
+  message_api.chatMessagesResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/message_api.messageData'
+        type: array
+      meta:
+        $ref: '#/definitions/message_api.paginationMeta'
+    type: object
+  message_api.messageData:
+    properties:
+      chat_id:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      reply_to:
+        type: string
+      sender_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
   message_api.msgRequest:
     properties:
       content:
@@ -47,6 +73,21 @@ definitions:
     properties:
       message:
         type: string
+    type: object
+  message_api.paginationMeta:
+    properties:
+      count:
+        type: integer
+      has_next:
+        type: boolean
+      has_prev:
+        type: boolean
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
     type: object
   user_api.deleteResponse:
     properties:
@@ -220,6 +261,69 @@ paths:
       summary: Validates users access token
       tags:
       - auth
+  /api/v1/messages/chat/{chat_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated messages from a chat
+      parameters:
+      - description: Chat ID
+        in: path
+        name: chat_id
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of messages per page
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message_api.chatMessagesResponse'
+        "400":
+          description: Invalid parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Access denied to chat
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Chat not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get chat messages
+      tags:
+      - messages
   /api/v1/messages/direct:
     post:
       consumes:
