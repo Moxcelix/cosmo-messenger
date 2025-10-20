@@ -27,6 +27,7 @@ type deleteResponse struct {
 	Message string `json:"message"`
 }
 
+// DeleteByPath  godoc
 // @Summary      Delete user by username (Admin only)
 // @Description  Deletes a user by username. Admin access required.
 // @Tags         users

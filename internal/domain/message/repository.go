@@ -6,4 +6,6 @@ type MessageRepository interface {
 	UpdateMessage(message *Message) error
 	DeleteMessage(id string) error
 	GetMessagesByChatId(chatId string, offset, limit int) (*MessageList, error)
+	GetMessagesByChatIdScroll(chatId string, cursor string, limit int, direction string) (*MessageList, error)
+	GetLastChatMessage(chatId string) (*Message, error)
 }

@@ -261,6 +261,54 @@ paths:
       summary: Validates users access token
       tags:
       - auth
+  /api/v1/chats:
+    get:
+      consumes:
+      - application/json
+      description: Get paginated list of user's chats
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of chats per page
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user chats
+      tags:
+      - chats
   /api/v1/messages/chat/{chat_id}:
     get:
       consumes:
@@ -272,11 +320,15 @@ paths:
         name: chat_id
         required: true
         type: string
-      - default: 1
-        description: Page number
+      - description: Cursor Message ID
         in: query
-        name: page
-        type: integer
+        name: cursor
+        type: string
+      - default: '"older"'
+        description: Scrolling direction
+        in: query
+        name: dir
+        type: string
       - default: 10
         description: Number of messages per page
         in: query

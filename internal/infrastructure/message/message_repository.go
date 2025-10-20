@@ -206,6 +206,138 @@ func (r *MessageRepository) GetMessagesByChatId(
 	}, nil
 }
 
+func (r *MessageRepository) GetMessagesByChatIdScroll(
+	chatId string, cursor string, limit int, direction string) (*message_domain.MessageList, error) {
+
+	ctx := context.Background()
+
+	var total int
+	countQuery := `SELECT COUNT(*) FROM messages WHERE chat_id = $1`
+	err := r.db.QueryRowContext(ctx, countQuery, chatId).Scan(&total)
+	if err != nil {
+		return nil, err
+	}
+
+	var query string
+	var rows *sql.Rows
+	var args []interface{}
+	var offset int
+
+	baseQuery := `
+        SELECT id, chat_id, sender_id, reply_to, content, created_at, updated_at 
+        FROM messages 
+        WHERE chat_id = $1
+    `
+
+	if direction == "older" {
+		if cursor != "" {
+			query = baseQuery + ` AND id < $2 ORDER BY id DESC LIMIT $3`
+			args = []interface{}{chatId, cursor, limit}
+
+			var newerCount int
+			countNewerQuery := `SELECT COUNT(*) FROM messages WHERE chat_id = $1 AND id >= $2`
+			err := r.db.QueryRowContext(ctx, countNewerQuery, chatId, cursor).Scan(&newerCount)
+			if err != nil {
+				return nil, err
+			}
+			offset = newerCount
+		} else {
+			query = baseQuery + ` ORDER BY id DESC LIMIT $2`
+			args = []interface{}{chatId, limit}
+			offset = 0
+		}
+	} else {
+		if cursor != "" {
+			query = baseQuery + ` AND id > $2 ORDER BY id ASC LIMIT $3`
+			args = []interface{}{chatId, cursor, limit}
+
+			var newerCount int
+			countNewerQuery := `SELECT COUNT(*) FROM messages WHERE chat_id = $1 AND id > $2`
+			err := r.db.QueryRowContext(ctx, countNewerQuery, chatId, cursor).Scan(&newerCount)
+			if err != nil {
+				return nil, err
+			}
+			offset = max(newerCount-limit, 0)
+		} else {
+			query = baseQuery + ` ORDER BY id ASC LIMIT $2`
+			args = []interface{}{chatId, limit}
+			offset = max(total-limit, 0)
+		}
+	}
+
+	rows, err = r.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var messages []*message_domain.Message
+	for rows.Next() {
+		var message message_domain.Message
+		err := rows.Scan(
+			&message.ID,
+			&message.ChatID,
+			&message.SenderID,
+			&message.ReplyTo,
+			&message.Content,
+			&message.CreatedAt,
+			&message.UpdatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+		messages = append(messages, &message)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Реверс для направления "newer" чтобы сообщения шли от старых к новым
+	if direction != "older" {
+		for i, j := 0, len(messages)-1; i < j; i, j = i+1, j-1 {
+			messages[i], messages[j] = messages[j], messages[i]
+		}
+	}
+
+	return &message_domain.MessageList{
+		Messages: messages,
+		Total:    total,
+		Offset:   offset,
+		Limit:    limit,
+	}, nil
+}
+
+func (r *MessageRepository) GetLastChatMessage(chatId string) (*message_domain.Message, error) {
+	query := `
+        SELECT id, chat_id, sender_id, content, reply_to, created_at, updated_at
+        FROM messages 
+        WHERE chat_id = $1 
+        ORDER BY created_at DESC 
+        LIMIT 1
+    `
+
+	var message message_domain.Message
+	err := r.db.QueryRow(query, chatId).Scan(
+		&message.ID,
+		&message.ChatID,
+		&message.SenderID,
+		&message.Content,
+		&message.ReplyTo,
+		&message.CreatedAt,
+		&message.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &message, nil
+}
+
 func generateMessageID() string {
 	return fmt.Sprintf("msg_%d", time.Now().UnixNano())
 }

@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"main/internal/api"
 	auth_api "main/internal/api/auth"
+	chat_api "main/internal/api/chat"
 	message_api "main/internal/api/message"
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
@@ -49,4 +50,5 @@ var CommonModules = fx.Options(
 	chat_domain.Module,
 	chat_application.Module,
 	chat_infrastructure.Module,
+	chat_api.Module,
 )

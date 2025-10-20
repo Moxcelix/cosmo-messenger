@@ -2,6 +2,7 @@ package api
 
 import (
 	auth_api "main/internal/api/auth"
+	chat_api "main/internal/api/chat"
 	message_api "main/internal/api/message"
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
@@ -26,6 +27,7 @@ func NewRoutes(
 	userRoutes *user_api.UserServiceRoutes,
 	authRoutes *auth_api.AuthServiceRoutes,
 	msgRoutes *message_api.MessageRoutes,
+	chatRoutes *chat_api.ChatRoutes,
 ) Routes {
 	return Routes{
 		swaggerRoutes,
@@ -33,6 +35,7 @@ func NewRoutes(
 		userRoutes,
 		authRoutes,
 		msgRoutes,
+		chatRoutes,
 	}
 }
 

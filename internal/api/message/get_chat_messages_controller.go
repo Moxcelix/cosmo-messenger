@@ -24,20 +24,6 @@ func NewGetChatMessagesController(
 	}
 }
 
-type chatMessagesResponse struct {
-	Data []*messageView `json:"data"`
-	Meta paginationMeta `json:"meta"`
-}
-
-type paginationMeta struct {
-	HasPrev    bool `json:"has_prev"`
-	HasNext    bool `json:"has_next"`
-	Page       int  `json:"page"`
-	TotalPages int  `json:"total_pages"`
-	Total      int  `json:"total"`
-	Count      int  `json:"count"`
-}
-
 // GetChatMessages godoc
 // @Summary Get chat messages
 // @Description Get paginated messages from a chat
@@ -45,10 +31,11 @@ type paginationMeta struct {
 // @Accept json
 // @Produce json
 // @Param chat_id path string true "Chat ID"
-// @Param page query int false "Page number" default(1)
+// @Param cursor query string false "Cursor Message ID"
+// @Param dir query string false "Scrolling direction" default("older")
 // @Param count query int false "Number of messages per page" default(10)
 // @Security BearerAuth
-// @Success 200 {object} chatMessagesResponse
+// @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string "Invalid parameters"
 // @Failure 401 {object} map[string]string "Unauthorized"
 // @Failure 403 {object} map[string]string "Access denied to chat"
@@ -59,11 +46,8 @@ func (c *GetChatMessagesController) GetChatMessages(ctx *gin.Context) {
 	userId := ctx.GetString("UserID")
 	chatId := ctx.Param("chat_id")
 
-	page, err := strconv.Atoi(ctx.DefaultQuery("page", "1"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid page parameter"})
-		return
-	}
+	cursorMessageId := ctx.Query("cursor")
+	direction := ctx.Query("dir")
 
 	count, err := strconv.Atoi(ctx.DefaultQuery("count", "10"))
 	if err != nil {
@@ -71,29 +55,12 @@ func (c *GetChatMessagesController) GetChatMessages(ctx *gin.Context) {
 		return
 	}
 
-	messages, err := c.getChatMessagesUsecase.Execute(userId, chatId, page, count)
+	messages, err := c.getChatMessagesUsecase.Execute(
+		userId, chatId, cursorMessageId, count, direction)
 	if err != nil {
 		ctx.JSON(http.StatusForbidden, gin.H{"error": "access denied"})
 		return
 	}
 
-	messageDatas := ToMessageViews(messages.Messages)
-	totalPages := (messages.Total + count - 1) / count
-	if totalPages == 0 {
-		totalPages = 1
-	}
-
-	response := chatMessagesResponse{
-		Data: messageDatas,
-		Meta: paginationMeta{
-			HasPrev:    page > 1,
-			HasNext:    page < totalPages,
-			Page:       page,
-			TotalPages: totalPages,
-			Total:      messages.Total,
-			Count:      len(messageDatas),
-		},
-	}
-
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(http.StatusOK, messages)
 }

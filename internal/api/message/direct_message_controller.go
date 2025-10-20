@@ -31,7 +31,7 @@ type msgResponse struct {
 	Message string `json:"message"`
 }
 
-// Register godoc
+// DirectMessage godoc
 // @Summary Message sending
 // @Description Send direct message
 // @Tags messages
