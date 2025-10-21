@@ -69,7 +69,7 @@ func (uc *GetUserChatsUsecase) Execute(userID string, page, count int) (*UserCha
 			Type: chat.Type,
 		}
 
-		lastMessage, err := uc.msgRepo.GetLastChatMessage(chat.ID)
+		lastMessage, err := uc.msgRepo.GetLastChatMessage(chat.ID, message_domain.NoPopulate)
 		if err != nil {
 			return nil, err
 		}

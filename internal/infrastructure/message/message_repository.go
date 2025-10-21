@@ -150,62 +150,6 @@ func (r *MessageRepository) DeleteMessage(id string) error {
 	return nil
 }
 
-func (r *MessageRepository) GetMessagesByChatId(
-	chatId string, offset, limit int) (*message_domain.MessageList, error) {
-
-	ctx := context.Background()
-
-	var total int
-	countQuery := `SELECT COUNT(*) FROM messages WHERE chat_id = $1`
-	err := r.db.QueryRowContext(ctx, countQuery, chatId).Scan(&total)
-	if err != nil {
-		return nil, err
-	}
-
-	query := `
-		SELECT id, chat_id, sender_id, reply_to, content, created_at, updated_at 
-		FROM messages 
-		WHERE chat_id = $1
-		ORDER BY created_at DESC 
-		LIMIT $2 OFFSET $3
-	`
-
-	rows, err := r.db.QueryContext(ctx, query, chatId, limit, offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var messages []*message_domain.Message
-	for rows.Next() {
-		var message message_domain.Message
-		err := rows.Scan(
-			&message.ID,
-			&message.ChatID,
-			&message.SenderID,
-			&message.ReplyTo,
-			&message.Content,
-			&message.CreatedAt,
-			&message.UpdatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-		messages = append(messages, &message)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return &message_domain.MessageList{
-		Messages: messages,
-		Total:    total,
-		Offset:   offset,
-		Limit:    limit,
-	}, nil
-}
-
 func (r *MessageRepository) GetMessagesByChatIdScroll(
 	chatId string, cursor string, limit int, direction string) (*message_domain.MessageList, error) {
 

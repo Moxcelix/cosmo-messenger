@@ -58,7 +58,7 @@ func (c *GetChatMessagesController) GetChatMessages(ctx *gin.Context) {
 	messages, err := c.getChatMessagesUsecase.Execute(
 		userId, chatId, cursorMessageId, count, direction)
 	if err != nil {
-		ctx.JSON(http.StatusForbidden, gin.H{"error": "access denied"})
+		ctx.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 		return
 	}
 

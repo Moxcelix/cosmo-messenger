@@ -28,7 +28,7 @@ func ToMessageView(msg *message_domain.Message) *messageView {
 		ChatID:    msg.ChatID,
 		SenderID:  msg.SenderID,
 		Content:   msg.Content,
-		ReplyTo:   msg.ReplyTo,
+		ReplyTo:   msg.ReplyToID,
 		Timestamp: time,
 		Edited:    edited,
 	}
