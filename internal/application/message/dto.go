@@ -7,22 +7,22 @@ type Sender struct {
 	Name string `json:"name"`
 }
 
-type RepliedMessage struct {
+type Reply struct {
 	ID      string  `json:"id"`
 	Content string  `json:"content"`
 	Sender  *Sender `json:"sender"`
 }
 
 type ChatMessage struct {
-	ID        string          `json:"id"`
-	Content   string          `json:"content"`
-	ReplyTo   *RepliedMessage `json:"reply_to,omitempty"`
-	Sender    *Sender         `json:"sender"`
-	Timestamp time.Time       `json:"timestamp"`
-	Edited    bool            `json:"edited"`
+	ID        string    `json:"id"`
+	Content   string    `json:"content"`
+	ReplyTo   *Reply    `json:"reply_to,omitempty"`
+	Sender    *Sender   `json:"sender"`
+	Timestamp time.Time `json:"timestamp"`
+	Edited    bool      `json:"edited"`
 }
 
-type ChatMessages struct {
+type MessageHistory struct {
 	Messages []*ChatMessage `json:"messages"`
 	Meta     ScrollingMeta  `json:"meta"`
 }
