@@ -10,25 +10,25 @@ const (
 	maxPageSize  = 100
 )
 
-type GetChatMessagesUsecase struct {
+type GetMessageHistoryUsecase struct {
 	msgRepo          message_domain.MessageRepository
 	chatPolicy       *chat_application.ChatPolicy
 	historyAssembler *MessageHistoryAssembler
 }
 
-func NewGetChatMessagesUsecase(
+func NewGetMessageHistoryUsecase(
 	msgRepo message_domain.MessageRepository,
 	chatPolicy *chat_application.ChatPolicy,
 	historyAssembler *MessageHistoryAssembler,
-) *GetChatMessagesUsecase {
-	return &GetChatMessagesUsecase{
+) *GetMessageHistoryUsecase {
+	return &GetMessageHistoryUsecase{
 		msgRepo:          msgRepo,
 		chatPolicy:       chatPolicy,
 		historyAssembler: historyAssembler,
 	}
 }
 
-func (uc *GetChatMessagesUsecase) Execute(
+func (uc *GetMessageHistoryUsecase) Execute(
 	userId, chatId, cursorMessageId string, count int, direction string) (*MessageHistory, error) {
 
 	if err := uc.chatPolicy.ValidateUserAccess(userId, chatId); err != nil {

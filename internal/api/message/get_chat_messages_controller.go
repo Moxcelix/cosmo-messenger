@@ -10,12 +10,12 @@ import (
 )
 
 type GetChatMessagesController struct {
-	getChatMessagesUsecase *message_application.GetChatMessagesUsecase
+	getChatMessagesUsecase *message_application.GetMessageHistoryUsecase
 	logger                 pkg.Logger
 }
 
 func NewGetChatMessagesController(
-	getChatMessagesUsecase *message_application.GetChatMessagesUsecase,
+	getChatMessagesUsecase *message_application.GetMessageHistoryUsecase,
 	logger pkg.Logger,
 ) *GetChatMessagesController {
 	return &GetChatMessagesController{

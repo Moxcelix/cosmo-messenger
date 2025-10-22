@@ -4,6 +4,8 @@ import "go.uber.org/fx"
 
 var Module = fx.Options(
 	fx.Provide(NewDirectMessageUsecase),
-	fx.Provide(NewGetChatMessagesUsecase),
+	fx.Provide(NewGetMessageHistoryUsecase),
 	fx.Provide(NewMessageHistoryAssembler),
+	fx.Provide(NewSenderProvider),
+	fx.Provide(NewReplyProvider),
 )
