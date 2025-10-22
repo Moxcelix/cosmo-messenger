@@ -1,28 +1,27 @@
-package message_application
+package chat_application
 
 import (
 	user_application "main/internal/application/user"
 	message_domain "main/internal/domain/message"
 )
 
-type ReplyProvider struct {
+type LastMessageProvider struct {
 	msgRepo        message_domain.MessageRepository
 	senderProvider *user_application.SenderProvider
 }
 
-func NewReplyProvider(
+func NewLastMessageProvider(
 	msgRepo message_domain.MessageRepository,
 	senderProvider *user_application.SenderProvider,
-) *ReplyProvider {
-	return &ReplyProvider{
+) *LastMessageProvider {
+	return &LastMessageProvider{
 		msgRepo:        msgRepo,
 		senderProvider: senderProvider,
 	}
 }
 
-func (p *ReplyProvider) Provide(msgId string) (*Reply, error) {
-	msg, err := p.msgRepo.GetMessageById(msgId)
-
+func (p *LastMessageProvider) Provide(chatId string) (*LastMessage, error) {
+	msg, err := p.msgRepo.GetLastChatMessage(chatId)
 	if err != nil {
 		return nil, err
 	}
@@ -36,9 +35,15 @@ func (p *ReplyProvider) Provide(msgId string) (*Reply, error) {
 		return nil, err
 	}
 
-	return &Reply{
-		ID:      msg.ID,
-		Content: msg.Content,
-		Sender:  sender,
+	timestamp := msg.CreatedAt
+	if !msg.UpdatedAt.Equal(msg.CreatedAt) {
+		timestamp = msg.UpdatedAt
+	}
+
+	return &LastMessage{
+		ID:        msg.ID,
+		Content:   msg.Content,
+		Timestamp: timestamp,
+		Sender:    sender,
 	}, nil
 }

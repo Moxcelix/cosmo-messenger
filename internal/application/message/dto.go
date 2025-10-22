@@ -1,25 +1,23 @@
 package message_application
 
-import "time"
-
-type Sender struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
+import (
+	user_application "main/internal/application/user"
+	"time"
+)
 
 type Reply struct {
-	ID      string  `json:"id"`
-	Content string  `json:"content"`
-	Sender  *Sender `json:"sender"`
+	ID      string                   `json:"id"`
+	Content string                   `json:"content"`
+	Sender  *user_application.Sender `json:"sender"`
 }
 
 type ChatMessage struct {
-	ID        string    `json:"id"`
-	Content   string    `json:"content"`
-	ReplyTo   *Reply    `json:"reply_to,omitempty"`
-	Sender    *Sender   `json:"sender"`
-	Timestamp time.Time `json:"timestamp"`
-	Edited    bool      `json:"edited"`
+	ID        string                   `json:"id"`
+	Content   string                   `json:"content"`
+	ReplyTo   *Reply                   `json:"reply_to,omitempty"`
+	Sender    *user_application.Sender `json:"sender"`
+	Timestamp time.Time                `json:"timestamp"`
+	Edited    bool                     `json:"edited"`
 }
 
 type MessageHistory struct {

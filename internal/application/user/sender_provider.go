@@ -1,6 +1,8 @@
-package message_application
+package user_application
 
-import user_domain "main/internal/domain/user"
+import (
+	user_domain "main/internal/domain/user"
+)
 
 type SenderProvider struct {
 	userRepo user_domain.UserRepository

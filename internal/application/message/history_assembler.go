@@ -1,17 +1,18 @@
 package message_application
 
 import (
+	user_application "main/internal/application/user"
 	message_domain "main/internal/domain/message"
 )
 
 type MessageHistoryAssembler struct {
 	replyProvider  *ReplyProvider
-	senderProvider *SenderProvider
+	senderProvider *user_application.SenderProvider
 }
 
 func NewMessageHistoryAssembler(
 	replyProvider *ReplyProvider,
-	senderProvider *SenderProvider,
+	senderProvider *user_application.SenderProvider,
 ) *MessageHistoryAssembler {
 	return &MessageHistoryAssembler{
 		replyProvider:  replyProvider,

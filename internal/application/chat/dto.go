@@ -1,11 +1,12 @@
 package chat_application
 
 import (
+	user_application "main/internal/application/user"
 	chat_domain "main/internal/domain/chat"
 	"time"
 )
 
-type ChatListItem struct {
+type ChatItem struct {
 	ID          string               `json:"id"`
 	Name        string               `json:"name"`
 	Type        chat_domain.ChatType `json:"type"`
@@ -13,27 +14,20 @@ type ChatListItem struct {
 }
 
 type LastMessage struct {
-	ID        string    `json:"id"`
-	Content   string    `json:"content"`
-	Timestamp time.Time `json:"timestamp"`
-	Sender    *Sender   `json:"sender"`
+	ID        string                   `json:"id"`
+	Content   string                   `json:"content"`
+	Timestamp time.Time                `json:"timestamp"`
+	Sender    *user_application.Sender `json:"sender"`
 }
 
-type Sender struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type ScrollingMeta struct {
+	HasPrev bool `json:"has_prev"`
+	HasNext bool `json:"has_next"`
+	Offset  int  `json:"offset"`
+	Total   int  `json:"total"`
 }
 
-type PaginationMeta struct {
-	HasPrev    bool `json:"has_prev"`
-	HasNext    bool `json:"has_next"`
-	Page       int  `json:"page"`
-	TotalPages int  `json:"total_pages"`
-	Total      int  `json:"total"`
-	Count      int  `json:"count"`
-}
-
-type UserChats struct {
-	Chats []*ChatListItem `json:"chats"`
-	Meta  PaginationMeta  `json:"meta"`
+type ChatCollection struct {
+	Chats []*ChatItem    `json:"chats"`
+	Meta  *ScrollingMeta `json:"meta"`
 }
