@@ -1,0 +1,10 @@
+policies:
+  message:
+    edit_duration: 15m
+    delete_duration: 1h
+    max_length: 4000
+    min_length: 1
+  chat:
+    max_group_members: 100
+    max_chat_name_length: 100
+    min_chat_name_length: 1

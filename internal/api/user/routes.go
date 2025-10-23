@@ -1,7 +1,7 @@
 package user_api
 
 import (
-	"main/internal/api/auth"
+	auth_api "main/internal/api/auth"
 	"main/pkg"
 )
 
@@ -51,9 +51,9 @@ func (r *UserServiceRoutes) Setup() {
 		authGroup.DELETE("/delete", r.userDeleteController.DeleteByContext)
 	}
 
-	adminGroup := base.Group("/admin")
+	adminGroup := base.Group("")
 	adminGroup.Use(r.adminAuthMiddleware.Handler())
 	{
-		adminGroup.DELETE("/delete/:username", r.userDeleteController.DeleteByPath)
+		adminGroup.DELETE("/delete/:user_id", r.userDeleteController.DeleteByPath)
 	}
 }

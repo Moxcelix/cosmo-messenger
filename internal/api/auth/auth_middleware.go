@@ -4,8 +4,9 @@ import (
 	"main/pkg"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	authapp "main/internal/application/auth"
+
+	"github.com/gin-gonic/gin"
 )
 
 type AuthMiddleware struct {
@@ -30,7 +31,7 @@ func (m *AuthMiddleware) Handler() gin.HandlerFunc {
 			return
 		}
 
-		username, err := m.validateUsecase.Execute(token)
+		userId, err := m.validateUsecase.Execute(token)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": err.Error(),
@@ -38,7 +39,7 @@ func (m *AuthMiddleware) Handler() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("Username", username)
+		ctx.Set("UserID", userId)
 
 		ctx.Next()
 	}

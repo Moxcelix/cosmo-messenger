@@ -10,4 +10,5 @@ var Module = fx.Options(
 	fx.Provide(NewHasher),
 	fx.Provide(NewMongoDatabase),
 	fx.Provide(NewJwt),
+	fx.Provide(NewPostgresDatabase),
 )

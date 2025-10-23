@@ -1,7 +1,7 @@
 package user_application
 
 import (
-	"main/internal/domain/user"
+	user_domain "main/internal/domain/user"
 )
 
 type DeleteUserUsecase struct {
@@ -15,17 +15,17 @@ func NewDeleteUserUsecase(
 	}
 }
 
-func (uc *DeleteUserUsecase) Execute(username string) error {
-	user, err := uc.repository.GetUserByUsername(username)
+func (uc *DeleteUserUsecase) Execute(userId string) error {
+	exists, err := uc.repository.UserExists(userId)
 	if err != nil {
 		return err
 	}
 
-	if user == nil {
+	if !exists {
 		return user_domain.ErrUserNotFound
 	}
 
-	if err := uc.repository.DeleteUserByUsername(username); err != nil {
+	if err := uc.repository.DeleteUserById(userId); err != nil {
 		return err
 	}
 

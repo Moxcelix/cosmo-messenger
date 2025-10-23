@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/spf13/viper"
-	"go.uber.org/fx"
 )
 
 type Env struct {
@@ -20,6 +19,12 @@ type Env struct {
 	DBUser string `mapstructure:"DB_USER"`
 	DBPass string `mapstructure:"DB_PASS"`
 	DBName string `mapstructure:"DB_NAME"`
+
+	PGHost string `mapstructure:"PG_HOST"`
+	PGPort string `mapstructure:"PG_PORT"`
+	PGUser string `mapstructure:"PG_USER"`
+	PGPass string `mapstructure:"PG_PASS"`
+	PGName string `mapstructure:"PG_NAME"`
 
 	ApiURL        string        `mapstructure:"API_URL"`
 	JwtSecreet    string        `mapstructure:"JWT_SECRET"`
@@ -70,6 +75,12 @@ func (e *Env) bindEnv() {
 	e.DBPass = os.Getenv("DB_PASS")
 	e.DBName = os.Getenv("DB_NAME")
 
+	e.PGHost = os.Getenv("PG_HOST")
+	e.PGPort = os.Getenv("PG_PORT")
+	e.PGUser = os.Getenv("PG_USER")
+	e.PGPass = os.Getenv("PG_PASS")
+	e.PGName = os.Getenv("PG_NAME")
+
 	e.JwtSecreet = os.Getenv("JWT_SECRET")
 
 	if val := os.Getenv("JWT_ACCESS_TTL"); val != "" {
@@ -88,7 +99,3 @@ func (e *Env) bindEnv() {
 		e.JwtRefreshTTL = d
 	}
 }
-
-var Module = fx.Options(
-	fx.Provide(NewEnv),
-)

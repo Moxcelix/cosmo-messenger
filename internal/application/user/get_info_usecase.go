@@ -1,8 +1,6 @@
 package user_application
 
-import (
-	"main/internal/domain/user"
-)
+import user_domain "main/internal/domain/user"
 
 type UserInfo struct {
 	Name     string `json:"name"`
@@ -21,8 +19,8 @@ func NewGetInfoUseCase(repository user_domain.UserRepository) *GetInfoUseCase {
 	}
 }
 
-func (uc *GetInfoUseCase) Execute(username string) (*UserInfo, error) {
-	user, err := uc.repository.GetUserByUsername(username)
+func (uc *GetInfoUseCase) Execute(userId string) (*UserInfo, error) {
+	user, err := uc.repository.GetUserById(userId)
 	if err != nil {
 		return nil, err
 	}
