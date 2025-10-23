@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.loginRequest"
+                            "$ref": "#/definitions/auth_api.loginRequest"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.loginResponse"
+                            "$ref": "#/definitions/auth_api.loginResponse"
                         }
                     },
                     "400": {
@@ -87,7 +87,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.refreshRequest"
+                            "$ref": "#/definitions/auth_api.refreshRequest"
                         }
                     }
                 ],
@@ -95,7 +95,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.refreshResponse"
+                            "$ref": "#/definitions/auth_api.refreshResponse"
                         }
                     },
                     "400": {
@@ -139,7 +139,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.validateRequest"
+                            "$ref": "#/definitions/auth_api.validateRequest"
                         }
                     }
                 ],
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/authservice_api.validateResponse"
+                            "$ref": "#/definitions/auth_api.validateResponse"
                         }
                     },
                     "400": {
@@ -161,6 +161,230 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/chats": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get paginated list of user's chats",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chats"
+                ],
+                "summary": "Get user chats",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of chats per page",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/messages/chat/{chat_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get paginated messages from a chat",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Get chat messages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cursor Message ID",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "\"older\"",
+                        "description": "Scrolling direction",
+                        "name": "dir",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of messages per page",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/message_api.chatMessagesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied to chat",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Chat not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/messages/direct": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Send direct message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Message sending",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/message_api.msgRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/message_api.msgResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -193,7 +417,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.deleteResponse"
+                            "$ref": "#/definitions/user_api.deleteResponse"
                         }
                     },
                     "400": {
@@ -226,7 +450,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/delete/{username}": {
+        "/api/v1/users/delete/{user_id}": {
             "delete": {
                 "security": [
                     {
@@ -257,7 +481,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.deleteResponse"
+                            "$ref": "#/definitions/user_api.deleteResponse"
                         }
                     },
                     "400": {
@@ -313,7 +537,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.infoResponse"
+                            "$ref": "#/definitions/user_api.infoResponse"
                         }
                     },
                     "400": {
@@ -370,7 +594,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.usernamesListResponse"
+                            "$ref": "#/definitions/user_api.usernamesListResponse"
                         }
                     },
                     "400": {
@@ -414,7 +638,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.registerRequest"
+                            "$ref": "#/definitions/user_api.registerRequest"
                         }
                     }
                 ],
@@ -422,7 +646,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/userservice_api.registerResponse"
+                            "$ref": "#/definitions/user_api.registerResponse"
                         }
                     },
                     "400": {
@@ -439,7 +663,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "authservice_api.loginRequest": {
+        "auth_api.loginRequest": {
             "type": "object",
             "properties": {
                 "password": {
@@ -450,7 +674,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.loginResponse": {
+        "auth_api.loginResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -461,7 +685,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.refreshRequest": {
+        "auth_api.refreshRequest": {
             "type": "object",
             "properties": {
                 "refresh_token": {
@@ -469,7 +693,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.refreshResponse": {
+        "auth_api.refreshResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -477,7 +701,7 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.validateRequest": {
+        "auth_api.validateRequest": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -485,15 +709,70 @@ const docTemplate = `{
                 }
             }
         },
-        "authservice_api.validateResponse": {
+        "auth_api.validateResponse": {
             "type": "object",
             "properties": {
-                "user_id": {
+                "username": {
                     "type": "string"
                 }
             }
         },
-        "userservice_api.deleteResponse": {
+        "message_api.chatMessagesResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/message_api.messageView"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/message_api.paginationMeta"
+                }
+            }
+        },
+        "message_api.messageView": {
+            "type": "object",
+            "properties": {
+                "chat_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "edited": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reply_to": {
+                    "type": "string"
+                },
+                "sender_id": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_api.msgRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "receiver_id"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "receiver_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_api.msgResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -501,7 +780,38 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.infoResponse": {
+        "message_api.paginationMeta": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "has_next": {
+                    "type": "boolean"
+                },
+                "has_prev": {
+                    "type": "boolean"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "total_pages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user_api.deleteResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_api.infoResponse": {
             "type": "object",
             "properties": {
                 "bio": {
@@ -518,7 +828,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.paginationMeta": {
+        "user_api.paginationMeta": {
             "type": "object",
             "properties": {
                 "has_next": {
@@ -538,7 +848,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.registerRequest": {
+        "user_api.registerRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -560,7 +870,7 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.registerResponse": {
+        "user_api.registerResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -568,17 +878,28 @@ const docTemplate = `{
                 }
             }
         },
-        "userservice_api.usernamesListResponse": {
+        "user_api.usernameData": {
             "type": "object",
             "properties": {
-                "meta": {
-                    "$ref": "#/definitions/userservice_api.paginationMeta"
+                "id": {
+                    "type": "string"
                 },
-                "usernames": {
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_api.usernamesListResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/user_api.usernameData"
                     }
+                },
+                "meta": {
+                    "$ref": "#/definitions/user_api.paginationMeta"
                 }
             }
         }

@@ -1,9 +1,10 @@
 package auth_api
 
 import (
-	"github.com/gin-gonic/gin"
-	"main/internal/application/auth"
+	auth_application "main/internal/application/auth"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ValidateController struct {
@@ -24,7 +25,7 @@ type validateResponse struct {
 	Username string `json:"username"`
 }
 
-// Refresh godoc
+// Validate godoc
 // @Summary Validates users access token
 // @Description Returns userID if access token is valid
 // @Tags auth
