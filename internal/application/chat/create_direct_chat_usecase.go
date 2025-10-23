@@ -45,7 +45,7 @@ func (uc *CreateDirectChatUsecase) Execute(firstMemberId, secondMemberId string)
 
 	chat := &chat_domain.Chat{
 		Type: chat_domain.ChatTypeDirect,
-		Members: []chat_domain.ChatMember{
+		Members: []*chat_domain.ChatMember{
 			{UserID: firstMemberId, Role: chat_domain.RoleMember},
 			{UserID: secondMemberId, Role: chat_domain.RoleMember},
 		},

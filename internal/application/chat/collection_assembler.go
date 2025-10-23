@@ -5,33 +5,25 @@ import (
 )
 
 type ChatCollectionAssembler struct {
-	lastMessageProvider *LastMessageProvider
+	chatAssembler *ChatItemAssembler
 }
 
 func NewChatCollectionAssembler(
-	lastMessageProvider *LastMessageProvider) *ChatCollectionAssembler {
+	chatAssembler *ChatItemAssembler,
+) *ChatCollectionAssembler {
 	return &ChatCollectionAssembler{
-		lastMessageProvider: lastMessageProvider,
+		chatAssembler: chatAssembler,
 	}
 }
 
-func (p *ChatCollectionAssembler) Assemble(
-	chatList *chat_domain.ChatList) (*ChatCollection, error) {
+func (a *ChatCollectionAssembler) Assemble(
+	chatList *chat_domain.ChatList, currentUserId string) (*ChatCollection, error) {
 	chats := make([]*ChatItem, 0, len(chatList.Chats))
 	for _, chat := range chatList.Chats {
-
-		lastMessage, err := p.lastMessageProvider.Provide(chat.ID)
+		chatItem, err := a.chatAssembler.Assemble(chat, currentUserId)
 		if err != nil {
 			return nil, err
 		}
-
-		chatItem := &ChatItem{
-			ID:          chat.ID,
-			Name:        chat.Name,
-			Type:        chat.Type,
-			LastMessage: lastMessage,
-		}
-
 		chats = append(chats, chatItem)
 	}
 

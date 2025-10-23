@@ -17,14 +17,14 @@ const (
 )
 
 type Chat struct {
-	ID          string       `json:"id" bson:"_id"`
-	Type        ChatType     `json:"type" bson:"type"`
-	Name        string       `json:"name" bson:"name"`
-	Description string       `json:"description" bson:"description"`
-	CreatedBy   string       `json:"created_by" bson:"created_by"`
-	Members     []ChatMember `json:"members" bson:"members"`
-	CreatedAt   time.Time    `json:"created_at" bson:"created_at"`
-	UpdatedAt   time.Time    `json:"updated_at" bson:"updated_at"`
+	ID          string        `json:"id" bson:"_id"`
+	Type        ChatType      `json:"type" bson:"type"`
+	Name        string        `json:"name" bson:"name"`
+	Description string        `json:"description" bson:"description"`
+	CreatedBy   string        `json:"created_by" bson:"created_by"`
+	Members     []*ChatMember `json:"members" bson:"members"`
+	CreatedAt   time.Time     `json:"created_at" bson:"created_at"`
+	UpdatedAt   time.Time     `json:"updated_at" bson:"updated_at"`
 }
 
 type ChatMember struct {

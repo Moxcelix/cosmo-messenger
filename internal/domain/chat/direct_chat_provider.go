@@ -37,7 +37,7 @@ func (p *DirectChatProvider) Provide(firstMemberId, secondMemberId string) (*Cha
 
 	newDirectChat := &Chat{
 		Type: ChatTypeDirect,
-		Members: []ChatMember{
+		Members: []*ChatMember{
 			{UserID: firstMemberId, Role: RoleMember},
 			{UserID: secondMemberId, Role: RoleMember},
 		},
