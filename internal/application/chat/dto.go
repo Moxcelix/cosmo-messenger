@@ -13,6 +13,12 @@ type ChatItem struct {
 	LastMessage *LastMessage         `json:"last_message,omitempty"`
 }
 
+type ChatHeader struct {
+	ID   string               `json:"id"`
+	Name string               `json:"name"`
+	Type chat_domain.ChatType `json:"type"`
+}
+
 type LastMessage struct {
 	ID        string                   `json:"id"`
 	Content   string                   `json:"content"`

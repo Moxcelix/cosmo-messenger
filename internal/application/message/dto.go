@@ -1,6 +1,7 @@
 package message_application
 
 import (
+	chat_application "main/internal/application/chat"
 	user_application "main/internal/application/user"
 	"time"
 )
@@ -21,8 +22,9 @@ type ChatMessage struct {
 }
 
 type MessageHistory struct {
-	Messages []*ChatMessage `json:"messages"`
-	Meta     ScrollingMeta  `json:"meta"`
+	ChatHeader *chat_application.ChatHeader `json:"chat"`
+	Messages   []*ChatMessage               `json:"messages"`
+	Meta       ScrollingMeta                `json:"meta"`
 }
 
 type ScrollingMeta struct {

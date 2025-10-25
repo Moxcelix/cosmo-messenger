@@ -449,10 +449,7 @@ func (r *ChatRepository) getChatMembers(chatID string) ([]*chat_domain.ChatMembe
 			return nil, err
 		}
 		members = append(members, member)
-		r.logger.Info("Loaded member: %+v\n", member)
 	}
-
-	r.logger.Info("Total members: %d\n", len(members))
 
 	return members, nil
 }

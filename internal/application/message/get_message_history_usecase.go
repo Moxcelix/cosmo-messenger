@@ -29,7 +29,8 @@ func NewGetMessageHistoryUsecase(
 }
 
 func (uc *GetMessageHistoryUsecase) Execute(
-	userId, chatId, cursorMessageId string, count int, direction string) (*MessageHistory, error) {
+	userId, chatId, cursorMessageId string, count int, direction string,
+) (*MessageHistory, error) {
 
 	if err := uc.chatPolicy.ValidateUserAccess(userId, chatId); err != nil {
 		return nil, err
@@ -48,5 +49,5 @@ func (uc *GetMessageHistoryUsecase) Execute(
 		return nil, err
 	}
 
-	return uc.historyAssembler.Assemble(messageList)
+	return uc.historyAssembler.Assemble(messageList, chatId, userId)
 }
