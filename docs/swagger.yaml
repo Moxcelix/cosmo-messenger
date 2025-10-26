@@ -33,32 +33,6 @@ definitions:
       username:
         type: string
     type: object
-  message_api.chatMessagesResponse:
-    properties:
-      data:
-        items:
-          $ref: '#/definitions/message_api.messageView'
-        type: array
-      meta:
-        $ref: '#/definitions/message_api.paginationMeta'
-    type: object
-  message_api.messageView:
-    properties:
-      chat_id:
-        type: string
-      content:
-        type: string
-      edited:
-        type: boolean
-      id:
-        type: string
-      reply_to:
-        type: string
-      sender_id:
-        type: string
-      timestamp:
-        type: string
-    type: object
   message_api.msgRequest:
     properties:
       content:
@@ -74,20 +48,17 @@ definitions:
       message:
         type: string
     type: object
-  message_api.paginationMeta:
+  message_api.sendRequest:
     properties:
-      count:
-        type: integer
-      has_next:
-        type: boolean
-      has_prev:
-        type: boolean
-      page:
-        type: integer
-      total:
-        type: integer
-      total_pages:
-        type: integer
+      content:
+        type: string
+    required:
+    - content
+    type: object
+  message_api.sendResponse:
+    properties:
+      message:
+        type: string
     type: object
   user_api.deleteResponse:
     properties:
@@ -340,7 +311,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/message_api.chatMessagesResponse'
+            additionalProperties:
+              type: string
+            type: object
         "400":
           description: Invalid parameters
           schema:
@@ -374,6 +347,40 @@ paths:
       security:
       - BearerAuth: []
       summary: Get chat messages
+      tags:
+      - messages
+    post:
+      consumes:
+      - application/json
+      description: Send message
+      parameters:
+      - description: Chat ID
+        in: path
+        name: chat_id
+        required: true
+        type: string
+      - description: Message data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/message_api.sendRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/message_api.sendResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Message sending
       tags:
       - messages
   /api/v1/messages/direct:
@@ -445,11 +452,11 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Deletes a user by username. Admin access required.
+      description: Deletes a user by id. Admin access required.
       parameters:
       - description: Username of the user to delete
         in: path
-        name: username
+        name: user_id
         required: true
         type: string
       produces:
@@ -479,7 +486,7 @@ paths:
             type: object
       security:
       - BearerAuth: []
-      summary: Delete user by username (Admin only)
+      summary: Delete user by id (Admin only)
       tags:
       - users
   /api/v1/users/get_info:

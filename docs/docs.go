@@ -296,7 +296,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/message_api.chatMessagesResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -337,6 +340,59 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Send message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Message sending",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Message data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/message_api.sendRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/message_api.sendResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -457,7 +513,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes a user by username. Admin access required.",
+                "description": "Deletes a user by id. Admin access required.",
                 "consumes": [
                     "application/json"
                 ],
@@ -467,12 +523,12 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Delete user by username (Admin only)",
+                "summary": "Delete user by id (Admin only)",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Username of the user to delete",
-                        "name": "username",
+                        "name": "user_id",
                         "in": "path",
                         "required": true
                     }
@@ -717,46 +773,6 @@ const docTemplate = `{
                 }
             }
         },
-        "message_api.chatMessagesResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/message_api.messageView"
-                    }
-                },
-                "meta": {
-                    "$ref": "#/definitions/message_api.paginationMeta"
-                }
-            }
-        },
-        "message_api.messageView": {
-            "type": "object",
-            "properties": {
-                "chat_id": {
-                    "type": "string"
-                },
-                "content": {
-                    "type": "string"
-                },
-                "edited": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "reply_to": {
-                    "type": "string"
-                },
-                "sender_id": {
-                    "type": "string"
-                },
-                "timestamp": {
-                    "type": "string"
-                }
-            }
-        },
         "message_api.msgRequest": {
             "type": "object",
             "required": [
@@ -780,26 +796,22 @@ const docTemplate = `{
                 }
             }
         },
-        "message_api.paginationMeta": {
+        "message_api.sendRequest": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_api.sendResponse": {
             "type": "object",
             "properties": {
-                "count": {
-                    "type": "integer"
-                },
-                "has_next": {
-                    "type": "boolean"
-                },
-                "has_prev": {
-                    "type": "boolean"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "total": {
-                    "type": "integer"
-                },
-                "total_pages": {
-                    "type": "integer"
+                "message": {
+                    "type": "string"
                 }
             }
         },

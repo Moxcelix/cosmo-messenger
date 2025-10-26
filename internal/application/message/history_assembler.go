@@ -38,10 +38,10 @@ func (a *MessageHistoryAssembler) Assemble(
 	}
 	chatMessages := &MessageHistory{
 		ChatHeader: chatHeader,
-		Messages: messages,
+		Messages:   messages,
 		Meta: ScrollingMeta{
-			HasPrev: messageList.Offset > 0,
-			HasNext: messageList.Offset < messageList.Total-messageList.Limit,
+			HasNext: messageList.Offset > 0,
+			HasPrev: messageList.Offset < messageList.Total-messageList.Limit,
 			Offset:  messageList.Offset,
 			Total:   messageList.Total,
 		},

@@ -3,6 +3,7 @@ package message_application
 import (
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
+	"time"
 )
 
 type SendMessageUsecase struct {
@@ -23,7 +24,7 @@ func NewSendMessageUsecase(
 	}
 }
 
-func (uc *SendMessageUsecase) Execute(senderId, chatId, receiverId, content string) error {
+func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) error {
 	chatExists, err := uc.chatRepo.ChatExists(chatId)
 	if err != nil {
 		return err
@@ -43,5 +44,13 @@ func (uc *SendMessageUsecase) Execute(senderId, chatId, receiverId, content stri
 		Content:  content,
 	}
 
-	return uc.msgRepo.CreateMessage(message)
+	if err := uc.msgRepo.CreateMessage(message); err != nil {
+		return err
+	}
+
+	if err := uc.chatRepo.MarkUpdated(chatId, time.Now()); err != nil {
+		return err
+	}
+
+	return nil
 }
