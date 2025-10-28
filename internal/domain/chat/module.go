@@ -7,5 +7,4 @@ import (
 var Module = fx.Options(
 	fx.Provide(NewChatPolicy),
 	fx.Provide(NewDirectChatProvider),
-	fx.Provide(NewChatNamingService),
 )

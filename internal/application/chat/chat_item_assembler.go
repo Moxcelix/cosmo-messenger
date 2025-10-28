@@ -6,12 +6,12 @@ import (
 
 type ChatItemAssembler struct {
 	lastMessageProvider *LastMessageProvider
-	namingService       *chat_domain.ChatNamingService
+	namingService       *ChatNamingService
 }
 
 func NewChatItemAssembler(
 	lastMessageProvider *LastMessageProvider,
-	namingService *chat_domain.ChatNamingService,
+	namingService *ChatNamingService,
 ) *ChatItemAssembler {
 	return &ChatItemAssembler{
 		lastMessageProvider: lastMessageProvider,

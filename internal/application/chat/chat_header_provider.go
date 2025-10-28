@@ -6,12 +6,12 @@ import (
 
 type ChatHeaderProvider struct {
 	chatRepo      chat_domain.ChatRepository
-	namingService *chat_domain.ChatNamingService
+	namingService *ChatNamingService
 }
 
 func NewChatHeaderProvider(
 	chatRepo chat_domain.ChatRepository,
-	namingService *chat_domain.ChatNamingService,
+	namingService *ChatNamingService,
 ) *ChatHeaderProvider {
 	return &ChatHeaderProvider{
 		chatRepo:      chatRepo,

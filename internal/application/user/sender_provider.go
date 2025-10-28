@@ -22,7 +22,7 @@ func (p *SenderProvider) Provide(userId string) (*Sender, error) {
 	}
 
 	if user == nil {
-		return nil, nil
+		return DeletedSender, nil
 	}
 
 	return &Sender{
