@@ -8,12 +8,12 @@ import (
 type WebSocketRoutes struct {
 	handler             pkg.RequestHandler
 	websocketController *WebSocketController
-	authMiddleware      *auth_api.AuthMiddleware
+	authMiddleware      *auth_api.QueryAuthMiddleware
 }
 
 func NewWebSocketRoutes(
 	websocketController *WebSocketController,
-	authMiddleware *auth_api.AuthMiddleware,
+	authMiddleware *auth_api.QueryAuthMiddleware,
 	handler pkg.RequestHandler,
 ) *WebSocketRoutes {
 	return &WebSocketRoutes{

@@ -85,12 +85,20 @@ func (m *WebSocketHub) HandleConnection(w http.ResponseWriter, r *http.Request, 
 
 	m.logger.Info("Client connected", "clientID", clientID, "ip", connectionInfo.IPAddress)
 
+	go m.startPing(conn, clientID)
 	go m.handleMessages(conn, clientID)
 
 	return nil
 }
 
 func (m *WebSocketHub) handleMessages(conn *websocket.Conn, clientID string) {
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	conn.SetPongHandler(func(string) error {
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+		return nil
+	})
+
 	defer func() {
 		m.RemoveConnection(clientID, conn)
 		conn.Close()
@@ -219,4 +227,22 @@ func (m *WebSocketHub) GetConnectionCount() int {
 	}
 
 	return count
+}
+
+func (m *WebSocketHub) startPing(conn *websocket.Conn, clientID string) {
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		err := conn.WriteControl(
+			websocket.PingMessage,
+			[]byte{},
+			time.Now().Add(10*time.Second))
+
+		if err != nil {
+			m.logger.Error("Ping failed", "clientID", clientID, "error", err)
+			m.RemoveConnection(clientID, conn)
+			return
+		}
+	}
 }

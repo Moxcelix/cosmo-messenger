@@ -10,6 +10,16 @@ type SendMessageWebSocket struct {
 	sendMessageUsecase *message_application.SendMessageUsecase
 }
 
+func NewSendMessageWebSocket(
+	logger pkg.Logger,
+	sendMessageUsecase *message_application.SendMessageUsecase,
+) *SendMessageWebSocket {
+	return &SendMessageWebSocket{
+		logger:             logger,
+		sendMessageUsecase: sendMessageUsecase,
+	}
+}
+
 type wsMessageRequest struct {
 	Content string `json:"content"`
 	ChatID  string `json:"chat_id"`
