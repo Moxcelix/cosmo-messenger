@@ -15,6 +15,7 @@ type Reply struct {
 type ChatMessage struct {
 	ID        string                   `json:"id"`
 	Content   string                   `json:"content"`
+	ChatID    string                   `json:"chat_id"`
 	ReplyTo   *Reply                   `json:"reply_to,omitempty"`
 	Sender    *user_application.Sender `json:"sender"`
 	Timestamp time.Time                `json:"timestamp"`

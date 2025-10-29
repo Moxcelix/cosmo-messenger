@@ -7,20 +7,23 @@ import (
 )
 
 type SendMessageUsecase struct {
-	msgRepo       message_domain.MessageRepository
-	chatRepo      chat_domain.ChatRepository
-	messagePolicy *message_domain.MessagePolicy
+	msgRepo            message_domain.MessageRepository
+	chatRepo           chat_domain.ChatRepository
+	messagePolicy      *message_domain.MessagePolicy
+	messageBroadcaster message_domain.MessageBroadcaster
 }
 
 func NewSendMessageUsecase(
 	msgRepo message_domain.MessageRepository,
 	chatRepo chat_domain.ChatRepository,
 	messagePolicy *message_domain.MessagePolicy,
+	messageBroadcaster message_domain.MessageBroadcaster,
 ) *SendMessageUsecase {
 	return &SendMessageUsecase{
-		msgRepo:       msgRepo,
-		chatRepo:      chatRepo,
-		messagePolicy: messagePolicy,
+		msgRepo:            msgRepo,
+		chatRepo:           chatRepo,
+		messagePolicy:      messagePolicy,
+		messageBroadcaster: messageBroadcaster,
 	}
 }
 
@@ -49,6 +52,10 @@ func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) error {
 	}
 
 	if err := uc.chatRepo.MarkUpdated(chatId, time.Now()); err != nil {
+		return err
+	}
+
+	if err := uc.messageBroadcaster.Broadcast(message); err != nil {
 		return err
 	}
 

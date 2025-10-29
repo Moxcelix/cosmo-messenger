@@ -34,6 +34,7 @@ func (a *ChatMessageAssembler) Assemble(msg *message_domain.Message) (*ChatMessa
 
 	return &ChatMessage{
 		ID:        msg.ID,
+		ChatID:    msg.ChatID,
 		Content:   msg.Content,
 		ReplyTo:   repliedMessage,
 		Sender:    sender,

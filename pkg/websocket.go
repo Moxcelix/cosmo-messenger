@@ -13,14 +13,14 @@ import (
 
 type Client struct {
 	Connections map[*websocket.Conn]ConnectionInfo
-
-	mutex sync.RWMutex
+	mutex       sync.RWMutex
 }
 
 type ConnectionInfo struct {
 	ConnectedAt time.Time
 	UserAgent   string
 	IPAddress   string
+	stopPing    chan struct{} // Канал для остановки ping
 }
 
 type WebSocketEvent struct {
@@ -56,93 +56,139 @@ func NewWebSocketHub(env config.Env, logger Logger) *WebSocketHub {
 	}
 }
 
-func (m *WebSocketHub) HandleConnection(w http.ResponseWriter, r *http.Request, clientID string) error {
-	conn, err := m.upgrader.Upgrade(w, r, nil)
+func (h *WebSocketHub) HandleConnection(w http.ResponseWriter, r *http.Request, clientID string) error {
+	conn, err := h.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		return err
 	}
 
-	connectionInfo := ConnectionInfo{
-		ConnectedAt: time.Now(),
-		UserAgent:   r.UserAgent(),
-		IPAddress:   r.RemoteAddr,
-	}
-
-	m.clientsMutex.Lock()
-	defer m.clientsMutex.Unlock()
-
-	if _, exists := m.clients[clientID]; !exists {
-		m.clients[clientID] = &Client{
-			Connections: make(map[*websocket.Conn]ConnectionInfo),
-			mutex:       sync.RWMutex{},
-		}
-	}
-
-	client := m.clients[clientID]
-	client.mutex.Lock()
-	client.Connections[conn] = connectionInfo
-	client.mutex.Unlock()
-
-	m.logger.Info("Client connected", "clientID", clientID, "ip", connectionInfo.IPAddress)
-
-	go m.startPing(conn, clientID)
-	go m.handleMessages(conn, clientID)
-
-	return nil
-}
-
-func (m *WebSocketHub) handleMessages(conn *websocket.Conn, clientID string) {
-	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
-	conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+	// Настраиваем обработчик Pong
 	conn.SetPongHandler(func(string) error {
 		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
 		return nil
 	})
 
+	connectionInfo := ConnectionInfo{
+		ConnectedAt: time.Now(),
+		UserAgent:   r.UserAgent(),
+		IPAddress:   r.RemoteAddr,
+		stopPing:    make(chan struct{}),
+	}
+
+	h.clientsMutex.Lock()
+	if _, exists := h.clients[clientID]; !exists {
+		h.clients[clientID] = &Client{
+			Connections: make(map[*websocket.Conn]ConnectionInfo),
+		}
+	}
+
+	client := h.clients[clientID]
+	client.mutex.Lock()
+	client.Connections[conn] = connectionInfo
+	client.mutex.Unlock()
+	h.clientsMutex.Unlock()
+
+	h.logger.Info("Client connected", "clientID", clientID, "ip", connectionInfo.IPAddress)
+
+	// Запускаем обработку сообщений и ping
+	go h.handleConnection(conn, clientID, connectionInfo.stopPing)
+
+	return nil
+}
+
+func (h *WebSocketHub) handleConnection(conn *websocket.Conn, clientID string, stopPing chan struct{}) {
 	defer func() {
-		m.RemoveConnection(clientID, conn)
+		if err := recover(); err != nil {
+			h.logger.Error("WebSocket panic in handleConnection", "error", err, "clientID", clientID)
+		}
+	}()
+
+	defer func() {
+		h.RemoveConnection(clientID, conn)
 		conn.Close()
 	}()
 
-	for {
-		var event WebSocketEvent
-		err := conn.ReadJSON(&event)
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				m.logger.Error("WebSocket error", "error", err, "clientID", clientID)
-			}
-			break
-		}
+	// Каналы для координации
+	messageChan := make(chan WebSocketEvent)
+	errorChan := make(chan error)
+	done := make(chan struct{})
 
-		m.handleEvent(event, clientID)
+	// Горутина для чтения сообщений
+	go h.readMessages(conn, messageChan, errorChan, done)
+
+	// Горутина для ping
+	pingTicker := time.NewTicker(30 * time.Second)
+	defer pingTicker.Stop()
+
+	for {
+		select {
+		case event := <-messageChan:
+			h.handleEvent(event, clientID)
+
+		case err := <-errorChan:
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				h.logger.Error("WebSocket error", "error", err, "clientID", clientID)
+			}
+			return
+
+		case <-pingTicker.C:
+			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				h.logger.Error("Ping failed", "clientID", clientID, "error", err)
+				return
+			}
+
+		case <-stopPing:
+			return
+
+		case <-done:
+			return
+		}
 	}
 }
 
-func (m *WebSocketHub) handleEvent(event WebSocketEvent, clientID string) {
-	m.handlersMutex.RLock()
-	handler, exists := m.handlers[event.Type]
-	m.handlersMutex.RUnlock()
+func (h *WebSocketHub) readMessages(conn *websocket.Conn, messageChan chan<- WebSocketEvent, errorChan chan<- error, done chan<- struct{}) {
+	defer close(done)
+
+	for {
+		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
+
+		var event WebSocketEvent
+		err := conn.ReadJSON(&event)
+		if err != nil {
+			errorChan <- err
+			return
+		}
+
+		messageChan <- event
+	}
+}
+
+func (h *WebSocketHub) handleEvent(event WebSocketEvent, clientID string) {
+	h.handlersMutex.RLock()
+	handler, exists := h.handlers[event.Type]
+	h.handlersMutex.RUnlock()
 
 	if !exists {
-		m.logger.Warn("No handler for event type", "type", event.Type, "clientID", clientID)
+		h.logger.Warn("No handler for event type", "type", event.Type, "clientID", clientID)
 		return
 	}
 
 	if err := handler(clientID, event); err != nil {
-		m.logger.Error("Handler error", "error", err, "clientID", clientID, "type", event.Type)
+		h.logger.Error("Handler error", "error", err, "clientID", clientID, "type", event.Type)
 	}
 }
 
-func (m *WebSocketHub) On(eventType string, handler MessageHandler) {
-	m.handlersMutex.Lock()
-	defer m.handlersMutex.Unlock()
-	m.handlers[eventType] = handler
+func (h *WebSocketHub) On(eventType string, handler MessageHandler) {
+	h.handlersMutex.Lock()
+	defer h.handlersMutex.Unlock()
+	h.handlers[eventType] = handler
 }
 
-func (m *WebSocketHub) SendToClient(clientID string, event WebSocketEvent) error {
-	m.clientsMutex.RLock()
-	client, exists := m.clients[clientID]
-	m.clientsMutex.RUnlock()
+func (h *WebSocketHub) SendToClient(clientID string, event WebSocketEvent) error {
+	h.clientsMutex.RLock()
+	client, exists := h.clients[clientID]
+	h.clientsMutex.RUnlock()
 
 	if !exists {
 		return fmt.Errorf("client not found: %s", clientID)
@@ -153,9 +199,11 @@ func (m *WebSocketHub) SendToClient(clientID string, event WebSocketEvent) error
 
 	var errors []error
 	for conn := range client.Connections {
+		conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
 		err := conn.WriteJSON(event)
 		if err != nil {
 			errors = append(errors, err)
+			h.logger.Error("Send error", "clientID", clientID, "error", err)
 		}
 	}
 
@@ -166,83 +214,93 @@ func (m *WebSocketHub) SendToClient(clientID string, event WebSocketEvent) error
 	return nil
 }
 
-func (m *WebSocketHub) Broadcast(event WebSocketEvent) {
-	m.clientsMutex.RLock()
-	defer m.clientsMutex.RUnlock()
+func (h *WebSocketHub) Broadcast(event WebSocketEvent) {
+	h.clientsMutex.RLock()
+	defer h.clientsMutex.RUnlock()
 
-	for clientID, client := range m.clients {
+	for clientID, client := range h.clients {
 		client.mutex.RLock()
 		for conn := range client.Connections {
+			conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
 			if err := conn.WriteJSON(event); err != nil {
-				m.logger.Error("Broadcast error", "error", err, "clientID", clientID)
+				h.logger.Error("Broadcast error", "error", err, "clientID", clientID)
 			}
 		}
 		client.mutex.RUnlock()
 	}
 }
 
-func (m *WebSocketHub) RemoveConnection(clientID string, conn *websocket.Conn) {
-	m.clientsMutex.Lock()
-	defer m.clientsMutex.Unlock()
+func (h *WebSocketHub) RemoveConnection(clientID string, conn *websocket.Conn) {
+	h.clientsMutex.Lock()
+	defer h.clientsMutex.Unlock()
 
-	client, exists := m.clients[clientID]
+	client, exists := h.clients[clientID]
 	if !exists {
 		return
 	}
 
 	client.mutex.Lock()
-	delete(client.Connections, conn)
+	if info, exists := client.Connections[conn]; exists {
+		if info.stopPing != nil {
+			close(info.stopPing)
+		}
+		delete(client.Connections, conn)
+	}
 	client.mutex.Unlock()
 
 	if len(client.Connections) == 0 {
-		delete(m.clients, clientID)
-		m.logger.Info("Client removed", "clientID", clientID)
+		delete(h.clients, clientID)
+		h.logger.Info("Client removed", "clientID", clientID)
 	}
 }
 
-func (m *WebSocketHub) GetClient(clientID string) (*Client, bool) {
-	m.clientsMutex.RLock()
-	defer m.clientsMutex.RUnlock()
+func (h *WebSocketHub) RemoveClient(clientID string) {
+	h.clientsMutex.Lock()
+	defer h.clientsMutex.Unlock()
 
-	client, exists := m.clients[clientID]
+	client, exists := h.clients[clientID]
+	if !exists {
+		return
+	}
+
+	client.mutex.Lock()
+	for conn, info := range client.Connections {
+		if info.stopPing != nil {
+			close(info.stopPing)
+		}
+		conn.Close()
+	}
+	client.mutex.Unlock()
+
+	delete(h.clients, clientID)
+	h.logger.Info("Client fully removed", "clientID", clientID)
+}
+
+func (h *WebSocketHub) GetClient(clientID string) (*Client, bool) {
+	h.clientsMutex.RLock()
+	defer h.clientsMutex.RUnlock()
+
+	client, exists := h.clients[clientID]
 	return client, exists
 }
 
-func (m *WebSocketHub) GetClientCount() int {
-	m.clientsMutex.RLock()
-	defer m.clientsMutex.RUnlock()
+func (h *WebSocketHub) GetClientCount() int {
+	h.clientsMutex.RLock()
+	defer h.clientsMutex.RUnlock()
 
-	return len(m.clients)
+	return len(h.clients)
 }
 
-func (m *WebSocketHub) GetConnectionCount() int {
-	m.clientsMutex.RLock()
-	defer m.clientsMutex.RUnlock()
+func (h *WebSocketHub) GetConnectionCount() int {
+	h.clientsMutex.RLock()
+	defer h.clientsMutex.RUnlock()
 
 	count := 0
-	for _, client := range m.clients {
+	for _, client := range h.clients {
 		client.mutex.RLock()
 		count += len(client.Connections)
 		client.mutex.RUnlock()
 	}
 
 	return count
-}
-
-func (m *WebSocketHub) startPing(conn *websocket.Conn, clientID string) {
-	ticker := time.NewTicker(30 * time.Second)
-	defer ticker.Stop()
-
-	for range ticker.C {
-		err := conn.WriteControl(
-			websocket.PingMessage,
-			[]byte{},
-			time.Now().Add(10*time.Second))
-
-		if err != nil {
-			m.logger.Error("Ping failed", "clientID", clientID, "error", err)
-			m.RemoveConnection(clientID, conn)
-			return
-		}
-	}
 }
