@@ -586,6 +586,13 @@ paths:
       summary: User registration
       tags:
       - users
+  /ws:
+    get:
+      description: WebSocket endpoint for real-time messaging
+      responses: {}
+      summary: WebSocket connection for real-time messages
+      tags:
+      - websocket
 securityDefinitions:
   BearerAuth:
     in: header

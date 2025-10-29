@@ -716,6 +716,16 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/ws": {
+            "get": {
+                "description": "WebSocket endpoint for real-time messaging",
+                "tags": [
+                    "websocket"
+                ],
+                "summary": "WebSocket connection for real-time messages",
+                "responses": {}
+            }
         }
     },
     "definitions": {

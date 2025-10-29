@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -30,6 +31,8 @@ type Env struct {
 	JwtSecreet    string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
 	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
+
+	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
 }
 
 func NewEnv() Env {
@@ -97,5 +100,9 @@ func (e *Env) bindEnv() {
 			log.Fatalf("Invalid JWT_REFRESH_TTL format: %v", err)
 		}
 		e.JwtRefreshTTL = d
+	}
+
+	if val := os.Getenv("ALLOWED_ORIGINS"); val != "" {
+		e.AllowedOrigins = strings.Split(val, ",")
 	}
 }

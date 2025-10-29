@@ -7,12 +7,7 @@ import (
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
 	user_api "main/internal/api/user"
-
-	"go.uber.org/fx"
-)
-
-var Module = fx.Options(
-	fx.Provide(NewRoutes),
+	websocket_api "main/internal/api/websocket"
 )
 
 type Route interface {
@@ -28,6 +23,7 @@ func NewRoutes(
 	authRoutes *auth_api.AuthServiceRoutes,
 	msgRoutes *message_api.MessageRoutes,
 	chatRoutes *chat_api.ChatRoutes,
+	websocketRoutes *websocket_api.WebSocketRoutes,
 ) Routes {
 	return Routes{
 		swaggerRoutes,
@@ -36,6 +32,7 @@ func NewRoutes(
 		authRoutes,
 		msgRoutes,
 		chatRoutes,
+		websocketRoutes,
 	}
 }
 

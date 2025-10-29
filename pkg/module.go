@@ -11,4 +11,5 @@ var Module = fx.Options(
 	fx.Provide(NewMongoDatabase),
 	fx.Provide(NewJwt),
 	fx.Provide(NewPostgresDatabase),
+	fx.Provide(NewWebSocketHub),
 )

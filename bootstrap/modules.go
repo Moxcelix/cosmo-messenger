@@ -8,6 +8,7 @@ import (
 	ping_api "main/internal/api/ping"
 	swagger_api "main/internal/api/swagger"
 	user_api "main/internal/api/user"
+	websocket_api "main/internal/api/websocket"
 	auth_application "main/internal/application/auth"
 	chat_application "main/internal/application/chat"
 	message_application "main/internal/application/message"
@@ -51,4 +52,6 @@ var CommonModules = fx.Options(
 	chat_application.Module,
 	chat_infrastructure.Module,
 	chat_api.Module,
+
+	websocket_api.Module,
 )
