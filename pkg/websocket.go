@@ -12,15 +12,15 @@ import (
 )
 
 type Client struct {
-	Connections map[*websocket.Conn]ConnectionInfo
+	Connections map[*websocket.Conn]ConnectionPort
 	mutex       sync.RWMutex
 }
 
-type ConnectionInfo struct {
+type ConnectionPort struct {
 	ConnectedAt time.Time
 	UserAgent   string
 	IPAddress   string
-	stopPing    chan struct{} // Канал для остановки ping
+	stopPing    chan struct{}
 }
 
 type WebSocketEvent struct {
@@ -62,13 +62,12 @@ func (h *WebSocketHub) HandleConnection(w http.ResponseWriter, r *http.Request, 
 		return err
 	}
 
-	// Настраиваем обработчик Pong
 	conn.SetPongHandler(func(string) error {
 		conn.SetReadDeadline(time.Now().Add(60 * time.Second))
 		return nil
 	})
 
-	connectionInfo := ConnectionInfo{
+	connectionInfo := ConnectionPort{
 		ConnectedAt: time.Now(),
 		UserAgent:   r.UserAgent(),
 		IPAddress:   r.RemoteAddr,
@@ -78,7 +77,7 @@ func (h *WebSocketHub) HandleConnection(w http.ResponseWriter, r *http.Request, 
 	h.clientsMutex.Lock()
 	if _, exists := h.clients[clientID]; !exists {
 		h.clients[clientID] = &Client{
-			Connections: make(map[*websocket.Conn]ConnectionInfo),
+			Connections: make(map[*websocket.Conn]ConnectionPort),
 		}
 	}
 
@@ -90,7 +89,6 @@ func (h *WebSocketHub) HandleConnection(w http.ResponseWriter, r *http.Request, 
 
 	h.logger.Info("Client connected", "clientID", clientID, "ip", connectionInfo.IPAddress)
 
-	// Запускаем обработку сообщений и ping
 	go h.handleConnection(conn, clientID, connectionInfo.stopPing)
 
 	return nil
@@ -108,15 +106,12 @@ func (h *WebSocketHub) handleConnection(conn *websocket.Conn, clientID string, s
 		conn.Close()
 	}()
 
-	// Каналы для координации
 	messageChan := make(chan WebSocketEvent)
 	errorChan := make(chan error)
 	done := make(chan struct{})
 
-	// Горутина для чтения сообщений
 	go h.readMessages(conn, messageChan, errorChan, done)
 
-	// Горутина для ping
 	pingTicker := time.NewTicker(30 * time.Second)
 	defer pingTicker.Stop()
 
@@ -240,9 +235,9 @@ func (h *WebSocketHub) RemoveConnection(clientID string, conn *websocket.Conn) {
 	}
 
 	client.mutex.Lock()
-	if info, exists := client.Connections[conn]; exists {
-		if info.stopPing != nil {
-			close(info.stopPing)
+	if port, exists := client.Connections[conn]; exists {
+		if port.stopPing != nil {
+			close(port.stopPing)
 		}
 		delete(client.Connections, conn)
 	}
@@ -264,9 +259,9 @@ func (h *WebSocketHub) RemoveClient(clientID string) {
 	}
 
 	client.mutex.Lock()
-	for conn, info := range client.Connections {
-		if info.stopPing != nil {
-			close(info.stopPing)
+	for conn, port := range client.Connections {
+		if port.stopPing != nil {
+			close(port.stopPing)
 		}
 		conn.Close()
 	}

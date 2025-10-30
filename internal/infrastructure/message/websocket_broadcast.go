@@ -2,46 +2,36 @@ package message_infrastructure
 
 import (
 	message_application "main/internal/application/message"
-	chat_domain "main/internal/domain/chat"
-	message_domain "main/internal/domain/message"
 	"main/pkg"
 )
 
 type WebsocketBroadcaster struct {
-	wsHub        *pkg.WebSocketHub
-	chatRepo     chat_domain.ChatRepository
-	msgAssembler *message_application.ChatMessageAssembler
+	wsHub *pkg.WebSocketHub
 }
 
 func NewWebsocketBroadcaster(
 	wsHub *pkg.WebSocketHub,
-	chatRepo chat_domain.ChatRepository,
-	msgAssembler *message_application.ChatMessageAssembler,
-) message_domain.MessageBroadcaster {
+) message_application.MessageBroadcaster {
 	return &WebsocketBroadcaster{
-		wsHub:        wsHub,
-		chatRepo:     chatRepo,
-		msgAssembler: msgAssembler,
+		wsHub: wsHub,
 	}
 }
 
-func (b *WebsocketBroadcaster) Broadcast(msg *message_domain.Message) error {
-	chat, err := b.chatRepo.GetByID(msg.ChatID)
-	if err != nil {
-		return err
-	}
+func (b *WebsocketBroadcaster) BroadcastToUser(userId string, msg *message_application.ChatMessage) error {
+	msgPayload := msg
+	b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
+		Type:    "new_message",
+		Payload: msgPayload,
+	})
 
-	if chat == nil {
-		return chat_domain.ErrChatNotFound
-	}
+	return nil
+}
 
-	msgPayload, err := b.msgAssembler.Assemble(msg)
-	if err != nil {
-		return err
-	}
-
-	for _, member := range chat.Members {
-		b.wsHub.SendToClient(member.UserID, pkg.WebSocketEvent{
+func (b *WebsocketBroadcaster) BroadcastToUsers(
+	usersId []string, msg *message_application.ChatMessage) error {
+	msgPayload := msg
+	for _, userId := range usersId {
+		b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
 			Type:    "new_message",
 			Payload: msgPayload,
 		})

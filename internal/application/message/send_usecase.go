@@ -10,30 +10,33 @@ type SendMessageUsecase struct {
 	msgRepo            message_domain.MessageRepository
 	chatRepo           chat_domain.ChatRepository
 	messagePolicy      *message_domain.MessagePolicy
-	messageBroadcaster message_domain.MessageBroadcaster
+	messageAssembler   *ChatMessageAssembler
+	messageBroadcaster MessageBroadcaster
 }
 
 func NewSendMessageUsecase(
 	msgRepo message_domain.MessageRepository,
 	chatRepo chat_domain.ChatRepository,
 	messagePolicy *message_domain.MessagePolicy,
-	messageBroadcaster message_domain.MessageBroadcaster,
+	messageAssembler *ChatMessageAssembler,
+	messageBroadcaster MessageBroadcaster,
 ) *SendMessageUsecase {
 	return &SendMessageUsecase{
 		msgRepo:            msgRepo,
 		chatRepo:           chatRepo,
 		messagePolicy:      messagePolicy,
+		messageAssembler:   messageAssembler,
 		messageBroadcaster: messageBroadcaster,
 	}
 }
 
 func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) error {
-	chatExists, err := uc.chatRepo.ChatExists(chatId)
+	chat, err := uc.chatRepo.GetByID(chatId)
 	if err != nil {
 		return err
 	}
 
-	if !chatExists {
+	if chat == nil {
 		return chat_domain.ErrChatNotFound
 	}
 
@@ -55,7 +58,13 @@ func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) error {
 		return err
 	}
 
-	if err := uc.messageBroadcaster.Broadcast(message); err != nil {
+	msgDto, err := uc.messageAssembler.Assemble(message)
+	if err != nil {
+		return err
+	}
+
+	chatMembersId := chat.GetMembersId()
+	if err := uc.messageBroadcaster.BroadcastToUsers(chatMembersId, msgDto); err != nil {
 		return err
 	}
 
