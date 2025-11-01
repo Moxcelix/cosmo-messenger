@@ -17,22 +17,22 @@ func NewWebsocketTypingBroadcaster(
 	}
 }
 
-func (b *WebsocketTypingBroadcaster) BroadcastToUser(userId string, isTyping bool) error {
+func (b *WebsocketTypingBroadcaster) BroadcastToUser(
+	userId string, typing *chat_application.Typing) error {
 	b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
-		Type:    "new_message",
-		Payload: isTyping,
+		Type:    "typing",
+		Payload: typing,
 	})
 
 	return nil
 }
 
 func (b *WebsocketTypingBroadcaster) BroadcastToUsers(
-	usersId []string, isTyping bool) error {
-	msgPayload := msg
+	usersId []string, typing *chat_application.Typing) error {
 	for _, userId := range usersId {
 		b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
-			Type:    "new_message",
-			Payload: msgPayload,
+			Type:    "typing",
+			Payload: typing,
 		})
 	}
 
