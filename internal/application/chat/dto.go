@@ -37,3 +37,10 @@ type ChatCollection struct {
 	Chats []*ChatItem    `json:"chats"`
 	Meta  *ScrollingMeta `json:"meta"`
 }
+
+type Typing struct {
+	UserID   string `json:"user_id"`
+	UserName string `json:"user_name"`
+	ChatID   string `json:"chat_id"`
+	IsTyping bool   `json:"is_typing"`
+}
