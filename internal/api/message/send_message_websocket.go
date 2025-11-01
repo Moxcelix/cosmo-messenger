@@ -1,6 +1,7 @@
 package message_api
 
 import (
+	"fmt"
 	message_application "main/internal/application/message"
 	"main/pkg"
 )
@@ -26,22 +27,16 @@ type wsMessageRequest struct {
 }
 
 func (c *SendMessageWebSocket) SendMessage(clientID string, event pkg.WebSocketEvent) error {
-	var msg wsMessageRequest
+	var req wsMessageRequest
 
-	if payload, ok := event.Payload.(map[string]any); ok {
-		if content, exists := payload["content"]; exists {
-			msg.Content = content.(string)
-		}
-		if chatID, exists := payload["chat_id"]; exists {
-			msg.ChatID = chatID.(string)
-		}
+	if err := pkg.ParsePayload(event.Payload, &req); err != nil {
+		return fmt.Errorf("failed to parse typing request: %w", err)
 	}
 
-	if err := c.sendMessageUsecase.Execute(clientID, msg.ChatID, msg.Content); err != nil {
+	if err := c.sendMessageUsecase.Execute(clientID, req.ChatID, req.Content); err != nil {
 		c.logger.Error("Send message usecase error:", err)
 		return err
 	}
 
-	c.logger.Info("Message sent via WebSocket", "userID", clientID, "chatID", msg.ChatID)
 	return nil
 }

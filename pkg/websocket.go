@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"encoding/json"
 	"fmt"
 	"main/internal/config"
 	"net/http"
@@ -298,4 +299,17 @@ func (h *WebSocketHub) GetConnectionCount() int {
 	}
 
 	return count
+}
+
+func ParsePayload[T any](payload interface{}, target *T) error {
+	jsonBytes, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("failed to marshal payload: %w", err)
+	}
+
+	if err := json.Unmarshal(jsonBytes, target); err != nil {
+		return fmt.Errorf("failed to unmarshal payload: %w", err)
+	}
+
+	return nil
 }

@@ -1,14 +1,19 @@
 package chat_api
 
 import (
+	"fmt"
+	chat_application "main/internal/application/chat"
 	"main/pkg"
 )
 
 type TypingWebSocket struct {
+	typingUsecase *chat_application.TypingUsecase
 }
 
-func NewTypingWebSocket() *TypingWebSocket {
-	return &TypingWebSocket{}
+func NewTypingWebSocket(typingUsecase *chat_application.TypingUsecase) *TypingWebSocket {
+	return &TypingWebSocket{
+		typingUsecase: typingUsecase,
+	}
 }
 
 type wsTypingRequest struct {
@@ -19,14 +24,9 @@ type wsTypingRequest struct {
 func (c *TypingWebSocket) Typing(clientID string, event pkg.WebSocketEvent) error {
 	var req wsTypingRequest
 
-	if payload, ok := event.Payload.(map[string]any); ok {
-		if isTyping, exists := payload["is_typing"]; exists {
-			req.IsTyping = isTyping.(bool)
-		}
-		if chatID, exists := payload["chat_id"]; exists {
-			req.ChatID = chatID.(string)
-		}
+	if err := pkg.ParsePayload(event.Payload, &req); err != nil {
+		return fmt.Errorf("failed to parse typing request: %w", err)
 	}
 
-	return nil
+	return c.typingUsecase.Execute(clientID, req.ChatID, req.IsTyping)
 }
