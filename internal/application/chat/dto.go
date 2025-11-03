@@ -11,12 +11,14 @@ type ChatItem struct {
 	Name        string               `json:"name"`
 	Type        chat_domain.ChatType `json:"type"`
 	LastMessage *LastMessage         `json:"last_message,omitempty"`
+	Typing      []*Typing            `json:"typing,omitempty"`
 }
 
 type ChatHeader struct {
-	ID   string               `json:"id"`
-	Name string               `json:"name"`
-	Type chat_domain.ChatType `json:"type"`
+	ID     string               `json:"id"`
+	Name   string               `json:"name"`
+	Type   chat_domain.ChatType `json:"type"`
+	Typing []*Typing            `json:"typing,omitempty"`
 }
 
 type LastMessage struct {

@@ -23,5 +23,5 @@ func NewChatEvents(
 }
 
 func (c *ChatEvents) Setup() {
-	c.wsHub.On("is_typing", c.typingWebsocket.Typing)
+	c.wsHub.On("typing", c.typingWebsocket.Typing)
 }

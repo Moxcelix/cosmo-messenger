@@ -11,6 +11,7 @@ import (
 
 	"main/internal/api"
 	"main/internal/config"
+	"main/internal/infrastructure"
 )
 
 func Run() any {
@@ -20,9 +21,11 @@ func Run() any {
 		handler pkg.RequestHandler,
 		routes api.Routes,
 		events api.Events,
+		workers infrastructure.Workers,
 	) {
 		routes.Setup()
 		events.Setup()
+		workers.Run()
 		err := handler.Gin.Run(":" + env.Port)
 
 		if err != nil {

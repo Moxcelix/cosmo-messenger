@@ -20,7 +20,7 @@ func NewWebsocketTypingBroadcaster(
 func (b *WebsocketTypingBroadcaster) BroadcastToUser(
 	userId string, typing *chat_application.Typing) error {
 	b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
-		Type:    "typing",
+		Type:    "user_typing",
 		Payload: typing,
 	})
 
@@ -31,7 +31,7 @@ func (b *WebsocketTypingBroadcaster) BroadcastToUsers(
 	usersId []string, typing *chat_application.Typing) error {
 	for _, userId := range usersId {
 		b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
-			Type:    "typing",
+			Type:    "user_typing",
 			Payload: typing,
 		})
 	}

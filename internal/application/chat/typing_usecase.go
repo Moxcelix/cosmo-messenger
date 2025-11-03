@@ -8,17 +8,20 @@ import (
 type TypingUsecase struct {
 	userRepo          user_domain.UserRepository
 	chatRepo          chat_domain.ChatRepository
+	typingService     chat_domain.TypingService
 	typingBroadcaster TypingBroadcaster
 }
 
 func NewTypingUsecase(
 	userRepo user_domain.UserRepository,
 	chatRepo chat_domain.ChatRepository,
+	typingService chat_domain.TypingService,
 	typingBroadcaster TypingBroadcaster,
 ) *TypingUsecase {
 	return &TypingUsecase{
 		userRepo:          userRepo,
 		chatRepo:          chatRepo,
+		typingService:     typingService,
 		typingBroadcaster: typingBroadcaster,
 	}
 }
@@ -36,6 +39,16 @@ func (uc *TypingUsecase) Execute(userId, chatId string, isTyping bool) error {
 	user, err := uc.userRepo.GetUserById(userId)
 	if err != nil {
 		return err
+	}
+
+	if isTyping {
+		if err := uc.typingService.StartTyping(userId, chatId); err != nil {
+			return err
+		}
+	} else {
+		if err := uc.typingService.StopTyping(userId, chatId); err != nil {
+			return err
+		}
 	}
 
 	typingDto := &Typing{
