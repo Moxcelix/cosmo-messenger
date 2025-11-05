@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"main/internal/config"
 	"net/http"
-	"slices"
 	"sync"
 	"time"
 
@@ -44,11 +43,12 @@ func NewWebSocketHub(env config.Env, logger Logger) *WebSocketHub {
 	return &WebSocketHub{
 		upgrader: websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
-				origin := r.Header.Get("Origin")
-				if env.AppEnv != "production" {
-					return true
-				}
-				return slices.Contains(env.AllowedOrigins, origin)
+				return true
+				// origin := r.Header.Get("Origin")
+				// if env.AppEnv != "production" {
+				// 	return true
+				// }
+				// return slices.Contains(env.AllowedOrigins, origin)
 			},
 		},
 		clients:  make(map[string]*Client),
