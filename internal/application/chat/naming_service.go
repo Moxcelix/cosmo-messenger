@@ -1,18 +1,26 @@
 package chat_application
 
 import (
-	user_application "main/internal/application/user"
 	chat_domain "main/internal/domain/chat"
+	user_domain "main/internal/domain/user"
 )
 
 type ChatNamingService struct {
-	senderProvider *user_application.SenderProvider
+	userRepo user_domain.UserRepository
 }
 
-func NewChatNamingService(senderProvider *user_application.SenderProvider) *ChatNamingService {
+func NewChatNamingService(userRepo user_domain.UserRepository) *ChatNamingService {
 	return &ChatNamingService{
-		senderProvider: senderProvider,
+		userRepo: userRepo,
 	}
+}
+
+func (s *ChatNamingService) ResolveDirectName(companion *user_domain.User) (string, error) {
+	if companion != nil {
+		return companion.Name, nil
+	}
+
+	return "DELETED", nil
 }
 
 func (s *ChatNamingService) ResolveChatName(
@@ -23,16 +31,12 @@ func (s *ChatNamingService) ResolveChatName(
 	}
 
 	otherUserID := getOtherUserID(chat.Members, currentUserID)
-	otherUser, err := s.senderProvider.Provide(otherUserID)
+	otherUser, err := s.userRepo.GetUserById(otherUserID)
 	if err != nil {
 		return "", err
 	}
 
-	if otherUser != nil {
-		return otherUser.Name, nil
-	}
-
-	return "", nil
+	return s.ResolveDirectName(otherUser)
 }
 
 func getOtherUserID(members []*chat_domain.ChatMember, currentUserID string) string {

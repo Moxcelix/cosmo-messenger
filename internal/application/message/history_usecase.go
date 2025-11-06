@@ -5,11 +5,6 @@ import (
 	message_domain "main/internal/domain/message"
 )
 
-const (
-	defaultCount = 10
-	maxPageSize  = 100
-)
-
 type GetMessageHistoryUsecase struct {
 	msgRepo          message_domain.MessageRepository
 	chatPolicy       *chat_application.ChatPolicy

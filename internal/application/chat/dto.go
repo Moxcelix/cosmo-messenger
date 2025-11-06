@@ -19,6 +19,12 @@ type ChatHeader struct {
 	Type chat_domain.ChatType `json:"type"`
 }
 
+type DirectHeader struct {
+	Username string               `json:"id"`
+	Name     string               `json:"name"`
+	Type     chat_domain.ChatType `json:"type"`
+}
+
 type LastMessage struct {
 	ID        string                   `json:"id"`
 	Content   string                   `json:"content"`
