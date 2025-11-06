@@ -32,7 +32,7 @@ type msgResponse struct {
 }
 
 // DirectMessage godoc
-// @Summary Message sending
+// @Summary Message sending	
 // @Description Send direct message
 // @Tags messages
 // @Accept json

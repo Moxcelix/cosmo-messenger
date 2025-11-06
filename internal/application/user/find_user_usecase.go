@@ -20,17 +20,17 @@ func NewFindUserUsecase(
 	}
 }
 
-func (uc *FindUserUsecase) Execute(requesterUsername, targetUsername string) (*UserReview, error) {
-	user, err := uc.userRepo.GetUserByUsername(targetUsername)
+func (uc *FindUserUsecase) Execute(requesterId, targetUsername string) (*UserReview, error) {
+	targetUser, err := uc.userRepo.GetUserByUsername(targetUsername)
 	if err != nil {
 		return nil, err
 	}
 
-	if user == nil {
+	if targetUser == nil {
 		return nil, user_domain.ErrUserNotFound
 	}
 
-	direct, err := uc.chatRepo.GetDirectChat(requesterUsername, targetUsername)
+	direct, err := uc.chatRepo.GetDirectChat(requesterId, targetUser.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -41,10 +41,10 @@ func (uc *FindUserUsecase) Execute(requesterUsername, targetUsername string) (*U
 	}
 
 	return &UserReview{
-		Name:         user.Name,
-		Username:     user.Username,
-		Bio:          user.Bio,
-		ID:           user.ID,
+		Name:         targetUser.Name,
+		Username:     targetUser.Username,
+		Bio:          targetUser.Bio,
+		ID:           targetUser.ID,
 		DirectChatId: directChatId,
 	}, nil
 }
