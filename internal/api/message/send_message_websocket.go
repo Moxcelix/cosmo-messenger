@@ -33,7 +33,7 @@ func (c *SendMessageWebSocket) SendMessage(clientID string, event pkg.WebSocketE
 		return fmt.Errorf("failed to parse typing request: %w", err)
 	}
 
-	if err := c.sendMessageUsecase.Execute(clientID, req.ChatID, req.Content); err != nil {
+	if _, err := c.sendMessageUsecase.Execute(clientID, req.ChatID, req.Content); err != nil {
 		c.logger.Error("Send message usecase error:", err)
 		return err
 	}

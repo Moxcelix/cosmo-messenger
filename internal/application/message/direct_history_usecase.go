@@ -1,28 +1,30 @@
 package message_application
 
 import (
-	chat_application "main/internal/application/chat"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 	user_domain "main/internal/domain/user"
 )
 
 type GetDirectMessageHistoryUsecase struct {
+	chatFactory      *chat_domain.ChatFactory
 	userRepo         user_domain.UserRepository
 	msgRepo          message_domain.MessageRepository
 	chatRepo         chat_domain.ChatRepository
-	chatPolicy       *chat_application.ChatPolicy
-	historyAssembler *DirectMessageHistoryAssembler
+	chatPolicy       *chat_domain.ChatPolicy
+	historyAssembler *MessageHistoryAssembler
 }
 
 func NewGetDirectMessageHistoryUsecase(
+	chatFactory *chat_domain.ChatFactory,
 	userRepo user_domain.UserRepository,
 	msgRepo message_domain.MessageRepository,
 	chatRepo chat_domain.ChatRepository,
-	chatPolicy *chat_application.ChatPolicy,
-	historyAssembler *DirectMessageHistoryAssembler,
+	chatPolicy *chat_domain.ChatPolicy,
+	historyAssembler *MessageHistoryAssembler,
 ) *GetDirectMessageHistoryUsecase {
 	return &GetDirectMessageHistoryUsecase{
+		chatFactory:      chatFactory,
 		msgRepo:          msgRepo,
 		chatPolicy:       chatPolicy,
 		chatRepo:         chatRepo,
@@ -33,7 +35,7 @@ func NewGetDirectMessageHistoryUsecase(
 
 func (uc *GetDirectMessageHistoryUsecase) Execute(
 	userId, targetUsername, cursorMessageId string, count int, direction string,
-) (*DirectMessageHistory, error) {
+) (*MessageHistory, error) {
 	companion, err := uc.userRepo.GetUserByUsername(targetUsername)
 	if err != nil {
 		return nil, err
@@ -49,10 +51,14 @@ func (uc *GetDirectMessageHistoryUsecase) Execute(
 	}
 
 	if chat == nil {
-		return uc.historyAssembler.AssembleEmpty(companion)
+		virtualChat, err := uc.chatFactory.CreateDirectChat(userId, companion.ID)
+		if err != nil {
+			return nil, err
+		}
+		chat = virtualChat
 	}
 
-	if err := uc.chatPolicy.ValidateUserAccess(userId, chat.ID); err != nil {
+	if err := uc.chatPolicy.ValidateUserAccess(userId, chat); err != nil {
 		return nil, err
 	}
 
@@ -69,5 +75,5 @@ func (uc *GetDirectMessageHistoryUsecase) Execute(
 		return nil, err
 	}
 
-	return uc.historyAssembler.Assemble(messageList, companion)
+	return uc.historyAssembler.Assemble(messageList, chat, userId)
 }

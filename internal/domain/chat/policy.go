@@ -39,3 +39,11 @@ func (p *ChatPolicy) ValidateGroupMembers(count int) error {
 
 	return nil
 }
+
+func (p *ChatPolicy) ValidateUserAccess(userId string, chat *Chat) error {
+	hasAccess := chat.HasMember(userId)
+	if !hasAccess {
+		return ErrChatAccessDenied
+	}
+	return nil
+}

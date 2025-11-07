@@ -2,6 +2,7 @@ package message_application
 
 import (
 	chat_application "main/internal/application/chat"
+	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 )
 
@@ -22,7 +23,8 @@ func NewMessageHistoryAssembler(
 
 func (a *MessageHistoryAssembler) Assemble(
 	messageList *message_domain.MessageList,
-	chatId, currentUserId string,
+	chat *chat_domain.Chat,
+	currentUserId string,
 ) (*MessageHistory, error) {
 	messages := make([]*ChatMessage, 0, len(messageList.Messages))
 	for _, msg := range messageList.Messages {
@@ -32,11 +34,13 @@ func (a *MessageHistoryAssembler) Assemble(
 		}
 		messages = append(messages, message)
 	}
-	chatHeader, err := a.chatHeaderProvider.Provide(chatId, currentUserId)
+
+	chatHeader, err := a.chatHeaderProvider.Provide(chat, currentUserId)
 	if err != nil {
 		return nil, err
 	}
-	chatMessages := &MessageHistory{
+
+	return &MessageHistory{
 		ChatHeader: chatHeader,
 		Messages:   messages,
 		Meta: ScrollingMeta{
@@ -45,6 +49,5 @@ func (a *MessageHistoryAssembler) Assemble(
 			Offset:  messageList.Offset,
 			Total:   messageList.Total,
 		},
-	}
-	return chatMessages, nil
+	}, nil
 }

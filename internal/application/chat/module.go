@@ -10,7 +10,5 @@ var Module = fx.Options(
 	fx.Provide(NewChatHeaderProvider),
 	fx.Provide(NewChatItemAssembler),
 	fx.Provide(NewLastMessageProvider),
-	fx.Provide(NewChatPolicy),
 	fx.Provide(NewChatNamingService),
-	fx.Provide(NewDirectHeaderProvider),
 )

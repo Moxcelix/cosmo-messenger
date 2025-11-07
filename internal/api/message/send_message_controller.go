@@ -27,7 +27,8 @@ type sendRequest struct {
 }
 
 type sendResponse struct {
-	Message string `json:"message"`
+	Text    string                           `json:"text"`
+	Message *message_application.ChatMessage `json:"message"`
 }
 
 // SendMessage godoc
@@ -53,13 +54,15 @@ func (c *SendMessageController) SendMessage(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.sendMessageUsecase.Execute(userId, chatId, req.Content); err != nil {
+	msg, err := c.sendMessageUsecase.Execute(userId, chatId, req.Content)
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, sendResponse{
-		Message: "message sent",
+		Text:    "message sent",
+		Message: msg,
 	})
 
 }

@@ -7,10 +7,9 @@ var Module = fx.Options(
 	fx.Provide(NewGetMessageHistoryUsecase),
 	fx.Provide(NewGetDirectMessageHistoryUsecase),
 	fx.Provide(NewSendMessageUsecase),
-	fx.Provide(NewDirectMessageUsecase),
 
 	fx.Provide(NewChatMessageAssembler),
-	fx.Provide(NewDirectMessageHistoryAssembler),
 	fx.Provide(NewMessageHistoryAssembler),
 	fx.Provide(NewReplyProvider),
+	fx.Provide(NewMessageSender),
 )

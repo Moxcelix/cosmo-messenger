@@ -28,12 +28,6 @@ type MessageHistory struct {
 	Meta       ScrollingMeta                `json:"meta"`
 }
 
-type DirectMessageHistory struct {
-	ChatHeader *chat_application.DirectHeader `json:"chat"`
-	Messages   []*ChatMessage                 `json:"messages"`
-	Meta       ScrollingMeta                  `json:"meta"`
-}
-
 type ScrollingMeta struct {
 	HasPrev bool `json:"has_prev"`
 	HasNext bool `json:"has_next"`
