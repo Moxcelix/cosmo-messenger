@@ -6,23 +6,29 @@ import (
 )
 
 type MessageRoutes struct {
-	handler                   pkg.RequestHandler
-	directMessageController   *DirectMessageController
-	getChatMessagesController *GetChatMessagesController
-	authMiddleware            *auth_api.AuthMiddleware
+	handler                     pkg.RequestHandler
+	directMessageController     *DirectMessageController
+	getChatMessagesController   *GetChatMessagesController
+	getDirectMessagesController *GetDirectMessagesController
+	sendMessageContoller        *SendMessageController
+	authMiddleware              *auth_api.AuthMiddleware
 }
 
 func NewMessageRoutes(
 	handler pkg.RequestHandler,
 	directMessageController *DirectMessageController,
 	getChatMessagesController *GetChatMessagesController,
+	getDirectMessagesController *GetDirectMessagesController,
+	sendMessageContoller *SendMessageController,
 	authMiddleware *auth_api.AuthMiddleware,
 ) *MessageRoutes {
 	return &MessageRoutes{
-		directMessageController:   directMessageController,
-		getChatMessagesController: getChatMessagesController,
-		authMiddleware:            authMiddleware,
-		handler:                   handler,
+		directMessageController:     directMessageController,
+		getChatMessagesController:   getChatMessagesController,
+		sendMessageContoller:        sendMessageContoller,
+		getDirectMessagesController: getDirectMessagesController,
+		authMiddleware:              authMiddleware,
+		handler:                     handler,
 	}
 }
 
@@ -31,5 +37,8 @@ func (r *MessageRoutes) Setup() {
 		Use(r.authMiddleware.Handler())
 
 	group.POST("/direct", r.directMessageController.DirectMessage)
+	group.POST("/chat/:chat_id", r.sendMessageContoller.SendMessage)
+
+	group.GET("/direct/:username", r.getDirectMessagesController.GetDirectMessages)
 	group.GET("/chat/:chat_id", r.getChatMessagesController.GetChatMessages)
 }

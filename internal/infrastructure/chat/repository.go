@@ -143,7 +143,7 @@ func (r *ChatRepository) GetByID(id string) (*chat_domain.Chat, error) {
 	}
 	defer rows.Close()
 
-	var members []chat_domain.ChatMember
+	var members []*chat_domain.ChatMember
 	for rows.Next() {
 		var member chat_domain.ChatMember
 		err := rows.Scan(
@@ -154,7 +154,7 @@ func (r *ChatRepository) GetByID(id string) (*chat_domain.Chat, error) {
 		if err != nil {
 			return nil, err
 		}
-		members = append(members, member)
+		members = append(members, &member)
 	}
 
 	chat.Members = members
@@ -194,6 +194,7 @@ func (r *ChatRepository) GetUserChats(userID string, offset, limit int) (*chat_d
 
 	var chats []*chat_domain.Chat
 	for rows.Next() {
+
 		var chat chat_domain.Chat
 		err := rows.Scan(
 			&chat.ID,
@@ -207,6 +208,13 @@ func (r *ChatRepository) GetUserChats(userID string, offset, limit int) (*chat_d
 		if err != nil {
 			return nil, err
 		}
+
+		members, err := r.getChatMembers(chat.ID)
+		if err != nil {
+			return nil, err
+		}
+		chat.Members = members
+
 		chats = append(chats, &chat)
 	}
 
@@ -311,6 +319,11 @@ func (r *ChatRepository) FindUserChat(userID, keyWord string, offset, limit int)
 		if err != nil {
 			return nil, err
 		}
+		members, err := r.getChatMembers(chat.ID)
+		if err != nil {
+			return nil, err
+		}
+		chat.Members = members
 		chats = append(chats, &chat)
 	}
 
@@ -411,7 +424,7 @@ func (r *ChatRepository) MarkUpdated(chatID string, updateTime time.Time) error 
 	return nil
 }
 
-func (r *ChatRepository) getChatMembers(chatID string) ([]chat_domain.ChatMember, error) {
+func (r *ChatRepository) getChatMembers(chatID string) ([]*chat_domain.ChatMember, error) {
 	query := `
 		SELECT user_id, role, joined_at
 		FROM members 
@@ -425,14 +438,13 @@ func (r *ChatRepository) getChatMembers(chatID string) ([]chat_domain.ChatMember
 	}
 	defer rows.Close()
 
-	var members []chat_domain.ChatMember
+	var members []*chat_domain.ChatMember
 	for rows.Next() {
-		var member chat_domain.ChatMember
+		member := &chat_domain.ChatMember{}
 		err := rows.Scan(
 			&member.UserID,
 			&member.Role,
-			&member.JoinedAt,
-		)
+			&member.JoinedAt)
 		if err != nil {
 			return nil, err
 		}

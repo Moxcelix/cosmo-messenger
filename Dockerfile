@@ -14,11 +14,14 @@ ENV CONFIG_PATH=./config.yaml
 COPY . .
 
 # Собираем приложение
-#RUN go build -o main .
+RUN go build -o main .
+
+# Создаем папку для загрузок внутри контейнера
+RUN mkdir -p /uploads
 
 # Открываем порт (если приложение использует сеть)
 EXPOSE 8080
 
 # Запускаем приложение
-#CMD ["./main"]
-CMD ["go", "run", "main.go"]
+CMD ["./main"]
+#CMD ["go", "run", "main.go"]

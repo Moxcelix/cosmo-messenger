@@ -13,6 +13,12 @@ type ChatItem struct {
 	LastMessage *LastMessage         `json:"last_message,omitempty"`
 }
 
+type ChatHeader struct {
+	ID   string               `json:"id"`
+	Name string               `json:"name"`
+	Type chat_domain.ChatType `json:"type"`
+}
+
 type LastMessage struct {
 	ID        string                   `json:"id"`
 	Content   string                   `json:"content"`
@@ -30,4 +36,11 @@ type ScrollingMeta struct {
 type ChatCollection struct {
 	Chats []*ChatItem    `json:"chats"`
 	Meta  *ScrollingMeta `json:"meta"`
+}
+
+type Typing struct {
+	UserID   string `json:"user_id"`
+	UserName string `json:"user_name"`
+	ChatID   string `json:"chat_id"`
+	IsTyping bool   `json:"is_typing"`
 }

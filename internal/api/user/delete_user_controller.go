@@ -28,12 +28,12 @@ type deleteResponse struct {
 }
 
 // DeleteByPath  godoc
-// @Summary      Delete user by username (Admin only)
-// @Description  Deletes a user by username. Admin access required.
+// @Summary      Delete user by id (Admin only)
+// @Description  Deletes a user by id. Admin access required.
 // @Tags         users
 // @Accept       json
 // @Produce      json
-// @Param        username  path  string  true  "Username of the user to delete"
+// @Param        user_id  path  string  true  "Username of the user to delete"
 // @Success      200   {object}  deleteResponse
 // @Failure      400   {object}  map[string]string
 // @Failure      401   {object}  map[string]string

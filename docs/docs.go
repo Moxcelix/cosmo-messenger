@@ -245,6 +245,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/chats/typing": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Represents user typing",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chats"
+                ],
+                "summary": "User typing",
+                "parameters": [
+                    {
+                        "description": "Typing data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chat_api.typingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/chat_api.typingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/messages/chat/{chat_id}": {
             "get": {
                 "security": [
@@ -296,7 +344,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/message_api.chatMessagesResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
@@ -345,6 +396,59 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Send message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Message sending",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Message data",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/message_api.sendRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/message_api.sendResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/messages/direct": {
@@ -380,11 +484,119 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/message_api.msgResponse"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/messages/direct/{username}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get paginated messages from the direct",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "messages"
+                ],
+                "summary": "Get direct messages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cursor Message ID",
+                        "name": "cursor",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "\"older\"",
+                        "description": "Scrolling direction",
+                        "name": "dir",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Number of messages per page",
+                        "name": "count",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied to chat",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Chat not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -457,7 +669,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Deletes a user by username. Admin access required.",
+                "description": "Deletes a user by id. Admin access required.",
                 "consumes": [
                     "application/json"
                 ],
@@ -467,12 +679,12 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Delete user by username (Admin only)",
+                "summary": "Delete user by id (Admin only)",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Username of the user to delete",
-                        "name": "username",
+                        "name": "user_id",
                         "in": "path",
                         "required": true
                     }
@@ -504,6 +716,56 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/find": {
+            "get": {
+                "description": "Returns user by username for direct chating",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -660,6 +922,16 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/ws": {
+            "get": {
+                "description": "WebSocket endpoint for real-time messaging",
+                "tags": [
+                    "websocket"
+                ],
+                "summary": "WebSocket connection for real-time messages",
+                "responses": {}
+            }
         }
     },
     "definitions": {
@@ -717,21 +989,63 @@ const docTemplate = `{
                 }
             }
         },
-        "message_api.chatMessagesResponse": {
+        "chat_api.typingRequest": {
             "type": "object",
             "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/message_api.messageView"
-                    }
+                "chat_id": {
+                    "type": "string"
                 },
-                "meta": {
-                    "$ref": "#/definitions/message_api.paginationMeta"
+                "is_typing": {
+                    "type": "boolean"
                 }
             }
         },
-        "message_api.messageView": {
+        "chat_api.typingResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_api.msgRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "receiver_username"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "receiver_username": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_api.sendRequest": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_api.sendResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "$ref": "#/definitions/message_application.ChatMessage"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "message_application.ChatMessage": {
             "type": "object",
             "properties": {
                 "chat_id": {
@@ -747,59 +1061,27 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "reply_to": {
-                    "type": "string"
+                    "$ref": "#/definitions/message_application.Reply"
                 },
-                "sender_id": {
-                    "type": "string"
+                "sender": {
+                    "$ref": "#/definitions/user_application.Sender"
                 },
                 "timestamp": {
                     "type": "string"
                 }
             }
         },
-        "message_api.msgRequest": {
+        "message_application.Reply": {
             "type": "object",
-            "required": [
-                "content",
-                "receiver_id"
-            ],
             "properties": {
                 "content": {
                     "type": "string"
                 },
-                "receiver_id": {
+                "id": {
                     "type": "string"
-                }
-            }
-        },
-        "message_api.msgResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "message_api.paginationMeta": {
-            "type": "object",
-            "properties": {
-                "count": {
-                    "type": "integer"
                 },
-                "has_next": {
-                    "type": "boolean"
-                },
-                "has_prev": {
-                    "type": "boolean"
-                },
-                "page": {
-                    "type": "integer"
-                },
-                "total": {
-                    "type": "integer"
-                },
-                "total_pages": {
-                    "type": "integer"
+                "sender": {
+                    "$ref": "#/definitions/user_application.Sender"
                 }
             }
         },
@@ -900,6 +1182,17 @@ const docTemplate = `{
                 },
                 "meta": {
                     "$ref": "#/definitions/user_api.paginationMeta"
+                }
+            }
+        },
+        "user_application.Sender": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         }

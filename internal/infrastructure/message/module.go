@@ -7,4 +7,5 @@ import (
 var Module = fx.Options(
 	fx.Provide(NewMessageRepository),
 	fx.Provide(NewMessagePolicyConfig),
+	fx.Provide(NewWebsocketBroadcaster),
 )

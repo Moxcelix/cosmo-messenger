@@ -1,37 +1,44 @@
 package message_application
 
 import (
-	chat_application "main/internal/application/chat"
+	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
-)
-
-const (
-	defaultCount = 10
-	maxPageSize  = 100
 )
 
 type GetMessageHistoryUsecase struct {
 	msgRepo          message_domain.MessageRepository
-	chatPolicy       *chat_application.ChatPolicy
+	chatRepo         chat_domain.ChatRepository
+	chatPolicy       *chat_domain.ChatPolicy
 	historyAssembler *MessageHistoryAssembler
 }
 
 func NewGetMessageHistoryUsecase(
 	msgRepo message_domain.MessageRepository,
-	chatPolicy *chat_application.ChatPolicy,
+	chatRepo chat_domain.ChatRepository,
+	chatPolicy *chat_domain.ChatPolicy,
 	historyAssembler *MessageHistoryAssembler,
 ) *GetMessageHistoryUsecase {
 	return &GetMessageHistoryUsecase{
 		msgRepo:          msgRepo,
+		chatRepo:         chatRepo,
 		chatPolicy:       chatPolicy,
 		historyAssembler: historyAssembler,
 	}
 }
 
 func (uc *GetMessageHistoryUsecase) Execute(
-	userId, chatId, cursorMessageId string, count int, direction string) (*MessageHistory, error) {
+	userId, chatId, cursorMessageId string, count int, direction string,
+) (*MessageHistory, error) {
+	chat, err := uc.chatRepo.GetByID(chatId)
+	if err != nil {
+		return nil, err
+	}
 
-	if err := uc.chatPolicy.ValidateUserAccess(userId, chatId); err != nil {
+	if chat == nil {
+		return nil, chat_domain.ErrChatNotFound
+	}
+
+	if err := uc.chatPolicy.ValidateUserAccess(userId, chat); err != nil {
 		return nil, err
 	}
 
@@ -48,5 +55,5 @@ func (uc *GetMessageHistoryUsecase) Execute(
 		return nil, err
 	}
 
-	return uc.historyAssembler.Assemble(messageList)
+	return uc.historyAssembler.Assemble(messageList, chat, userId)
 }

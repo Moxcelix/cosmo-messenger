@@ -23,12 +23,8 @@ func NewDirectMessageController(
 }
 
 type msgRequest struct {
-	ReceiverID string `json:"receiver_id" binding:"required"`
-	Content    string `json:"content" binding:"required"`
-}
-
-type msgResponse struct {
-	Message string `json:"message"`
+	ReceiverUsername string `json:"receiver_username" binding:"required"`
+	Content          string `json:"content" binding:"required"`
 }
 
 // DirectMessage godoc
@@ -38,7 +34,7 @@ type msgResponse struct {
 // @Accept json
 // @Produce json
 // @Param input body msgRequest true "User data"
-// @Success 201 {object} msgResponse
+// @Success 201 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Security     BearerAuth
 // @Router /api/v1/messages/direct [post]
@@ -52,13 +48,11 @@ func (c *DirectMessageController) DirectMessage(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.directMessageUsecase.Execute(userId, req.ReceiverID, req.Content); err != nil {
+	msg, err := c.directMessageUsecase.Execute(userId, req.ReceiverUsername, req.Content)
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, msgResponse{
-		Message: "message sent",
-	})
-
+	ctx.JSON(http.StatusOK, msg)
 }
