@@ -18,6 +18,7 @@ services:
     volumes:
 #      - .:/go-app
       - go-modules:/go/pkg/mod
+      - ./uploads:/uploads
     restart: unless-stopped
     networks:
       - app-network

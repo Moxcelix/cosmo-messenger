@@ -23,4 +23,6 @@ func (r *PingRoutes) Setup() {
 	group := r.handler.Gin.Group("/api/v1")
 
 	group.GET("/ping", r.pingController.Ping)
+
+	group.Static("/uploads", "./uploads")
 }
