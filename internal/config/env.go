@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/spf13/viper"
@@ -30,6 +31,11 @@ type Env struct {
 	JwtSecreet    string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
 	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
+
+	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
+
+	TypingCleanupInterval time.Duration `mapstructure:"TYPING_CLEANUP_INTERVAL"`
+	TypingTTL             time.Duration `mapstructure:"TYPING_TTL"`
 }
 
 func NewEnv() Env {
@@ -97,5 +103,26 @@ func (e *Env) bindEnv() {
 			log.Fatalf("Invalid JWT_REFRESH_TTL format: %v", err)
 		}
 		e.JwtRefreshTTL = d
+	}
+
+	if val := os.Getenv("ALLOWED_ORIGINS"); val != "" {
+		e.AllowedOrigins = strings.Split(val, ",")
+	}
+
+	// Новые переменные для Typing
+	if val := os.Getenv("TYPING_CLEANUP_INTERVAL"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err != nil {
+			log.Fatalf("Invalid TYPING_CLEANUP_INTERVAL format: %v", err)
+		}
+		e.TypingCleanupInterval = d
+	}
+
+	if val := os.Getenv("TYPING_TTL"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err != nil {
+			log.Fatalf("Invalid TYPING_TTL format: %v", err)
+		}
+		e.TypingTTL = d
 	}
 }

@@ -43,5 +43,5 @@ func (uc *GetUserChatsUsecase) Execute(userID string, page, count int) (*ChatCol
 		return nil, err
 	}
 
-	return uc.collectionAssembler.Assemble(chatList)
+	return uc.collectionAssembler.Assemble(chatList, userID)
 }

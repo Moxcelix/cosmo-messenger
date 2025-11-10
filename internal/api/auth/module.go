@@ -9,4 +9,5 @@ var Module = fx.Options(
 	fx.Provide(NewAuthMiddleware),
 	fx.Provide(NewAdminAuthMiddleware),
 	fx.Provide(NewAuthServiceRoutes),
+	fx.Provide(NewQueryAuthMiddleware),
 )

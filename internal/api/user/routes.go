@@ -11,6 +11,7 @@ type UserServiceRoutes struct {
 	userGetInfoController  *UserGetInfoController
 	userDeleteController   *UserDeleteController
 	getUsersListController *GetUsersListController
+	findUserController     *FindUserController
 	authMiddleware         *auth_api.AuthMiddleware
 	adminAuthMiddleware    *auth_api.AdminAuthMiddleware
 }
@@ -20,6 +21,7 @@ func NewUserServiceRoutes(
 	userGetInfoController *UserGetInfoController,
 	userDeleteController *UserDeleteController,
 	getUsersListController *GetUsersListController,
+	findUserController *FindUserController,
 	authMiddleware *auth_api.AuthMiddleware,
 	adminAuthMiddleware *auth_api.AdminAuthMiddleware,
 	handler pkg.RequestHandler,
@@ -29,6 +31,7 @@ func NewUserServiceRoutes(
 		userRegisterController: userRegisterController,
 		userDeleteController:   userDeleteController,
 		getUsersListController: getUsersListController,
+		findUserController:     findUserController,
 		authMiddleware:         authMiddleware,
 		adminAuthMiddleware:    adminAuthMiddleware,
 		handler:                handler,
@@ -49,6 +52,7 @@ func (r *UserServiceRoutes) Setup() {
 	authGroup.Use(r.authMiddleware.Handler())
 	{
 		authGroup.DELETE("/delete", r.userDeleteController.DeleteByContext)
+		authGroup.GET("/find", r.findUserController.FindUser)
 	}
 
 	adminGroup := base.Group("")

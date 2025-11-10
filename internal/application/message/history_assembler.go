@@ -1,60 +1,53 @@
 package message_application
 
 import (
-	user_application "main/internal/application/user"
+	chat_application "main/internal/application/chat"
+	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 )
 
 type MessageHistoryAssembler struct {
-	replyProvider  *ReplyProvider
-	senderProvider *user_application.SenderProvider
+	msgAssembler       *ChatMessageAssembler
+	chatHeaderProvider *chat_application.ChatHeaderProvider
 }
 
 func NewMessageHistoryAssembler(
-	replyProvider *ReplyProvider,
-	senderProvider *user_application.SenderProvider,
+	msgAssembler *ChatMessageAssembler,
+	chatHeaderProvider *chat_application.ChatHeaderProvider,
 ) *MessageHistoryAssembler {
 	return &MessageHistoryAssembler{
-		replyProvider:  replyProvider,
-		senderProvider: senderProvider,
+		msgAssembler:       msgAssembler,
+		chatHeaderProvider: chatHeaderProvider,
 	}
 }
 
 func (a *MessageHistoryAssembler) Assemble(
-	messageList *message_domain.MessageList) (*MessageHistory, error) {
+	messageList *message_domain.MessageList,
+	chat *chat_domain.Chat,
+	currentUserId string,
+) (*MessageHistory, error) {
 	messages := make([]*ChatMessage, 0, len(messageList.Messages))
 	for _, msg := range messageList.Messages {
-		sender, err := a.senderProvider.Provide(msg.SenderID)
+		message, err := a.msgAssembler.Assemble(msg)
 		if err != nil {
 			return nil, err
 		}
-		repliedMessage, err := a.replyProvider.Provide(msg.ReplyTo)
-		if err != nil {
-			return nil, err
-		}
-		timestamp := msg.CreatedAt
-		edited := !msg.UpdatedAt.Equal(msg.CreatedAt)
-
-		message := &ChatMessage{
-			ID:        msg.ID,
-			Content:   msg.Content,
-			ReplyTo:   repliedMessage,
-			Sender:    sender,
-			Timestamp: timestamp,
-			Edited:    edited,
-		}
-
 		messages = append(messages, message)
 	}
-	chatMessages := &MessageHistory{
-		Messages: messages,
+
+	chatHeader, err := a.chatHeaderProvider.Provide(chat, currentUserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &MessageHistory{
+		ChatHeader: chatHeader,
+		Messages:   messages,
 		Meta: ScrollingMeta{
-			HasPrev: messageList.Offset > 0,
-			HasNext: messageList.Offset < messageList.Total-messageList.Limit,
+			HasNext: messageList.Offset > 0,
+			HasPrev: messageList.Offset < messageList.Total-messageList.Limit,
 			Offset:  messageList.Offset,
 			Total:   messageList.Total,
 		},
-	}
-
-	return chatMessages, nil
+	}, nil
 }

@@ -9,8 +9,9 @@ import (
 
 	"main/pkg"
 
-	route "main/internal/api"
+	"main/internal/api"
 	"main/internal/config"
+	"main/internal/infrastructure"
 )
 
 func Run() any {
@@ -18,9 +19,13 @@ func Run() any {
 		env config.Env,
 		logger pkg.Logger,
 		handler pkg.RequestHandler,
-		route route.Routes,
+		routes api.Routes,
+		events api.Events,
+		workers infrastructure.Workers,
 	) {
-		route.Setup()
+		routes.Setup()
+		events.Setup()
+		workers.Run()
 		err := handler.Gin.Run(":" + env.Port)
 
 		if err != nil {
