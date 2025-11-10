@@ -4,6 +4,7 @@ import (
 	chat_application "main/internal/application/chat"
 	chat_domain "main/internal/domain/chat"
 	user_domain "main/internal/domain/user"
+	"time"
 )
 
 type DirectMessageUsecase struct {
@@ -48,6 +49,10 @@ func (uc *DirectMessageUsecase) Execute(
 
 	msg, err := uc.messageSender.SendMessageToChat(chat, senderId, content)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := uc.chatRepo.MarkUpdated(chat.ID, time.Now()); err != nil {
 		return nil, err
 	}
 
