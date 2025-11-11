@@ -6,7 +6,7 @@ import (
 	user_domain "main/internal/domain/user"
 	"time"
 )
-
+	
 type DirectMessageUsecase struct {
 	chatFactory   *chat_domain.ChatFactory
 	userRepo      user_domain.UserRepository
