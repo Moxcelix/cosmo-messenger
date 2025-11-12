@@ -1,6 +1,7 @@
-package chat_application
+package services
 
 import (
+	"main/internal/application/chat/dto"
 	user_application "main/internal/application/user"
 	message_domain "main/internal/domain/message"
 )
@@ -20,7 +21,7 @@ func NewLastMessageProvider(
 	}
 }
 
-func (p *LastMessageProvider) Provide(chatId string) (*LastMessage, error) {
+func (p *LastMessageProvider) Provide(chatId string) (*dto.LastMessage, error) {
 	msg, err := p.msgRepo.GetLastChatMessage(chatId)
 	if err != nil {
 		return nil, err
@@ -40,7 +41,7 @@ func (p *LastMessageProvider) Provide(chatId string) (*LastMessage, error) {
 		timestamp = msg.UpdatedAt
 	}
 
-	return &LastMessage{
+	return &dto.LastMessage{
 		ID:        msg.ID,
 		Content:   msg.Content,
 		Timestamp: timestamp,

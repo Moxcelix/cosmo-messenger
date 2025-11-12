@@ -1,7 +1,8 @@
 package chat_infrastructure
 
 import (
-	chat_application "main/internal/application/chat"
+	"main/internal/application/chat/dto"
+	"main/internal/application/chat/services"
 	"main/pkg"
 )
 
@@ -11,14 +12,14 @@ type WebsocketChatBroadcaster struct {
 
 func NewWebsocketChatBroadcaster(
 	wsHub *pkg.WebSocketHub,
-) chat_application.ChatBroadcaster {
+) services.ChatBroadcaster {
 	return &WebsocketChatBroadcaster{
 		wsHub: wsHub,
 	}
 }
 
 func (b *WebsocketChatBroadcaster) BroadcastToUser(
-	userId string, chat *chat_application.ChatItem, event chat_application.ChatEvent) error {
+	userId string, chat *dto.ChatItem, event services.ChatEvent) error {
 	b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
 		Type:    string(event),
 		Payload: chat,
@@ -28,7 +29,7 @@ func (b *WebsocketChatBroadcaster) BroadcastToUser(
 }
 
 func (b *WebsocketChatBroadcaster) BroadcastToUsers(
-	usersId []string, chat *chat_application.ChatItem, event chat_application.ChatEvent) error {
+	usersId []string, chat *dto.ChatItem, event services.ChatEvent) error {
 	for _, userId := range usersId {
 		b.BroadcastToUser(userId, chat, event)
 	}

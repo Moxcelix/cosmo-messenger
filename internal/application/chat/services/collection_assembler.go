@@ -1,6 +1,7 @@
-package chat_application
+package services
 
 import (
+	"main/internal/application/chat/dto"
 	chat_domain "main/internal/domain/chat"
 )
 
@@ -17,8 +18,8 @@ func NewChatCollectionAssembler(
 }
 
 func (a *ChatCollectionAssembler) Assemble(
-	chatList *chat_domain.ChatList, currentUserId string) (*ChatCollection, error) {
-	chats := make([]*ChatItem, 0, len(chatList.Chats))
+	chatList *chat_domain.ChatList, currentUserId string) (*dto.ChatCollection, error) {
+	chats := make([]*dto.ChatItem, 0, len(chatList.Chats))
 	for _, chat := range chatList.Chats {
 		chatItem, err := a.chatAssembler.Assemble(chat, currentUserId)
 		if err != nil {
@@ -27,9 +28,9 @@ func (a *ChatCollectionAssembler) Assemble(
 		chats = append(chats, chatItem)
 	}
 
-	return &ChatCollection{
+	return &dto.ChatCollection{
 		Chats: chats,
-		Meta: &ScrollingMeta{
+		Meta: &dto.ScrollingMeta{
 			HasPrev: chatList.Offset > 0,
 			HasNext: chatList.Offset < chatList.Total-chatList.Limit,
 			Offset:  chatList.Offset,

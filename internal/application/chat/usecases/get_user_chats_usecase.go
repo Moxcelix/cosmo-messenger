@@ -1,6 +1,8 @@
-package chat_application
+package usecases
 
 import (
+	"main/internal/application/chat/dto"
+	"main/internal/application/chat/services"
 	chat_domain "main/internal/domain/chat"
 )
 
@@ -12,12 +14,12 @@ const (
 
 type GetUserChatsUsecase struct {
 	chatRepo            chat_domain.ChatRepository
-	collectionAssembler *ChatCollectionAssembler
+	collectionAssembler *services.ChatCollectionAssembler
 }
 
 func NewGetUserChatsUsecase(
 	chatRepo chat_domain.ChatRepository,
-	collectionAssembler *ChatCollectionAssembler,
+	collectionAssembler *services.ChatCollectionAssembler,
 ) *GetUserChatsUsecase {
 	return &GetUserChatsUsecase{
 		chatRepo:            chatRepo,
@@ -25,7 +27,7 @@ func NewGetUserChatsUsecase(
 	}
 }
 
-func (uc *GetUserChatsUsecase) Execute(userID string, page, count int) (*ChatCollection, error) {
+func (uc *GetUserChatsUsecase) Execute(userID string, page, count int) (*dto.ChatCollection, error) {
 	if page < 1 {
 		page = defaultPage
 	}

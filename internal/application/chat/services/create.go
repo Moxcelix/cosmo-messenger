@@ -1,6 +1,8 @@
-package chat_application
+package services
 
-import chat_domain "main/internal/domain/chat"
+import (
+	chat_domain "main/internal/domain/chat"
+)
 
 type ChatCreator struct {
 	chatRepo        chat_domain.ChatRepository

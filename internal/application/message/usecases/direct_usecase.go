@@ -1,7 +1,7 @@
 package usecases
 
 import (
-	chat_application "main/internal/application/chat"
+	chat_application "main/internal/application/chat/services"
 	"main/internal/application/message/dto"
 	"main/internal/application/message/services"
 	chat_domain "main/internal/domain/chat"

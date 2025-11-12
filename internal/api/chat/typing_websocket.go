@@ -2,7 +2,7 @@ package chat_api
 
 import (
 	"fmt"
-	chat_application "main/internal/application/chat"
+	chat_application "main/internal/application/chat/usecases"
 	"main/pkg"
 )
 

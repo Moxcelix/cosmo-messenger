@@ -1,7 +1,7 @@
 package mappers
 
 import (
-	chat_application "main/internal/application/chat"
+	chat_application "main/internal/application/chat/services"
 	"main/internal/application/message/dto"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"

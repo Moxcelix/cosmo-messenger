@@ -1,6 +1,7 @@
-package chat_application
+package services
 
 import (
+	"main/internal/application/chat/dto"
 	chat_domain "main/internal/domain/chat"
 )
 
@@ -19,7 +20,7 @@ func NewChatItemAssembler(
 	}
 }
 
-func (p *ChatItemAssembler) Assemble(chat *chat_domain.Chat, currentUserId string) (*ChatItem, error) {
+func (p *ChatItemAssembler) Assemble(chat *chat_domain.Chat, currentUserId string) (*dto.ChatItem, error) {
 	lastMessage, err := p.lastMessageProvider.Provide(chat.ID)
 	if err != nil {
 		return nil, err
@@ -30,7 +31,7 @@ func (p *ChatItemAssembler) Assemble(chat *chat_domain.Chat, currentUserId strin
 		return nil, err
 	}
 
-	return &ChatItem{
+	return &dto.ChatItem{
 		ID:          chat.ID,
 		Name:        chatName,
 		Type:        chat.Type,

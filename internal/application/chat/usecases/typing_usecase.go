@@ -1,6 +1,8 @@
-package chat_application
+package usecases
 
 import (
+	"main/internal/application/chat/dto"
+	"main/internal/application/chat/services"
 	chat_domain "main/internal/domain/chat"
 	user_domain "main/internal/domain/user"
 )
@@ -8,13 +10,13 @@ import (
 type TypingUsecase struct {
 	userRepo          user_domain.UserRepository
 	chatRepo          chat_domain.ChatRepository
-	typingBroadcaster TypingBroadcaster
+	typingBroadcaster services.TypingBroadcaster
 }
 
 func NewTypingUsecase(
 	userRepo user_domain.UserRepository,
 	chatRepo chat_domain.ChatRepository,
-	typingBroadcaster TypingBroadcaster,
+	typingBroadcaster services.TypingBroadcaster,
 ) *TypingUsecase {
 	return &TypingUsecase{
 		userRepo:          userRepo,
@@ -38,7 +40,7 @@ func (uc *TypingUsecase) Execute(userId, chatId string, isTyping bool) error {
 		return err
 	}
 
-	typingDto := &Typing{
+	typingDto := &dto.Typing{
 		UserID:   user.ID,
 		UserName: user.Name,
 		ChatID:   chatId,

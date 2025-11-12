@@ -1,7 +1,7 @@
 package chat_api
 
 import (
-	chat_application "main/internal/application/chat"
+	chat_application "main/internal/application/chat/usecases"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

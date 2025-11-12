@@ -1,15 +1,20 @@
 package chat_application
 
-import "go.uber.org/fx"
+import (
+	"main/internal/application/chat/services"
+	"main/internal/application/chat/usecases"
+
+	"go.uber.org/fx"
+)
 
 var Module = fx.Options(
-	fx.Provide(NewGetUserChatsUsecase),
-	fx.Provide(NewTypingUsecase),
+	fx.Provide(usecases.NewGetUserChatsUsecase),
+	fx.Provide(usecases.NewTypingUsecase),
 
-	fx.Provide(NewChatCollectionAssembler),
-	fx.Provide(NewChatHeaderProvider),
-	fx.Provide(NewChatItemAssembler),
-	fx.Provide(NewLastMessageProvider),
-	fx.Provide(NewChatNamingService),
-	fx.Provide(NewChatCreator),
+	fx.Provide(services.NewChatCollectionAssembler),
+	fx.Provide(services.NewChatHeaderProvider),
+	fx.Provide(services.NewChatItemAssembler),
+	fx.Provide(services.NewLastMessageProvider),
+	fx.Provide(services.NewChatNamingService),
+	fx.Provide(services.NewChatCreator),
 )

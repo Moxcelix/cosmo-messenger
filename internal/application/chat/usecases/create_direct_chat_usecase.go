@@ -1,4 +1,4 @@
-package chat_application
+package usecases
 
 import (
 	chat_domain "main/internal/domain/chat"
