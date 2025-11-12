@@ -1,6 +1,7 @@
-package user_application
+package usecases
 
 import (
+	"main/internal/application/user/dto"
 	chat_domain "main/internal/domain/chat"
 	user_domain "main/internal/domain/user"
 )
@@ -20,7 +21,7 @@ func NewFindUserUsecase(
 	}
 }
 
-func (uc *FindUserUsecase) Execute(requesterId, targetUsername string) (*UserReview, error) {
+func (uc *FindUserUsecase) Execute(requesterId, targetUsername string) (*dto.UserReview, error) {
 	targetUser, err := uc.userRepo.GetUserByUsername(targetUsername)
 	if err != nil {
 		return nil, err
@@ -40,7 +41,7 @@ func (uc *FindUserUsecase) Execute(requesterId, targetUsername string) (*UserRev
 		directChatId = &direct.ID
 	}
 
-	return &UserReview{
+	return &dto.UserReview{
 		Name:         targetUser.Name,
 		Username:     targetUser.Username,
 		Bio:          targetUser.Bio,

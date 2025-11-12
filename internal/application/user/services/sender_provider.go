@@ -1,6 +1,7 @@
-package user_application
+package services
 
 import (
+	"main/internal/application/user/dto"
 	user_domain "main/internal/domain/user"
 )
 
@@ -14,7 +15,7 @@ func NewSenderProvider(userRepo user_domain.UserRepository) *SenderProvider {
 	}
 }
 
-func (p *SenderProvider) Provide(userId string) (*Sender, error) {
+func (p *SenderProvider) Provide(userId string) (*dto.Sender, error) {
 	user, err := p.userRepo.GetUserById(userId)
 
 	if err != nil {
@@ -22,10 +23,10 @@ func (p *SenderProvider) Provide(userId string) (*Sender, error) {
 	}
 
 	if user == nil {
-		return DeletedSender, nil
+		return dto.DeletedSender, nil
 	}
 
-	return &Sender{
+	return &dto.Sender{
 		ID:   user.ID,
 		Name: user.Name,
 	}, nil

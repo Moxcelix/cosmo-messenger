@@ -1,4 +1,4 @@
-package user_application
+package dto
 
 var (
 	DeletedSender = &Sender{

@@ -1,12 +1,18 @@
 package user_application
 
-import "go.uber.org/fx"
+import (
+	"main/internal/application/user/services"
+	"main/internal/application/user/usecases"
+
+	"go.uber.org/fx"
+)
 
 var Module = fx.Options(
-	fx.Provide(NewRegisterUseCase),
-	fx.Provide(NewGetInfoUseCase),
-	fx.Provide(NewDeleteUserUsecase),
-	fx.Provide(NewGetUsersListUsecase),
-	fx.Provide(NewFindUserUsecase),
-	fx.Provide(NewSenderProvider),
+	fx.Provide(usecases.NewRegisterUseCase),
+	fx.Provide(usecases.NewGetInfoUseCase),
+	fx.Provide(usecases.NewDeleteUserUsecase),
+	fx.Provide(usecases.NewGetUsersListUsecase),
+	fx.Provide(usecases.NewFindUserUsecase),
+
+	fx.Provide(services.NewSenderProvider),
 )

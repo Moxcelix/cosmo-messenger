@@ -3,9 +3,10 @@ package user_api
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	user_application "main/internal/application/user"
+	user_application "main/internal/application/user/usecases"
 	"main/pkg"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserRegisterController struct {

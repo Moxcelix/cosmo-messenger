@@ -2,7 +2,7 @@ package services
 
 import (
 	"main/internal/application/chat/dto"
-	user_application "main/internal/application/user"
+	user_application "main/internal/application/user/services"
 	message_domain "main/internal/domain/message"
 )
 

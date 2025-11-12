@@ -2,7 +2,7 @@ package mappers
 
 import (
 	"main/internal/application/message/dto"
-	user_application "main/internal/application/user"
+	user_application "main/internal/application/user/services"
 	message_domain "main/internal/domain/message"
 )
 

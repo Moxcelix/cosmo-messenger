@@ -1,4 +1,4 @@
-package user_application
+package usecases
 
 import (
 	"time"

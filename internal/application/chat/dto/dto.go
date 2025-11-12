@@ -1,7 +1,7 @@
 package dto
 
 import (
-	user_application "main/internal/application/user"
+	user_application "main/internal/application/user/dto"
 	chat_domain "main/internal/domain/chat"
 	"time"
 )

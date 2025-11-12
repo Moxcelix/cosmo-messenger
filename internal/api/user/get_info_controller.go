@@ -3,8 +3,9 @@ package user_api
 import (
 	"net/http"
 
+	user_application "main/internal/application/user/usecases"
+
 	"github.com/gin-gonic/gin"
-	user_application "main/internal/application/user"
 )
 
 type UserGetInfoController struct {

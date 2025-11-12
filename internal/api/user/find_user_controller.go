@@ -2,7 +2,7 @@ package user_api
 
 import (
 	"errors"
-	user_application "main/internal/application/user"
+	user_application "main/internal/application/user/usecases"
 	user_domain "main/internal/domain/user"
 	"net/http"
 

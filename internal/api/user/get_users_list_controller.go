@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	user_application "main/internal/application/user"
+	user_application "main/internal/application/user/usecases"
 
 	"github.com/gin-gonic/gin"
 )
