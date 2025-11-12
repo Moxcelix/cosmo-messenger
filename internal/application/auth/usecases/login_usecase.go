@@ -1,8 +1,8 @@
-package auth_application
+package usecases
 
 import (
-	"main/internal/domain/auth"
-	"main/internal/domain/user"
+	auth_domain "main/internal/domain/auth"
+	user_domain "main/internal/domain/user"
 )
 
 type LoginUsecase struct {

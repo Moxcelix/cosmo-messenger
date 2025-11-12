@@ -1,9 +1,13 @@
 package auth_application
 
-import "go.uber.org/fx"
+import (
+	"main/internal/application/auth/usecases"
+
+	"go.uber.org/fx"
+)
 
 var Module = fx.Options(
-	fx.Provide(NewLoginUsecase),
-	fx.Provide(NewRefreshUsecase),
-	fx.Provide(NewValidateUsecase),
+	fx.Provide(usecases.NewLoginUsecase),
+	fx.Provide(usecases.NewRefreshUsecase),
+	fx.Provide(usecases.NewValidateUsecase),
 )

@@ -1,7 +1,7 @@
 package auth_api
 
 import (
-	auth_application "main/internal/application/auth"
+	auth_application "main/internal/application/auth/usecases"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

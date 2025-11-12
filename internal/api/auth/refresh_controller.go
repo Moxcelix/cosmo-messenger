@@ -1,9 +1,11 @@
 package auth_api
 
 import (
-	"github.com/gin-gonic/gin"
-	"main/internal/application/auth"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	auth_application "main/internal/application/auth/usecases"
 )
 
 type RefreshController struct {

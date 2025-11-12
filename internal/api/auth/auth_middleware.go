@@ -4,7 +4,7 @@ import (
 	"main/pkg"
 	"net/http"
 
-	authapp "main/internal/application/auth"
+	authapp "main/internal/application/auth/usecases"
 
 	"github.com/gin-gonic/gin"
 )

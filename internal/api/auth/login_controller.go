@@ -3,8 +3,9 @@ package auth_api
 import (
 	"net/http"
 
+	auth_application "main/internal/application/auth/usecases"
+
 	"github.com/gin-gonic/gin"
-	"main/internal/application/auth"
 )
 
 type LoginController struct {
