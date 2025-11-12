@@ -1,18 +1,20 @@
-package message_application
+package usecases
 
 import (
+	"main/internal/application/message/dto"
+	"main/internal/application/message/services"
 	chat_domain "main/internal/domain/chat"
 	"time"
 )
 
 type SendMessageUsecase struct {
 	chatRepo  chat_domain.ChatRepository
-	msgSender *MessageSender
+	msgSender *services.MessageSender
 }
 
 func NewSendMessageUsecase(
 	chatRepo chat_domain.ChatRepository,
-	msgSender *MessageSender,
+	msgSender *services.MessageSender,
 ) *SendMessageUsecase {
 	return &SendMessageUsecase{
 		chatRepo:  chatRepo,
@@ -20,7 +22,7 @@ func NewSendMessageUsecase(
 	}
 }
 
-func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) (*ChatMessage, error) {
+func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) (*dto.ChatMessage, error) {
 	chat, err := uc.chatRepo.GetByID(chatId)
 	if err != nil {
 		return nil, err

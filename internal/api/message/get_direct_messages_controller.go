@@ -2,7 +2,7 @@ package message_api
 
 import (
 	"errors"
-	message_application "main/internal/application/message"
+	message_application "main/internal/application/message/usecases"
 	user_domain "main/internal/domain/user"
 	"main/pkg"
 	"net/http"

@@ -1,7 +1,7 @@
 package websocket_api
 
 import (
-	message_application "main/internal/application/message"
+	message_application "main/internal/application/message/usecases"
 	"main/pkg"
 	"net/http"
 

@@ -1,7 +1,8 @@
-package message_application
+package mappers
 
 import (
 	chat_application "main/internal/application/chat"
+	"main/internal/application/message/dto"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 )
@@ -25,8 +26,8 @@ func (a *MessageHistoryAssembler) Assemble(
 	messageList *message_domain.MessageList,
 	chat *chat_domain.Chat,
 	currentUserId string,
-) (*MessageHistory, error) {
-	messages := make([]*ChatMessage, 0, len(messageList.Messages))
+) (*dto.MessageHistory, error) {
+	messages := make([]*dto.ChatMessage, 0, len(messageList.Messages))
 	for _, msg := range messageList.Messages {
 		message, err := a.msgAssembler.Assemble(msg)
 		if err != nil {
@@ -40,10 +41,10 @@ func (a *MessageHistoryAssembler) Assemble(
 		return nil, err
 	}
 
-	return &MessageHistory{
+	return &dto.MessageHistory{
 		ChatHeader: chatHeader,
 		Messages:   messages,
-		Meta: ScrollingMeta{
+		Meta: dto.ScrollingMeta{
 			HasNext: messageList.Offset > 0,
 			HasPrev: messageList.Offset < messageList.Total-messageList.Limit,
 			Offset:  messageList.Offset,

@@ -1,6 +1,8 @@
-package message_application
+package usecases
 
 import (
+	"main/internal/application/message/dto"
+	"main/internal/application/message/mappers"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 	user_domain "main/internal/domain/user"
@@ -12,7 +14,7 @@ type GetDirectMessageHistoryUsecase struct {
 	msgRepo          message_domain.MessageRepository
 	chatRepo         chat_domain.ChatRepository
 	chatPolicy       *chat_domain.ChatPolicy
-	historyAssembler *MessageHistoryAssembler
+	historyAssembler *mappers.MessageHistoryAssembler
 }
 
 func NewGetDirectMessageHistoryUsecase(
@@ -21,7 +23,7 @@ func NewGetDirectMessageHistoryUsecase(
 	msgRepo message_domain.MessageRepository,
 	chatRepo chat_domain.ChatRepository,
 	chatPolicy *chat_domain.ChatPolicy,
-	historyAssembler *MessageHistoryAssembler,
+	historyAssembler *mappers.MessageHistoryAssembler,
 ) *GetDirectMessageHistoryUsecase {
 	return &GetDirectMessageHistoryUsecase{
 		chatFactory:      chatFactory,
@@ -35,7 +37,7 @@ func NewGetDirectMessageHistoryUsecase(
 
 func (uc *GetDirectMessageHistoryUsecase) Execute(
 	userId, targetUsername, cursorMessageId string, count int, direction string,
-) (*MessageHistory, error) {
+) (*dto.MessageHistory, error) {
 	companion, err := uc.userRepo.GetUserByUsername(targetUsername)
 	if err != nil {
 		return nil, err

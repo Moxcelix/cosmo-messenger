@@ -1,22 +1,29 @@
-package message_application
+package usecases
 
 import (
+	"main/internal/application/message/dto"
+	"main/internal/application/message/mappers"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
+)
+
+const (
+	defaultCount = 10
+	maxPageSize  = 100
 )
 
 type GetMessageHistoryUsecase struct {
 	msgRepo          message_domain.MessageRepository
 	chatRepo         chat_domain.ChatRepository
 	chatPolicy       *chat_domain.ChatPolicy
-	historyAssembler *MessageHistoryAssembler
+	historyAssembler *mappers.MessageHistoryAssembler
 }
 
 func NewGetMessageHistoryUsecase(
 	msgRepo message_domain.MessageRepository,
 	chatRepo chat_domain.ChatRepository,
 	chatPolicy *chat_domain.ChatPolicy,
-	historyAssembler *MessageHistoryAssembler,
+	historyAssembler *mappers.MessageHistoryAssembler,
 ) *GetMessageHistoryUsecase {
 	return &GetMessageHistoryUsecase{
 		msgRepo:          msgRepo,
@@ -28,7 +35,7 @@ func NewGetMessageHistoryUsecase(
 
 func (uc *GetMessageHistoryUsecase) Execute(
 	userId, chatId, cursorMessageId string, count int, direction string,
-) (*MessageHistory, error) {
+) (*dto.MessageHistory, error) {
 	chat, err := uc.chatRepo.GetByID(chatId)
 	if err != nil {
 		return nil, err

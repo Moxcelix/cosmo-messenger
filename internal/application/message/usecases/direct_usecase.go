@@ -1,17 +1,19 @@
-package message_application
+package usecases
 
 import (
 	chat_application "main/internal/application/chat"
+	"main/internal/application/message/dto"
+	"main/internal/application/message/services"
 	chat_domain "main/internal/domain/chat"
 	user_domain "main/internal/domain/user"
 	"time"
 )
-	
+
 type DirectMessageUsecase struct {
 	chatFactory   *chat_domain.ChatFactory
 	userRepo      user_domain.UserRepository
 	chatRepo      chat_domain.ChatRepository
-	messageSender *MessageSender
+	messageSender *services.MessageSender
 	chatCreator   *chat_application.ChatCreator
 }
 
@@ -19,7 +21,7 @@ func NewDirectMessageUsecase(
 	chatFactory *chat_domain.ChatFactory,
 	userRepo user_domain.UserRepository,
 	chatRepo chat_domain.ChatRepository,
-	messageSender *MessageSender,
+	messageSender *services.MessageSender,
 	chatCreator *chat_application.ChatCreator,
 ) *DirectMessageUsecase {
 	return &DirectMessageUsecase{
@@ -32,7 +34,7 @@ func NewDirectMessageUsecase(
 }
 
 func (uc *DirectMessageUsecase) Execute(
-	senderId, receiverUsername, content string) (*ChatMessage, error) {
+	senderId, receiverUsername, content string) (*dto.ChatMessage, error) {
 	receiver, err := uc.userRepo.GetUserByUsername(receiverUsername)
 	if err != nil {
 		return nil, err

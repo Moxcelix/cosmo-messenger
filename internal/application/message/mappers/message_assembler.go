@@ -1,6 +1,7 @@
-package message_application
+package mappers
 
 import (
+	"main/internal/application/message/dto"
 	user_application "main/internal/application/user"
 	message_domain "main/internal/domain/message"
 )
@@ -20,7 +21,7 @@ func NewChatMessageAssembler(
 	}
 }
 
-func (a *ChatMessageAssembler) Assemble(msg *message_domain.Message) (*ChatMessage, error) {
+func (a *ChatMessageAssembler) Assemble(msg *message_domain.Message) (*dto.ChatMessage, error) {
 	sender, err := a.senderProvider.Provide(msg.SenderID)
 	if err != nil {
 		return nil, err
@@ -32,7 +33,7 @@ func (a *ChatMessageAssembler) Assemble(msg *message_domain.Message) (*ChatMessa
 	timestamp := msg.CreatedAt
 	edited := !msg.UpdatedAt.Equal(msg.CreatedAt)
 
-	return &ChatMessage{
+	return &dto.ChatMessage{
 		ID:        msg.ID,
 		ChatID:    msg.ChatID,
 		Content:   msg.Content,

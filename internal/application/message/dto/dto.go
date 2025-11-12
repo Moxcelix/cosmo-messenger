@@ -1,4 +1,4 @@
-package message_application
+package dto
 
 import (
 	chat_application "main/internal/application/chat"

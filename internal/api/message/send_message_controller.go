@@ -1,7 +1,8 @@
 package message_api
 
 import (
-	message_application "main/internal/application/message"
+	"main/internal/application/message/dto"
+	message_application "main/internal/application/message/usecases"
 	"main/pkg"
 	"net/http"
 
@@ -27,8 +28,8 @@ type sendRequest struct {
 }
 
 type sendResponse struct {
-	Text    string                           `json:"text"`
-	Message *message_application.ChatMessage `json:"message"`
+	Text    string           `json:"text"`
+	Message *dto.ChatMessage `json:"message"`
 }
 
 // SendMessage godoc

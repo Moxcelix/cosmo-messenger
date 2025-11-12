@@ -2,7 +2,7 @@ package message_api
 
 import (
 	"fmt"
-	message_application "main/internal/application/message"
+	message_application "main/internal/application/message/usecases"
 	"main/pkg"
 )
 

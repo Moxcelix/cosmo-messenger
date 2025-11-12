@@ -1,6 +1,7 @@
-package message_application
+package mappers
 
 import (
+	"main/internal/application/message/dto"
 	user_application "main/internal/application/user"
 	message_domain "main/internal/domain/message"
 )
@@ -20,7 +21,7 @@ func NewReplyProvider(
 	}
 }
 
-func (p *ReplyProvider) Provide(msgId string) (*Reply, error) {
+func (p *ReplyProvider) Provide(msgId string) (*dto.Reply, error) {
 	msg, err := p.msgRepo.GetMessageById(msgId)
 
 	if err != nil {
@@ -36,7 +37,7 @@ func (p *ReplyProvider) Provide(msgId string) (*Reply, error) {
 		return nil, err
 	}
 
-	return &Reply{
+	return &dto.Reply{
 		ID:      msg.ID,
 		Content: msg.Content,
 		Sender:  sender,

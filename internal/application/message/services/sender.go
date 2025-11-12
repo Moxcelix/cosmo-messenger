@@ -1,6 +1,8 @@
-package message_application
+package services
 
 import (
+	"main/internal/application/message/dto"
+	"main/internal/application/message/mappers"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 )
@@ -8,14 +10,14 @@ import (
 type MessageSender struct {
 	messagePolicy      *message_domain.MessagePolicy
 	messageRepo        message_domain.MessageRepository
-	messageAssembler   *ChatMessageAssembler
+	messageAssembler   *mappers.ChatMessageAssembler
 	messageBroadcaster MessageBroadcaster
 }
 
 func NewMessageSender(
 	messagePolicy *message_domain.MessagePolicy,
 	messageRepo message_domain.MessageRepository,
-	messageAssembler *ChatMessageAssembler,
+	messageAssembler *mappers.ChatMessageAssembler,
 	messageBroadcaster MessageBroadcaster,
 ) *MessageSender {
 	return &MessageSender{
@@ -27,7 +29,7 @@ func NewMessageSender(
 }
 
 func (s *MessageSender) SendMessageToChat(
-	chat *chat_domain.Chat, senderID, content string) (*ChatMessage, error) {
+	chat *chat_domain.Chat, senderID, content string) (*dto.ChatMessage, error) {
 	if err := s.messagePolicy.ValidateMessageContent(content); err != nil {
 		return nil, err
 	}

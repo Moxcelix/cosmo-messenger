@@ -1,15 +1,21 @@
 package message_application
 
-import "go.uber.org/fx"
+import (
+	"main/internal/application/message/mappers"
+	"main/internal/application/message/services"
+	"main/internal/application/message/usecases"
+
+	"go.uber.org/fx"
+)
 
 var Module = fx.Options(
-	fx.Provide(NewDirectMessageUsecase),
-	fx.Provide(NewGetMessageHistoryUsecase),
-	fx.Provide(NewGetDirectMessageHistoryUsecase),
-	fx.Provide(NewSendMessageUsecase),
+	fx.Provide(usecases.NewDirectMessageUsecase),
+	fx.Provide(usecases.NewGetMessageHistoryUsecase),
+	fx.Provide(usecases.NewGetDirectMessageHistoryUsecase),
+	fx.Provide(usecases.NewSendMessageUsecase),
 
-	fx.Provide(NewChatMessageAssembler),
-	fx.Provide(NewMessageHistoryAssembler),
-	fx.Provide(NewReplyProvider),
-	fx.Provide(NewMessageSender),
+	fx.Provide(mappers.NewChatMessageAssembler),
+	fx.Provide(mappers.NewMessageHistoryAssembler),
+	fx.Provide(mappers.NewReplyProvider),
+	fx.Provide(services.NewMessageSender),
 )
