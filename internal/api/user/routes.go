@@ -1,29 +1,30 @@
 package user_api
 
 import (
-	auth_api "main/internal/api/auth"
+	controllers "main/internal/infrastructure/controllers/user"
+	"main/internal/infrastructure/middlewares"
 	"main/pkg"
 )
 
 type UserServiceRoutes struct {
 	handler                pkg.RequestHandler
-	userRegisterController *UserRegisterController
-	userGetInfoController  *UserGetInfoController
-	userDeleteController   *UserDeleteController
-	getUsersListController *GetUsersListController
-	findUserController     *FindUserController
-	authMiddleware         *auth_api.AuthMiddleware
-	adminAuthMiddleware    *auth_api.AdminAuthMiddleware
+	userRegisterController *controllers.UserRegisterController
+	userGetInfoController  *controllers.UserGetInfoController
+	userDeleteController   *controllers.UserDeleteController
+	getUsersListController *controllers.GetUsersListController
+	findUserController     *controllers.FindUserController
+	authMiddleware         *middlewares.AuthMiddleware
+	adminAuthMiddleware    *middlewares.AdminAuthMiddleware
 }
 
 func NewUserServiceRoutes(
-	userRegisterController *UserRegisterController,
-	userGetInfoController *UserGetInfoController,
-	userDeleteController *UserDeleteController,
-	getUsersListController *GetUsersListController,
-	findUserController *FindUserController,
-	authMiddleware *auth_api.AuthMiddleware,
-	adminAuthMiddleware *auth_api.AdminAuthMiddleware,
+	userRegisterController *controllers.UserRegisterController,
+	userGetInfoController *controllers.UserGetInfoController,
+	userDeleteController *controllers.UserDeleteController,
+	getUsersListController *controllers.GetUsersListController,
+	findUserController *controllers.FindUserController,
+	authMiddleware *middlewares.AuthMiddleware,
+	adminAuthMiddleware *middlewares.AdminAuthMiddleware,
 	handler pkg.RequestHandler,
 ) *UserServiceRoutes {
 	return &UserServiceRoutes{

@@ -1,5 +1,4 @@
-package user_api
-
+package controllers
 import (
 	"net/http"
 	"strconv"

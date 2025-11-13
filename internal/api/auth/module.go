@@ -1,13 +1,20 @@
 package auth_api
 
-import "go.uber.org/fx"
+import (
+	controllers "main/internal/infrastructure/controllers/auth"
+	"main/internal/infrastructure/middlewares"
+
+	"go.uber.org/fx"
+)
 
 var Module = fx.Options(
-	fx.Provide(NewLoginController),
-	fx.Provide(NewRefreshController),
-	fx.Provide(NewValidateController),
-	fx.Provide(NewAuthMiddleware),
-	fx.Provide(NewAdminAuthMiddleware),
+	fx.Provide(controllers.NewLoginController),
+	fx.Provide(controllers.NewRefreshController),
+	fx.Provide(controllers.NewValidateController),
+
+	fx.Provide(middlewares.NewAuthMiddleware),
+	fx.Provide(middlewares.NewAdminAuthMiddleware),
+	fx.Provide(middlewares.NewQueryAuthMiddleware),
+
 	fx.Provide(NewAuthServiceRoutes),
-	fx.Provide(NewQueryAuthMiddleware),
 )

@@ -1,4 +1,4 @@
-package auth_api
+package controllers
 
 import (
 	auth_application "main/internal/application/auth/usecases"

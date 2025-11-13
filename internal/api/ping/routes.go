@@ -26,3 +26,4 @@ func (r *PingRoutes) Setup() {
 
 	group.Static("/uploads", "./uploads")
 }
+           

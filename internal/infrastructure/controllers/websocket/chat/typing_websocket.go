@@ -1,4 +1,4 @@
-package chat_api
+package websocket
 
 import (
 	"fmt"

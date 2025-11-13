@@ -1,12 +1,17 @@
 package user_api
 
-import "go.uber.org/fx"
+import (
+	controllers "main/internal/infrastructure/controllers/user"
+
+	"go.uber.org/fx"
+)
 
 var Module = fx.Options(
-	fx.Provide(NewUserRegisterController),
-	fx.Provide(NewUserGetInfoController),
-	fx.Provide(NewUserDeleteController),
-	fx.Provide(NewGetUsersListController),
-	fx.Provide(NewFindUserController),
+	fx.Provide(controllers.NewUserRegisterController),
+	fx.Provide(controllers.NewUserGetInfoController),
+	fx.Provide(controllers.NewUserDeleteController),
+	fx.Provide(controllers.NewGetUsersListController),
+	fx.Provide(controllers.NewFindUserController),
+
 	fx.Provide(NewUserServiceRoutes),
 )

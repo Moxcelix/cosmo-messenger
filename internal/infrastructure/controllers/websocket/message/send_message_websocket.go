@@ -1,4 +1,4 @@
-package message_api
+package websocket
 
 import (
 	"fmt"

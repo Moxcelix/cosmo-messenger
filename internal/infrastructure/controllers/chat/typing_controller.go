@@ -1,4 +1,4 @@
-package chat_api
+package controllers
 
 import (
 	chat_application "main/internal/application/chat/usecases"

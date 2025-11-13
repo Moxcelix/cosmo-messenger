@@ -1,26 +1,27 @@
 package message_api
 
 import (
-	auth_api "main/internal/api/auth"
+	controllers "main/internal/infrastructure/controllers/message"
+	"main/internal/infrastructure/middlewares"
 	"main/pkg"
 )
 
 type MessageRoutes struct {
 	handler                     pkg.RequestHandler
-	directMessageController     *DirectMessageController
-	getChatMessagesController   *GetChatMessagesController
-	getDirectMessagesController *GetDirectMessagesController
-	sendMessageContoller        *SendMessageController
-	authMiddleware              *auth_api.AuthMiddleware
+	directMessageController     *controllers.DirectMessageController
+	getChatMessagesController   *controllers.GetChatMessagesController
+	getDirectMessagesController *controllers.GetDirectMessagesController
+	sendMessageContoller        *controllers.SendMessageController
+	authMiddleware              *middlewares.AuthMiddleware
 }
 
 func NewMessageRoutes(
 	handler pkg.RequestHandler,
-	directMessageController *DirectMessageController,
-	getChatMessagesController *GetChatMessagesController,
-	getDirectMessagesController *GetDirectMessagesController,
-	sendMessageContoller *SendMessageController,
-	authMiddleware *auth_api.AuthMiddleware,
+	directMessageController *controllers.DirectMessageController,
+	getChatMessagesController *controllers.GetChatMessagesController,
+	getDirectMessagesController *controllers.GetDirectMessagesController,
+	sendMessageContoller *controllers.SendMessageController,
+	authMiddleware *middlewares.AuthMiddleware,
 ) *MessageRoutes {
 	return &MessageRoutes{
 		directMessageController:     directMessageController,

@@ -1,4 +1,4 @@
-package message_api
+package controllers
 
 import (
 	"main/internal/application/message/dto"

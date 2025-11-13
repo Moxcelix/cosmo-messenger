@@ -1,19 +1,19 @@
 package websocket_api
 
 import (
-	auth_api "main/internal/api/auth"
+	"main/internal/infrastructure/middlewares"
 	"main/pkg"
 )
 
 type WebSocketRoutes struct {
 	handler             pkg.RequestHandler
 	websocketController *WebSocketController
-	authMiddleware      *auth_api.QueryAuthMiddleware
+	authMiddleware      *middlewares.QueryAuthMiddleware
 }
 
 func NewWebSocketRoutes(
 	websocketController *WebSocketController,
-	authMiddleware *auth_api.QueryAuthMiddleware,
+	authMiddleware *middlewares.QueryAuthMiddleware,
 	handler pkg.RequestHandler,
 ) *WebSocketRoutes {
 	return &WebSocketRoutes{

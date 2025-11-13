@@ -1,22 +1,23 @@
 package chat_api
 
 import (
-	auth_api "main/internal/api/auth"
+	controllers "main/internal/infrastructure/controllers/chat"
+	"main/internal/infrastructure/middlewares"
 	"main/pkg"
 )
 
 type ChatRoutes struct {
 	handler                pkg.RequestHandler
-	getUserChatsController *GetUserChatsController
-	typingController       *TypingController
-	authMiddleware         *auth_api.AuthMiddleware
+	getUserChatsController *controllers.GetUserChatsController
+	typingController       *controllers.TypingController
+	authMiddleware         *middlewares.AuthMiddleware
 }
 
 func NewChatRoutes(
 	handler pkg.RequestHandler,
-	getUserChatsController *GetUserChatsController,
-	typingController *TypingController,
-	authMiddleware *auth_api.AuthMiddleware,
+	getUserChatsController *controllers.GetUserChatsController,
+	typingController *controllers.TypingController,
+	authMiddleware *middlewares.AuthMiddleware,
 ) *ChatRoutes {
 	return &ChatRoutes{
 		getUserChatsController: getUserChatsController,

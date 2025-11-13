@@ -1,17 +1,18 @@
 package message_api
 
 import (
+	websocket "main/internal/infrastructure/controllers/websocket/message"
 	"main/pkg"
 )
 
 type MessageEvents struct {
-	sendMessageWebsocket *SendMessageWebSocket
+	sendMessageWebsocket *websocket.SendMessageWebSocket
 	logger               pkg.Logger
 	wsHub                *pkg.WebSocketHub
 }
 
 func NewMessageEvents(
-	sendMessageWebsocket *SendMessageWebSocket,
+	sendMessageWebsocket *websocket.SendMessageWebSocket,
 	logger pkg.Logger,
 	wsHub *pkg.WebSocketHub,
 ) *MessageEvents {

@@ -1,17 +1,18 @@
 package chat_api
 
 import (
+	websocket "main/internal/infrastructure/controllers/websocket/chat"
 	"main/pkg"
 )
 
 type ChatEvents struct {
-	typingWebsocket *TypingWebSocket
+	typingWebsocket *websocket.TypingWebSocket
 	logger          pkg.Logger
 	wsHub           *pkg.WebSocketHub
 }
 
 func NewChatEvents(
-	typingWebsocket *TypingWebSocket,
+	typingWebsocket *websocket.TypingWebSocket,
 	logger pkg.Logger,
 	wsHub *pkg.WebSocketHub,
 ) *ChatEvents {

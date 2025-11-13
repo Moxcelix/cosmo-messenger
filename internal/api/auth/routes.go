@@ -1,18 +1,22 @@
 package auth_api
 
 import (
+	controllers "main/internal/infrastructure/controllers/auth"
 	"main/pkg"
 )
 
 type AuthServiceRoutes struct {
 	handler            pkg.RequestHandler
-	loginController    *LoginController
-	refreshController  *RefreshController
-	validateController *ValidateController
+	loginController    *controllers.LoginController
+	refreshController  *controllers.RefreshController
+	validateController *controllers.ValidateController
 }
 
-func NewAuthServiceRoutes(handler pkg.RequestHandler, loginController *LoginController,
-	refreshController *RefreshController, validateController *ValidateController) *AuthServiceRoutes {
+func NewAuthServiceRoutes(
+	handler pkg.RequestHandler,
+	loginController *controllers.LoginController,
+	refreshController *controllers.RefreshController,
+	validateController *controllers.ValidateController) *AuthServiceRoutes {
 	return &AuthServiceRoutes{
 		handler:            handler,
 		validateController: validateController,

@@ -1,4 +1,4 @@
-package auth_api
+package middlewares
 
 import (
 	"net/http"
