@@ -1,4 +1,4 @@
-package websocket_api
+package controllers
 
 import (
 	message_application "main/internal/application/message/usecases"

@@ -9,22 +9,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type GetChatMessagesController struct {
+type GetHistoryController struct {
 	getChatMessagesUsecase *message_application.GetMessageHistoryUsecase
 	logger                 pkg.Logger
 }
 
-func NewGetChatMessagesController(
+func NewGetHistoryController(
 	getChatMessagesUsecase *message_application.GetMessageHistoryUsecase,
 	logger pkg.Logger,
-) *GetChatMessagesController {
-	return &GetChatMessagesController{
+) *GetHistoryController {
+	return &GetHistoryController{
 		getChatMessagesUsecase: getChatMessagesUsecase,
 		logger:                 logger,
 	}
 }
 
-// GetChatMessages godoc
+// GetHistory godoc
 // @Summary Get chat messages
 // @Description Get paginated messages from a chat
 // @Tags messages
@@ -42,7 +42,7 @@ func NewGetChatMessagesController(
 // @Failure 404 {object} map[string]string "Chat not found"
 // @Failure 500 {object} map[string]string "Internal server error"
 // @Router /api/v1/messages/chat/{chat_id} [get]
-func (c *GetChatMessagesController) GetChatMessages(ctx *gin.Context) {
+func (c *GetHistoryController) GetHistory(ctx *gin.Context) {
 	userId := ctx.GetString("UserID")
 	chatId := ctx.Param("chat_id")
 

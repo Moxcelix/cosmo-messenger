@@ -1,7 +1,7 @@
 package message_api
 
 import (
-	websocket "main/internal/infrastructure/controllers/websocket/message"
+	websocket "main/internal/infrastructure/websocket/message"
 	"main/pkg"
 )
 

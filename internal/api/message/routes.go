@@ -9,7 +9,7 @@ import (
 type MessageRoutes struct {
 	handler                     pkg.RequestHandler
 	directMessageController     *controllers.DirectMessageController
-	getChatMessagesController   *controllers.GetChatMessagesController
+	getChatMessagesController   *controllers.GetHistoryController
 	getDirectMessagesController *controllers.GetDirectMessagesController
 	sendMessageContoller        *controllers.SendMessageController
 	authMiddleware              *middlewares.AuthMiddleware
@@ -18,7 +18,7 @@ type MessageRoutes struct {
 func NewMessageRoutes(
 	handler pkg.RequestHandler,
 	directMessageController *controllers.DirectMessageController,
-	getChatMessagesController *controllers.GetChatMessagesController,
+	getChatMessagesController *controllers.GetHistoryController,
 	getDirectMessagesController *controllers.GetDirectMessagesController,
 	sendMessageContoller *controllers.SendMessageController,
 	authMiddleware *middlewares.AuthMiddleware,
@@ -41,5 +41,5 @@ func (r *MessageRoutes) Setup() {
 	group.POST("/chat/:chat_id", r.sendMessageContoller.SendMessage)
 
 	group.GET("/direct/:username", r.getDirectMessagesController.GetDirectMessages)
-	group.GET("/chat/:chat_id", r.getChatMessagesController.GetChatMessages)
+	group.GET("/chat/:chat_id", r.getChatMessagesController.GetHistory)
 }

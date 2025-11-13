@@ -1,7 +1,7 @@
 package chat_api
 
 import (
-	websocket "main/internal/infrastructure/controllers/websocket/chat"
+	websocket "main/internal/infrastructure/websocket/chat"
 	"main/pkg"
 )
 
