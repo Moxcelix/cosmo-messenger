@@ -1,4 +1,4 @@
-package message_infrastructure
+package broadcasters
 
 import (
 	"main/internal/application/message/dto"
@@ -6,19 +6,19 @@ import (
 	"main/pkg"
 )
 
-type WebsocketBroadcaster struct {
+type MessageWebsocketPublisher struct {
 	wsHub *pkg.WebSocketHub
 }
 
-func NewWebsocketBroadcaster(
+func NewMessageWebsocketPublisher(
 	wsHub *pkg.WebSocketHub,
-) services.MessageBroadcaster {
-	return &WebsocketBroadcaster{
+) services.MessagePublisher {
+	return &MessageWebsocketPublisher{
 		wsHub: wsHub,
 	}
 }
 
-func (b *WebsocketBroadcaster) BroadcastToUser(userId string, msg *dto.ChatMessage) error {
+func (b *MessageWebsocketPublisher) PublishToUser(userId string, msg *dto.ChatMessage) error {
 	msgPayload := msg
 	b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
 		Type:    "new_message",
@@ -28,7 +28,7 @@ func (b *WebsocketBroadcaster) BroadcastToUser(userId string, msg *dto.ChatMessa
 	return nil
 }
 
-func (b *WebsocketBroadcaster) BroadcastToUsers(
+func (b *MessageWebsocketPublisher) PublishToUsers(
 	usersId []string, msg *dto.ChatMessage) error {
 	msgPayload := msg
 	for _, userId := range usersId {

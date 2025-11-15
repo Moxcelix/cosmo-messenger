@@ -8,23 +8,23 @@ import (
 )
 
 type MessageSender struct {
-	messagePolicy      *message_domain.MessagePolicy
-	messageRepo        message_domain.MessageRepository
-	messageAssembler   *mappers.ChatMessageAssembler
-	messageBroadcaster MessageBroadcaster
+	messagePolicy    *message_domain.MessagePolicy
+	messageRepo      message_domain.MessageRepository
+	messageAssembler *mappers.ChatMessageAssembler
+	messagePublisher MessagePublisher
 }
 
 func NewMessageSender(
 	messagePolicy *message_domain.MessagePolicy,
 	messageRepo message_domain.MessageRepository,
 	messageAssembler *mappers.ChatMessageAssembler,
-	messageBroadcaster MessageBroadcaster,
+	messagePublisher MessagePublisher,
 ) *MessageSender {
 	return &MessageSender{
-		messagePolicy:      messagePolicy,
-		messageRepo:        messageRepo,
-		messageAssembler:   messageAssembler,
-		messageBroadcaster: messageBroadcaster,
+		messagePolicy:    messagePolicy,
+		messageRepo:      messageRepo,
+		messageAssembler: messageAssembler,
+		messagePublisher: messagePublisher,
 	}
 }
 
@@ -50,7 +50,7 @@ func (s *MessageSender) SendMessageToChat(
 	}
 
 	chatMembersId := chat.GetMembersId()
-	if err := s.messageBroadcaster.BroadcastToUsers(chatMembersId, msgDto); err != nil {
+	if err := s.messagePublisher.PublishToUsers(chatMembersId, msgDto); err != nil {
 		return nil, err
 	}
 

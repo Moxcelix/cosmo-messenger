@@ -1,4 +1,4 @@
-package user_infrastructure
+package persistence
 
 import (
 	"go.uber.org/fx"

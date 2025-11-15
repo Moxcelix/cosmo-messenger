@@ -1,10 +1,10 @@
-package auth_infrastructure
+package services
 
 import (
 	"errors"
 	"main/internal/config"
-	"main/internal/domain/auth"
-	"main/internal/domain/user"
+	auth_domain "main/internal/domain/auth"
+	user_domain "main/internal/domain/user"
 	"main/pkg"
 	"time"
 )
@@ -26,7 +26,7 @@ type User struct {
 func NewInternalAuthService(
 	jwt *pkg.Jwt,
 	env config.Env,
-	userRepo user_domain.UserRepository, 
+	userRepo user_domain.UserRepository,
 	passwordHasher *user_domain.PasswordHasher) auth_domain.AuthService {
 	return &InternalAuthService{
 		jwt:            jwt,

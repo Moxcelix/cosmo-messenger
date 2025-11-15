@@ -1,4 +1,4 @@
-package chat_infrastructure
+package broadcasters
 
 import (
 	"main/internal/application/chat/dto"
@@ -6,19 +6,19 @@ import (
 	"main/pkg"
 )
 
-type WebsocketTypingBroadcaster struct {
+type WebsocketTypingPublisher struct {
 	wsHub *pkg.WebSocketHub
 }
 
-func NewWebsocketTypingBroadcaster(
+func NewWebsocketTypingPublisher(
 	wsHub *pkg.WebSocketHub,
-) services.TypingBroadcaster {
-	return &WebsocketTypingBroadcaster{
+) services.TypingPublisher {
+	return &WebsocketTypingPublisher{
 		wsHub: wsHub,
 	}
 }
 
-func (b *WebsocketTypingBroadcaster) BroadcastToUser(
+func (b *WebsocketTypingPublisher) PublishToUser(
 	userId string, typing *dto.Typing) error {
 	b.wsHub.SendToClient(userId, pkg.WebSocketEvent{
 		Type:    "user_typing",
@@ -28,7 +28,7 @@ func (b *WebsocketTypingBroadcaster) BroadcastToUser(
 	return nil
 }
 
-func (b *WebsocketTypingBroadcaster) BroadcastToUsers(
+func (b *WebsocketTypingPublisher) PublishToUsers(
 	usersId []string, typing *dto.Typing) error {
 	for _, userId := range usersId {
 		b.wsHub.SendToClient(userId, pkg.WebSocketEvent{

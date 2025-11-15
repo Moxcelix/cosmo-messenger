@@ -9,7 +9,7 @@ const (
 	ChatEventUpdated ChatEvent = "chat_updated"
 )
 
-type ChatBroadcaster interface {
-	BroadcastToUser(userId string, chat *dto.ChatItem, event ChatEvent) error
-	BroadcastToUsers(usersId []string, chat *dto.ChatItem, event ChatEvent) error
+type ChatPublisher interface {
+	PublishToUser(userId string, chat *dto.ChatItem, event ChatEvent) error
+	PublishToUsers(usersId []string, chat *dto.ChatItem, event ChatEvent) error
 }

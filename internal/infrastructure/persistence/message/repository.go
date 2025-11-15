@@ -1,4 +1,4 @@
-package message_infrastructure
+package persistence
 
 import (
 	"context"

@@ -5,20 +5,20 @@ import (
 )
 
 type ChatCreator struct {
-	chatRepo        chat_domain.ChatRepository
-	chatBroadcaster ChatBroadcaster
-	chatAssembler   *ChatItemAssembler
+	chatRepo      chat_domain.ChatRepository
+	chatPublisher ChatPublisher
+	chatAssembler *ChatItemAssembler
 }
 
 func NewChatCreator(
 	chatRepo chat_domain.ChatRepository,
-	chatBroadcaster ChatBroadcaster,
+	chatBroadcaster ChatPublisher,
 	chatAssembler *ChatItemAssembler,
 ) *ChatCreator {
 	return &ChatCreator{
-		chatRepo:        chatRepo,
-		chatBroadcaster: chatBroadcaster,
-		chatAssembler:   chatAssembler,
+		chatRepo:      chatRepo,
+		chatPublisher: chatBroadcaster,
+		chatAssembler: chatAssembler,
 	}
 }
 
@@ -33,7 +33,7 @@ func (c *ChatCreator) Create(chat *chat_domain.Chat) error {
 		if err != nil {
 			return err
 		}
-		c.chatBroadcaster.BroadcastToUser(chatMemberId, chatDto, ChatEventCreated)
+		c.chatPublisher.PublishToUser(chatMemberId, chatDto, ChatEventCreated)
 	}
 
 	return nil

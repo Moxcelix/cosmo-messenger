@@ -1,4 +1,4 @@
-package chat_infrastructure
+package persistence
 
 import (
 	"main/internal/config"
