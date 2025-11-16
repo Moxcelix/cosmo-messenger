@@ -10,11 +10,11 @@ import (
 )
 
 type DirectMessageUsecase struct {
-	chatFactory   *chat_domain.ChatFactory
-	userRepo      user_domain.UserRepository
-	chatRepo      chat_domain.ChatRepository
-	messageSender *services.MessageSender
-	chatCreator   *chat_application.ChatCreator
+	chatFactory         *chat_domain.ChatFactory
+	userRepo            user_domain.UserRepository
+	chatRepo            chat_domain.ChatRepository
+	messageSender       *services.MessageSender
+	chatRegistryService *chat_application.ChatRegistryService
 }
 
 func NewDirectMessageUsecase(
@@ -22,14 +22,14 @@ func NewDirectMessageUsecase(
 	userRepo user_domain.UserRepository,
 	chatRepo chat_domain.ChatRepository,
 	messageSender *services.MessageSender,
-	chatCreator *chat_application.ChatCreator,
+	chatRegistryService *chat_application.ChatRegistryService,
 ) *DirectMessageUsecase {
 	return &DirectMessageUsecase{
-		chatFactory:   chatFactory,
-		userRepo:      userRepo,
-		chatRepo:      chatRepo,
-		messageSender: messageSender,
-		chatCreator:   chatCreator,
+		chatFactory:         chatFactory,
+		userRepo:            userRepo,
+		chatRepo:            chatRepo,
+		messageSender:       messageSender,
+		chatRegistryService: chatRegistryService,
 	}
 }
 
@@ -76,7 +76,7 @@ func (uc *DirectMessageUsecase) findOrCreateDirectChat(
 		return nil, err
 	}
 
-	if err := uc.chatCreator.Create(chat); err != nil {
+	if err := uc.chatRegistryService.Register(chat); err != nil {
 		return nil, err
 	}
 

@@ -12,11 +12,11 @@ var Module = fx.Options(
 	fx.Provide(usecases.NewGetUserChatsUsecase),
 	fx.Provide(usecases.NewTypingUsecase),
 
-	fx.Provide(services.NewChatCollectionAssembler),
 	fx.Provide(services.NewChatHeaderProvider),
-	fx.Provide(services.NewChatItemAssembler),
 	fx.Provide(services.NewLastMessageProvider),
-	fx.Provide(services.NewChatCreator),
+	fx.Provide(services.NewChatRegistryService),
 
 	fx.Provide(mappers.NewChatCollectionMapper),
+	fx.Provide(mappers.NewChatItemMapper),
+	fx.Provide(mappers.NewLastMessageMapper),
 )

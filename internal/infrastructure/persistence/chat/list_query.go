@@ -6,6 +6,8 @@ import (
 	"main/internal/application/chat/queries"
 	"main/internal/application/chat/readmodels"
 	"main/pkg"
+
+	user_readmodels "main/internal/application/user/readmodels"
 )
 
 type ChatListQuery struct {
@@ -89,7 +91,7 @@ func (q *ChatListQuery) Query(userID string, offset, limit int) (*readmodels.Cha
 				Content: content.String,
 				ReplyId: replyTo.String,
 				SentAt:  messageCreatedAt.Time,
-				Sender: &readmodels.LastMessageSender{
+				Sender: &user_readmodels.Sender{
 					ID:       senderID.String,
 					Name:     senderName.String,
 					Username: senderUsername.String,
