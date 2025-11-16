@@ -1,6 +1,7 @@
 package chat_application
 
 import (
+	"main/internal/application/chat/mappers"
 	"main/internal/application/chat/services"
 	"main/internal/application/chat/usecases"
 
@@ -15,6 +16,7 @@ var Module = fx.Options(
 	fx.Provide(services.NewChatHeaderProvider),
 	fx.Provide(services.NewChatItemAssembler),
 	fx.Provide(services.NewLastMessageProvider),
-	fx.Provide(services.NewChatNamingService),
 	fx.Provide(services.NewChatCreator),
+
+	fx.Provide(mappers.NewChatCollectionMapper),
 )

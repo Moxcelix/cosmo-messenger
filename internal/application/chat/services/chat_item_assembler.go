@@ -7,12 +7,12 @@ import (
 
 type ChatItemAssembler struct {
 	lastMessageProvider *LastMessageProvider
-	namingService       *ChatNamingService
+	namingService       *chat_domain.ChatNamingService
 }
 
 func NewChatItemAssembler(
 	lastMessageProvider *LastMessageProvider,
-	namingService *ChatNamingService,
+	namingService *chat_domain.ChatNamingService,
 ) *ChatItemAssembler {
 	return &ChatItemAssembler{
 		lastMessageProvider: lastMessageProvider,
@@ -34,7 +34,7 @@ func (p *ChatItemAssembler) Assemble(chat *chat_domain.Chat, currentUserId strin
 	return &dto.ChatItem{
 		ID:          chat.ID,
 		Name:        chatName,
-		Type:        chat.Type,
+		Type:        string(chat.Type),
 		LastMessage: lastMessage,
 	}, nil
 }

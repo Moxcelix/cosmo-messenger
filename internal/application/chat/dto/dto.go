@@ -7,10 +7,10 @@ import (
 )
 
 type ChatItem struct {
-	ID          string               `json:"id"`
-	Name        string               `json:"name"`
-	Type        chat_domain.ChatType `json:"type"`
-	LastMessage *LastMessage         `json:"last_message,omitempty"`
+	ID          string       `json:"id"`
+	Name        string       `json:"name"`
+	Type        string       `json:"type"`
+	LastMessage *LastMessage `json:"last_message,omitempty"`
 }
 
 type ChatHeader struct {
