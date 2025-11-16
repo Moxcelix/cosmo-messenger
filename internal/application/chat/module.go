@@ -13,7 +13,6 @@ var Module = fx.Options(
 	fx.Provide(usecases.NewTypingUsecase),
 
 	fx.Provide(services.NewChatHeaderProvider),
-	fx.Provide(services.NewLastMessageProvider),
 	fx.Provide(services.NewChatRegistryService),
 
 	fx.Provide(mappers.NewChatCollectionMapper),
