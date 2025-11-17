@@ -27,5 +27,6 @@ func (m *LastMessageMapper) MapToDTO(lastMessage *readmodels.LastMessage) *dto.L
 		Content:   lastMessage.Content,
 		Timestamp: lastMessage.SentAt,
 		Sender:    m.senderMapper.MapToDTO(lastMessage.Sender),
+		IsReplied: lastMessage.ReplyId != "",
 	}
 }

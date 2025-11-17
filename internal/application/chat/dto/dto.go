@@ -16,6 +16,7 @@ type LastMessage struct {
 	ID        string                   `json:"id"`
 	Content   string                   `json:"content"`
 	Timestamp time.Time                `json:"timestamp"`
+	IsReplied bool                     `json:"is_replied"`
 	Sender    *user_application.Sender `json:"sender"`
 }
 
