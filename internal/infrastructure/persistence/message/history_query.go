@@ -125,12 +125,13 @@ func (q *MessageHistoryQuery) getMessagesOnly(
 			m.reply_to,
 			m.created_at,
 			m.updated_at,
-			-- Данные отправителя
+			-- sender data
 			u.id as sender_id,
 			u.name as sender_name,
 			u.username as sender_username,
-			-- Данные реплая (если есть)
+			-- reply data
 			rm.content as reply_content,
+			-- reply sender data
 			ru.id as reply_sender_id,
 			ru.name as reply_sender_name,
 			ru.username as reply_sender_username

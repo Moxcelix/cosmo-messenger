@@ -3,6 +3,7 @@ package services
 import (
 	"main/internal/application/message/dto"
 	"main/internal/application/message/mappers"
+	"main/internal/application/message/queries"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 )
@@ -10,21 +11,24 @@ import (
 type MessageSender struct {
 	messagePolicy    *message_domain.MessagePolicy
 	messageRepo      message_domain.MessageRepository
-	messageAssembler *mappers.ChatMessageAssembler
 	messagePublisher MessagePublisher
+	messageQuery     queries.MessageQuery
+	messageMapper    *mappers.MessageMapper
 }
 
 func NewMessageSender(
 	messagePolicy *message_domain.MessagePolicy,
 	messageRepo message_domain.MessageRepository,
-	messageAssembler *mappers.ChatMessageAssembler,
 	messagePublisher MessagePublisher,
+	messageQuery queries.MessageQuery,
+	messageMapper *mappers.MessageMapper,
 ) *MessageSender {
 	return &MessageSender{
 		messagePolicy:    messagePolicy,
 		messageRepo:      messageRepo,
-		messageAssembler: messageAssembler,
 		messagePublisher: messagePublisher,
+		messageQuery:     messageQuery,
+		messageMapper:    messageMapper,
 	}
 }
 
@@ -44,10 +48,12 @@ func (s *MessageSender) SendMessageToChat(
 		return nil, err
 	}
 
-	msgDto, err := s.messageAssembler.Assemble(message)
+	msgReadmodel, err := s.messageQuery.Query(message.ID)
 	if err != nil {
 		return nil, err
 	}
+
+	msgDto := s.messageMapper.MapToDTO(msgReadmodel)
 
 	chatMembersId := chat.GetMembersId()
 	if err := s.messagePublisher.PublishToUsers(chatMembersId, msgDto); err != nil {

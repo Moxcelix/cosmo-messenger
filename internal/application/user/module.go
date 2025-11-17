@@ -2,7 +2,6 @@ package user_application
 
 import (
 	"main/internal/application/user/mappers"
-	"main/internal/application/user/services"
 	"main/internal/application/user/usecases"
 
 	"go.uber.org/fx"
@@ -15,6 +14,5 @@ var Module = fx.Options(
 	fx.Provide(usecases.NewGetUsersListUsecase),
 	fx.Provide(usecases.NewFindUserUsecase),
 
-	fx.Provide(services.NewSenderProvider),
 	fx.Provide(mappers.NewSenderMapper),
 )

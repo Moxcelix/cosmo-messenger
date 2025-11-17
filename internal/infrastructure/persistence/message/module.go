@@ -6,4 +6,5 @@ var Module = fx.Options(
 	fx.Provide(NewMessagePolicyConfig),
 	fx.Provide(NewMessageRepository),
 	fx.Provide(NewMessageHistoryQuery),
+	fx.Provide(NewMessageQuery),
 )

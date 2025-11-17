@@ -2,8 +2,7 @@ package usecases
 
 import (
 	"main/internal/application/message/dto"
-	"main/internal/application/message/mappers"
-	"main/internal/application/message/queries"
+	"main/internal/application/message/services"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 )
@@ -14,29 +13,23 @@ const (
 )
 
 type GetMessageHistoryUsecase struct {
-	msgRepo           message_domain.MessageRepository
-	chatRepo          chat_domain.ChatRepository
-	chatPolicy        *chat_domain.ChatPolicy
-	historyQuery      queries.MessageHistoryQuery
-	historyMapper     *mappers.MessageHistoryMapper
-	chatNamingService *chat_domain.ChatNamingService
+	msgRepo        message_domain.MessageRepository
+	chatRepo       chat_domain.ChatRepository
+	chatPolicy     *chat_domain.ChatPolicy
+	historyService *services.MessageHistoryService
 }
 
 func NewGetMessageHistoryUsecase(
 	msgRepo message_domain.MessageRepository,
 	chatRepo chat_domain.ChatRepository,
 	chatPolicy *chat_domain.ChatPolicy,
-	historyQuery queries.MessageHistoryQuery,
-	historyMapper *mappers.MessageHistoryMapper,
-	chatNamingService *chat_domain.ChatNamingService,
+	historyService *services.MessageHistoryService,
 ) *GetMessageHistoryUsecase {
 	return &GetMessageHistoryUsecase{
-		msgRepo:           msgRepo,
-		chatRepo:          chatRepo,
-		chatPolicy:        chatPolicy,
-		historyQuery:      historyQuery,
-		historyMapper:     historyMapper,
-		chatNamingService: chatNamingService,
+		msgRepo:        msgRepo,
+		chatRepo:       chatRepo,
+		chatPolicy:     chatPolicy,
+		historyService: historyService,
 	}
 }
 
@@ -56,25 +49,5 @@ func (uc *GetMessageHistoryUsecase) Execute(
 		return nil, err
 	}
 
-	if count < 1 {
-		count = defaultCount
-	}
-	if count > maxPageSize {
-		count = maxPageSize
-	}
-
-	historyReadmodel, err := uc.historyQuery.Query(
-		chatId, cursorMessageId, count, direction)
-	if err != nil {
-		return nil, err
-	}
-
-	chatName, err := uc.chatNamingService.ResolveChatName(chat, userId)
-	if err != nil {
-		return nil, err
-	}
-
-	historyDto := uc.historyMapper.MapToDTO(historyReadmodel, chatName)
-
-	return historyDto, nil
+	return uc.historyService.GetMessageHistory(userId, chatId, cursorMessageId, count, direction, chat)
 }
