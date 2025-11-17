@@ -22,7 +22,7 @@ func NewChatQuery(db pkg.PostgresDB, logger pkg.Logger) queries.ChatQuery {
 	}
 }
 
-func (q *ChatQuery) Query(chatID, userID string) (*readmodels.ChatWithLastMessage, error) {
+func (q *ChatQuery) Query(chatID string) (*readmodels.ChatWithLastMessage, error) {
 	ctx := context.Background()
 
 	query := `
@@ -48,11 +48,7 @@ func (q *ChatQuery) Query(chatID, userID string) (*readmodels.ChatWithLastMessag
             (SELECT COUNT(*) FROM members m2 WHERE m2.chat_id = c.id) as member_count
         FROM chats c
         LEFT JOIN LastMessages lm ON c.id = lm.chat_id AND lm.rn = 1
-        WHERE c.id = $1 
-        AND EXISTS (
-            SELECT 1 FROM members m 
-            WHERE m.chat_id = c.id AND m.user_id = $2
-        )
+        WHERE c.id = $1
     `
 
 	var chat readmodels.ChatWithLastMessage
@@ -60,7 +56,7 @@ func (q *ChatQuery) Query(chatID, userID string) (*readmodels.ChatWithLastMessag
 	var messageCreatedAt sql.NullTime
 	var senderID, senderName, senderUsername sql.NullString
 
-	err := q.db.QueryRowContext(ctx, query, chatID, userID).Scan(
+	err := q.db.QueryRowContext(ctx, query, chatID).Scan(
 		&chat.ID, &chat.Type, &chat.Name, &chat.Description, &chat.UpdatedAt,
 		&messageID, &content, &replyTo, &messageCreatedAt,
 		&senderID, &senderName, &senderUsername,

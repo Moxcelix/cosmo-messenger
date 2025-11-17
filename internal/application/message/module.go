@@ -15,7 +15,12 @@ var Module = fx.Options(
 	fx.Provide(usecases.NewSendMessageUsecase),
 
 	fx.Provide(mappers.NewChatMessageAssembler),
-	fx.Provide(mappers.NewMessageHistoryAssembler),
 	fx.Provide(mappers.NewReplyProvider),
+
+	fx.Provide(mappers.NewAttachmentMapper),
+	fx.Provide(mappers.NewChatHeaderMapper),
+	fx.Provide(mappers.NewReplyMapper),
+	fx.Provide(mappers.NewMessageMapper),
+	fx.Provide(mappers.NewMessageHistoryMapper),
 	fx.Provide(services.NewMessageSender),
 )

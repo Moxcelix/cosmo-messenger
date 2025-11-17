@@ -2,7 +2,6 @@ package dto
 
 import (
 	user_application "main/internal/application/user/dto"
-	chat_domain "main/internal/domain/chat"
 	"time"
 )
 
@@ -11,12 +10,6 @@ type ChatItem struct {
 	Name        string       `json:"name"`
 	Type        string       `json:"type"`
 	LastMessage *LastMessage `json:"last_message,omitempty"`
-}
-
-type ChatHeader struct {
-	ID   string               `json:"id"`
-	Name string               `json:"name"`
-	Type chat_domain.ChatType `json:"type"`
 }
 
 type LastMessage struct {

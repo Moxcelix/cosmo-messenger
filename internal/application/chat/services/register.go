@@ -38,7 +38,7 @@ func (c *ChatRegistryService) Register(chat *chat_domain.Chat) error {
 	chatMembersId := chat.GetMembersId()
 	for _, chatMemberId := range chatMembersId {
 
-		chatReadmodel, err := c.chatQuery.Query(chat.ID, chatMemberId)
+		chatReadmodel, err := c.chatQuery.Query(chat.ID)
 		if err != nil {
 			return err
 		}

@@ -58,6 +58,7 @@ func (c *GetHistoryController) GetHistory(ctx *gin.Context) {
 	messages, err := c.getChatMessagesUsecase.Execute(
 		userId, chatId, cursorMessageId, count, direction)
 	if err != nil {
+		c.logger.Error(err.Error())
 		ctx.JSON(http.StatusForbidden, gin.H{"error": "access denied"})
 		return
 	}

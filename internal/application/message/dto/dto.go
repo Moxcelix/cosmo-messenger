@@ -1,10 +1,15 @@
 package dto
 
 import (
-	chat_application "main/internal/application/chat/dto"
 	user_application "main/internal/application/user/dto"
 	"time"
 )
+
+type ChatHeader struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
 
 type Reply struct {
 	ID      string                   `json:"id"`
@@ -23,9 +28,9 @@ type ChatMessage struct {
 }
 
 type MessageHistory struct {
-	ChatHeader *chat_application.ChatHeader `json:"chat"`
-	Messages   []*ChatMessage               `json:"messages"`
-	Meta       ScrollingMeta                `json:"meta"`
+	ChatHeader *ChatHeader    `json:"chat"`
+	Messages   []*ChatMessage `json:"messages"`
+	Meta       ScrollingMeta  `json:"meta"`
 }
 
 type ScrollingMeta struct {
@@ -33,4 +38,14 @@ type ScrollingMeta struct {
 	HasNext bool `json:"has_next"`
 	Offset  int  `json:"offset"`
 	Total   int  `json:"total"`
+}
+
+type Attachment struct {
+	ID        string    `json:"id"`
+	Type      string    `json:"type"`
+	URL       string    `json:"url"`
+	Filename  string    `json:"filename,omitempty"`
+	Size      int64     `json:"size,omitempty"`
+	MimeType  string    `json:"mime_type,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
 }
