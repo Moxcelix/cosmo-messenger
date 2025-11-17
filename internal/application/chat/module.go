@@ -10,6 +10,7 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(usecases.NewGetUserChatsUsecase),
+	fx.Provide(usecases.NewGetChatUsecase),
 	fx.Provide(usecases.NewTypingUsecase),
 
 	fx.Provide(services.NewChatRegistryService),

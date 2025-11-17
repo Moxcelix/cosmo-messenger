@@ -1,106 +1,10 @@
 definitions:
-  auth_api.loginRequest:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    type: object
-  auth_api.loginResponse:
-    properties:
-      access_token:
-        type: string
-      refresh_token:
-        type: string
-    type: object
-  auth_api.refreshRequest:
-    properties:
-      refresh_token:
-        type: string
-    type: object
-  auth_api.refreshResponse:
-    properties:
-      access_token:
-        type: string
-    type: object
-  auth_api.validateRequest:
-    properties:
-      access_token:
-        type: string
-    type: object
-  auth_api.validateResponse:
-    properties:
-      username:
-        type: string
-    type: object
-  chat_api.typingRequest:
-    properties:
-      chat_id:
-        type: string
-      is_typing:
-        type: boolean
-    type: object
-  chat_api.typingResponse:
+  controllers.deleteResponse:
     properties:
       message:
         type: string
     type: object
-  message_api.msgRequest:
-    properties:
-      content:
-        type: string
-      receiver_username:
-        type: string
-    required:
-    - content
-    - receiver_username
-    type: object
-  message_api.sendRequest:
-    properties:
-      content:
-        type: string
-    required:
-    - content
-    type: object
-  message_api.sendResponse:
-    properties:
-      message:
-        $ref: '#/definitions/message_application.ChatMessage'
-      text:
-        type: string
-    type: object
-  message_application.ChatMessage:
-    properties:
-      chat_id:
-        type: string
-      content:
-        type: string
-      edited:
-        type: boolean
-      id:
-        type: string
-      reply_to:
-        $ref: '#/definitions/message_application.Reply'
-      sender:
-        $ref: '#/definitions/user_application.Sender'
-      timestamp:
-        type: string
-    type: object
-  message_application.Reply:
-    properties:
-      content:
-        type: string
-      id:
-        type: string
-      sender:
-        $ref: '#/definitions/user_application.Sender'
-    type: object
-  user_api.deleteResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  user_api.infoResponse:
+  controllers.infoResponse:
     properties:
       bio:
         type: string
@@ -111,7 +15,31 @@ definitions:
       username:
         type: string
     type: object
-  user_api.paginationMeta:
+  controllers.loginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  controllers.loginResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  controllers.msgRequest:
+    properties:
+      content:
+        type: string
+      receiver_username:
+        type: string
+    required:
+    - content
+    - receiver_username
+    type: object
+  controllers.paginationMeta:
     properties:
       has_next:
         type: boolean
@@ -124,7 +52,17 @@ definitions:
       total_pages:
         type: integer
     type: object
-  user_api.registerRequest:
+  controllers.refreshRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  controllers.refreshResponse:
+    properties:
+      access_token:
+        type: string
+    type: object
+  controllers.registerRequest:
     properties:
       bio:
         type: string
@@ -139,28 +77,114 @@ definitions:
     - password
     - username
     type: object
-  user_api.registerResponse:
+  controllers.registerResponse:
     properties:
       message:
         type: string
     type: object
-  user_api.usernameData:
+  controllers.sendRequest:
+    properties:
+      content:
+        type: string
+    required:
+    - content
+    type: object
+  controllers.sendResponse:
+    properties:
+      message:
+        $ref: '#/definitions/dto.ChatMessage'
+      text:
+        type: string
+    type: object
+  controllers.typingRequest:
+    properties:
+      chat_id:
+        type: string
+      is_typing:
+        type: boolean
+    type: object
+  controllers.typingResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  controllers.usernameData:
     properties:
       id:
         type: string
       username:
         type: string
     type: object
-  user_api.usernamesListResponse:
+  controllers.usernamesListResponse:
     properties:
       data:
         items:
-          $ref: '#/definitions/user_api.usernameData'
+          $ref: '#/definitions/controllers.usernameData'
         type: array
       meta:
-        $ref: '#/definitions/user_api.paginationMeta'
+        $ref: '#/definitions/controllers.paginationMeta'
     type: object
-  user_application.Sender:
+  controllers.validateRequest:
+    properties:
+      access_token:
+        type: string
+    type: object
+  controllers.validateResponse:
+    properties:
+      username:
+        type: string
+    type: object
+  dto.ChatItem:
+    properties:
+      id:
+        type: string
+      last_message:
+        $ref: '#/definitions/dto.LastMessage'
+      name:
+        type: string
+      type:
+        type: string
+    type: object
+  dto.ChatMessage:
+    properties:
+      chat_id:
+        type: string
+      content:
+        type: string
+      edited:
+        type: boolean
+      id:
+        type: string
+      reply_to:
+        $ref: '#/definitions/dto.Reply'
+      sender:
+        $ref: '#/definitions/dto.Sender'
+      timestamp:
+        type: string
+    type: object
+  dto.LastMessage:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+      is_replied:
+        type: boolean
+      sender:
+        $ref: '#/definitions/dto.Sender'
+      timestamp:
+        type: string
+    type: object
+  dto.Reply:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+      sender:
+        $ref: '#/definitions/dto.Sender'
+    type: object
+  dto.Sender:
     properties:
       id:
         type: string
@@ -183,14 +207,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/auth_api.loginRequest'
+          $ref: '#/definitions/controllers.loginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth_api.loginResponse'
+            $ref: '#/definitions/controllers.loginResponse'
         "400":
           description: Bad Request
           schema:
@@ -217,14 +241,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/auth_api.refreshRequest'
+          $ref: '#/definitions/controllers.refreshRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth_api.refreshResponse'
+            $ref: '#/definitions/controllers.refreshResponse'
         "400":
           description: Bad Request
           schema:
@@ -251,14 +275,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/auth_api.validateRequest'
+          $ref: '#/definitions/controllers.validateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth_api.validateResponse'
+            $ref: '#/definitions/controllers.validateResponse'
         "400":
           description: Bad Request
           schema:
@@ -322,6 +346,59 @@ paths:
       summary: Get user chats
       tags:
       - chats
+  /api/v1/chats/{chat_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a specific chat
+      parameters:
+      - description: Chat ID
+        in: path
+        name: chat_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ChatItem'
+        "400":
+          description: Invalid chat ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Access denied
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Chat not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get specific chat
+      tags:
+      - chats
   /api/v1/chats/typing:
     post:
       consumes:
@@ -333,14 +410,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/chat_api.typingRequest'
+          $ref: '#/definitions/controllers.typingRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/chat_api.typingResponse'
+            $ref: '#/definitions/controllers.typingResponse'
         "400":
           description: Bad Request
           schema:
@@ -436,14 +513,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/message_api.sendRequest'
+          $ref: '#/definitions/controllers.sendRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/message_api.sendResponse'
+            $ref: '#/definitions/controllers.sendResponse'
         "400":
           description: Bad Request
           schema:
@@ -466,7 +543,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/message_api.msgRequest'
+          $ref: '#/definitions/controllers.msgRequest'
       produces:
       - application/json
       responses:
@@ -540,7 +617,7 @@ paths:
               type: string
             type: object
         "404":
-          description: Chat not found
+          description: User not found
           schema:
             additionalProperties:
               type: string
@@ -567,7 +644,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_api.deleteResponse'
+            $ref: '#/definitions/controllers.deleteResponse'
         "400":
           description: Bad Request
           schema:
@@ -608,7 +685,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_api.deleteResponse'
+            $ref: '#/definitions/controllers.deleteResponse'
         "400":
           description: Bad Request
           schema:
@@ -680,7 +757,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_api.infoResponse'
+            $ref: '#/definitions/controllers.infoResponse'
         "400":
           description: Bad Request
           schema:
@@ -718,7 +795,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_api.usernamesListResponse'
+            $ref: '#/definitions/controllers.usernamesListResponse'
         "400":
           description: Bad Request
           schema:
@@ -745,14 +822,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/user_api.registerRequest'
+          $ref: '#/definitions/controllers.registerRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/user_api.registerResponse'
+            $ref: '#/definitions/controllers.registerResponse'
         "400":
           description: Bad Request
           schema:

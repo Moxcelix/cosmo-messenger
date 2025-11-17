@@ -6,5 +6,6 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(NewGetUserChatsController),
+	fx.Provide(NewGetChatController),
 	fx.Provide(NewTypingController),
 )

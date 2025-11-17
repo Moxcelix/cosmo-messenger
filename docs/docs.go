@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth_api.loginRequest"
+                            "$ref": "#/definitions/controllers.loginRequest"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth_api.loginResponse"
+                            "$ref": "#/definitions/controllers.loginResponse"
                         }
                     },
                     "400": {
@@ -87,7 +87,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth_api.refreshRequest"
+                            "$ref": "#/definitions/controllers.refreshRequest"
                         }
                     }
                 ],
@@ -95,7 +95,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth_api.refreshResponse"
+                            "$ref": "#/definitions/controllers.refreshResponse"
                         }
                     },
                     "400": {
@@ -139,7 +139,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth_api.validateRequest"
+                            "$ref": "#/definitions/controllers.validateRequest"
                         }
                     }
                 ],
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth_api.validateResponse"
+                            "$ref": "#/definitions/controllers.validateResponse"
                         }
                     },
                     "400": {
@@ -270,7 +270,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/chat_api.typingRequest"
+                            "$ref": "#/definitions/controllers.typingRequest"
                         }
                     }
                 ],
@@ -278,11 +278,93 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/chat_api.typingResponse"
+                            "$ref": "#/definitions/controllers.typingResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/chats/{chat_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get detailed information about a specific chat",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chats"
+                ],
+                "summary": "Get specific chat",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Chat ID",
+                        "name": "chat_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ChatItem"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid chat ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Chat not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -428,7 +510,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/message_api.sendRequest"
+                            "$ref": "#/definitions/controllers.sendRequest"
                         }
                     }
                 ],
@@ -436,7 +518,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/message_api.sendResponse"
+                            "$ref": "#/definitions/controllers.sendResponse"
                         }
                     },
                     "400": {
@@ -476,7 +558,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/message_api.msgRequest"
+                            "$ref": "#/definitions/controllers.msgRequest"
                         }
                     }
                 ],
@@ -587,7 +669,7 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Chat not found",
+                        "description": "User not found",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -629,7 +711,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_api.deleteResponse"
+                            "$ref": "#/definitions/controllers.deleteResponse"
                         }
                     },
                     "400": {
@@ -693,7 +775,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_api.deleteResponse"
+                            "$ref": "#/definitions/controllers.deleteResponse"
                         }
                     },
                     "400": {
@@ -799,7 +881,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_api.infoResponse"
+                            "$ref": "#/definitions/controllers.infoResponse"
                         }
                     },
                     "400": {
@@ -856,7 +938,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_api.usernamesListResponse"
+                            "$ref": "#/definitions/controllers.usernamesListResponse"
                         }
                     },
                     "400": {
@@ -900,7 +982,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_api.registerRequest"
+                            "$ref": "#/definitions/controllers.registerRequest"
                         }
                     }
                 ],
@@ -908,7 +990,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/user_api.registerResponse"
+                            "$ref": "#/definitions/controllers.registerResponse"
                         }
                     },
                     "400": {
@@ -935,72 +1017,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "auth_api.loginRequest": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth_api.loginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth_api.refreshRequest": {
-            "type": "object",
-            "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth_api.refreshResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth_api.validateRequest": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "auth_api.validateResponse": {
-            "type": "object",
-            "properties": {
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "chat_api.typingRequest": {
-            "type": "object",
-            "properties": {
-                "chat_id": {
-                    "type": "string"
-                },
-                "is_typing": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "chat_api.typingResponse": {
+        "controllers.deleteResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -1008,92 +1025,7 @@ const docTemplate = `{
                 }
             }
         },
-        "message_api.msgRequest": {
-            "type": "object",
-            "required": [
-                "content",
-                "receiver_username"
-            ],
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "receiver_username": {
-                    "type": "string"
-                }
-            }
-        },
-        "message_api.sendRequest": {
-            "type": "object",
-            "required": [
-                "content"
-            ],
-            "properties": {
-                "content": {
-                    "type": "string"
-                }
-            }
-        },
-        "message_api.sendResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "$ref": "#/definitions/message_application.ChatMessage"
-                },
-                "text": {
-                    "type": "string"
-                }
-            }
-        },
-        "message_application.ChatMessage": {
-            "type": "object",
-            "properties": {
-                "chat_id": {
-                    "type": "string"
-                },
-                "content": {
-                    "type": "string"
-                },
-                "edited": {
-                    "type": "boolean"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "reply_to": {
-                    "$ref": "#/definitions/message_application.Reply"
-                },
-                "sender": {
-                    "$ref": "#/definitions/user_application.Sender"
-                },
-                "timestamp": {
-                    "type": "string"
-                }
-            }
-        },
-        "message_application.Reply": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "sender": {
-                    "$ref": "#/definitions/user_application.Sender"
-                }
-            }
-        },
-        "user_api.deleteResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "user_api.infoResponse": {
+        "controllers.infoResponse": {
             "type": "object",
             "properties": {
                 "bio": {
@@ -1110,7 +1042,44 @@ const docTemplate = `{
                 }
             }
         },
-        "user_api.paginationMeta": {
+        "controllers.loginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.loginResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.msgRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "receiver_username"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "receiver_username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.paginationMeta": {
             "type": "object",
             "properties": {
                 "has_next": {
@@ -1130,7 +1099,23 @@ const docTemplate = `{
                 }
             }
         },
-        "user_api.registerRequest": {
+        "controllers.refreshRequest": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.refreshResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.registerRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -1152,7 +1137,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user_api.registerResponse": {
+        "controllers.registerResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -1160,7 +1145,48 @@ const docTemplate = `{
                 }
             }
         },
-        "user_api.usernameData": {
+        "controllers.sendRequest": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.sendResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "$ref": "#/definitions/dto.ChatMessage"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.typingRequest": {
+            "type": "object",
+            "properties": {
+                "chat_id": {
+                    "type": "string"
+                },
+                "is_typing": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "controllers.typingResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.usernameData": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1171,21 +1197,114 @@ const docTemplate = `{
                 }
             }
         },
-        "user_api.usernamesListResponse": {
+        "controllers.usernamesListResponse": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_api.usernameData"
+                        "$ref": "#/definitions/controllers.usernameData"
                     }
                 },
                 "meta": {
-                    "$ref": "#/definitions/user_api.paginationMeta"
+                    "$ref": "#/definitions/controllers.paginationMeta"
                 }
             }
         },
-        "user_application.Sender": {
+        "controllers.validateRequest": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.validateResponse": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ChatItem": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "last_message": {
+                    "$ref": "#/definitions/dto.LastMessage"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ChatMessage": {
+            "type": "object",
+            "properties": {
+                "chat_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "edited": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reply_to": {
+                    "$ref": "#/definitions/dto.Reply"
+                },
+                "sender": {
+                    "$ref": "#/definitions/dto.Sender"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LastMessage": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_replied": {
+                    "type": "boolean"
+                },
+                "sender": {
+                    "$ref": "#/definitions/dto.Sender"
+                },
+                "timestamp": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.Reply": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "sender": {
+                    "$ref": "#/definitions/dto.Sender"
+                }
+            }
+        },
+        "dto.Sender": {
             "type": "object",
             "properties": {
                 "id": {
