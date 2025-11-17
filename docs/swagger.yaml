@@ -134,6 +134,15 @@ definitions:
       username:
         type: string
     type: object
+  dto.ChatCollection:
+    properties:
+      chats:
+        items:
+          $ref: '#/definitions/dto.ChatItem'
+        type: array
+      meta:
+        $ref: '#/definitions/main_internal_application_chat_dto.ScrollingMeta'
+    type: object
   dto.ChatItem:
     properties:
       id:
@@ -190,6 +199,17 @@ definitions:
         type: string
       name:
         type: string
+    type: object
+  main_internal_application_chat_dto.ScrollingMeta:
+    properties:
+      has_next:
+        type: boolean
+      has_prev:
+        type: boolean
+      offset:
+        type: integer
+      total:
+        type: integer
     type: object
 info:
   contact: {}
@@ -302,27 +322,32 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get paginated list of user's chats
+      description: Get paginated list of user's chats with cursor-based pagination
       parameters:
-      - default: 1
-        description: Page number
+      - description: Cursor for pagination (chat ID)
         in: query
-        name: page
-        type: integer
+        name: cursor
+        type: string
       - default: 10
         description: Number of chats per page
         in: query
         name: count
         type: integer
+      - default: older
+        description: 'Pagination direction: older or newer'
+        enum:
+        - older
+        - newer
+        in: query
+        name: direction
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/dto.ChatCollection'
         "400":
           description: Invalid parameters
           schema:

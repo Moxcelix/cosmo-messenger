@@ -9,7 +9,6 @@ import (
 )
 
 const (
-	defaultPage  = 1
 	defaultCount = 10
 	maxPageSize  = 100
 )
@@ -34,20 +33,15 @@ func NewGetUserChatsUsecase(
 		mapper:        mapper,
 	}
 }
-
-func (uc *GetUserChatsUsecase) Execute(userID string, page, count int) (*dto.ChatCollection, error) {
-	if page < 1 {
-		page = defaultPage
-	}
+func (uc *GetUserChatsUsecase) Execute(userID string, cursorChatID string, count int, direction string) (*dto.ChatCollection, error) {
 	if count < 1 {
 		count = defaultCount
 	}
 	if count > maxPageSize {
 		count = maxPageSize
 	}
-	offset := (page - 1) * count
 
-	readModelList, err := uc.chatListQuery.Query(userID, offset, count)
+	readModelList, err := uc.chatListQuery.Query(userID, cursorChatID, count, direction)
 	if err != nil {
 		return nil, err
 	}

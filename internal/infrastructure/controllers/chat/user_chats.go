@@ -13,7 +13,8 @@ type GetUserChatsController struct {
 }
 
 func NewGetUserChatsController(
-	userChatsUsecase *chat_application.GetUserChatsUsecase) *GetUserChatsController {
+	userChatsUsecase *chat_application.GetUserChatsUsecase,
+) *GetUserChatsController {
 	return &GetUserChatsController{
 		userChatsUsecase: userChatsUsecase,
 	}
@@ -21,25 +22,23 @@ func NewGetUserChatsController(
 
 // GetUserChats godoc
 // @Summary Get user chats
-// @Description Get paginated list of user's chats
+// @Description Get paginated list of user's chats with cursor-based pagination
 // @Tags chats
 // @Accept json
 // @Produce json
-// @Param page query int false "Page number" default(1)
+// @Param cursor query string false "Cursor for pagination (chat ID)"
 // @Param count query int false "Number of chats per page" default(10)
+// @Param direction query string false "Pagination direction: older or newer" Enums(older, newer) default(older)
 // @Security BearerAuth
-// @Success 200 {object} map[string]string
+// @Success 200 {object} dto.ChatCollection
 // @Failure 400 {object} map[string]string "Invalid parameters"
 // @Failure 401 {object} map[string]string "Unauthorized"
 // @Failure 500 {object} map[string]string "Internal server error"
 // @Router /api/v1/chats [get]
 func (c *GetUserChatsController) GetUserChats(ctx *gin.Context) {
-	userId := ctx.GetString("UserID")
-	page, err := strconv.Atoi(ctx.DefaultQuery("page", "1"))
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid page parameter"})
-		return
-	}
+	userID := ctx.GetString("UserID")
+
+	cursorChatID := ctx.Query("cursor")
 
 	count, err := strconv.Atoi(ctx.DefaultQuery("count", "10"))
 	if err != nil {
@@ -47,7 +46,13 @@ func (c *GetUserChatsController) GetUserChats(ctx *gin.Context) {
 		return
 	}
 
-	list, err := c.userChatsUsecase.Execute(userId, page, count)
+	direction := ctx.DefaultQuery("direction", "older")
+	if direction != "older" && direction != "newer" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "direction must be 'older' or 'newer'"})
+		return
+	}
+
+	list, err := c.userChatsUsecase.Execute(userID, cursorChatID, count, direction)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

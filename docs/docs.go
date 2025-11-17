@@ -178,7 +178,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Get paginated list of user's chats",
+                "description": "Get paginated list of user's chats with cursor-based pagination",
                 "consumes": [
                     "application/json"
                 ],
@@ -191,10 +191,9 @@ const docTemplate = `{
                 "summary": "Get user chats",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Page number",
-                        "name": "page",
+                        "type": "string",
+                        "description": "Cursor for pagination (chat ID)",
+                        "name": "cursor",
                         "in": "query"
                     },
                     {
@@ -203,16 +202,24 @@ const docTemplate = `{
                         "description": "Number of chats per page",
                         "name": "count",
                         "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "older",
+                            "newer"
+                        ],
+                        "type": "string",
+                        "default": "older",
+                        "description": "Pagination direction: older or newer",
+                        "name": "direction",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/dto.ChatCollection"
                         }
                     },
                     "400": {
@@ -1227,6 +1234,20 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ChatCollection": {
+            "type": "object",
+            "properties": {
+                "chats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ChatItem"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/main_internal_application_chat_dto.ScrollingMeta"
+                }
+            }
+        },
         "dto.ChatItem": {
             "type": "object",
             "properties": {
@@ -1312,6 +1333,23 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "main_internal_application_chat_dto.ScrollingMeta": {
+            "type": "object",
+            "properties": {
+                "has_next": {
+                    "type": "boolean"
+                },
+                "has_prev": {
+                    "type": "boolean"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         }
