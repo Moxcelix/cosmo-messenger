@@ -6,6 +6,7 @@ import (
 	"main/internal/application/message/queries"
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
+	"time"
 )
 
 type MessageSender struct {
@@ -14,6 +15,7 @@ type MessageSender struct {
 	messagePublisher MessagePublisher
 	messageQuery     queries.MessageQuery
 	messageMapper    *mappers.MessageMapper
+	chatRepo         chat_domain.ChatRepository
 }
 
 func NewMessageSender(
@@ -22,6 +24,7 @@ func NewMessageSender(
 	messagePublisher MessagePublisher,
 	messageQuery queries.MessageQuery,
 	messageMapper *mappers.MessageMapper,
+	chatRepo chat_domain.ChatRepository,
 ) *MessageSender {
 	return &MessageSender{
 		messagePolicy:    messagePolicy,
@@ -29,6 +32,7 @@ func NewMessageSender(
 		messagePublisher: messagePublisher,
 		messageQuery:     messageQuery,
 		messageMapper:    messageMapper,
+		chatRepo:         chatRepo,
 	}
 }
 
@@ -57,6 +61,10 @@ func (s *MessageSender) SendMessageToChat(
 
 	chatMembersId := chat.GetMembersId()
 	if err := s.messagePublisher.PublishToUsers(chatMembersId, msgDto); err != nil {
+		return nil, err
+	}
+
+	if err := s.chatRepo.MarkUpdated(chat.ID, time.Now()); err != nil {
 		return nil, err
 	}
 
