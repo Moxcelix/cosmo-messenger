@@ -4,34 +4,25 @@ import (
 	"main/internal/application/message/dto"
 	"main/internal/application/message/services"
 	chat_domain "main/internal/domain/chat"
-	message_domain "main/internal/domain/message"
 	user_domain "main/internal/domain/user"
 )
 
 type GetDirectMessageHistoryUsecase struct {
-	chatFactory    *chat_domain.ChatFactory
 	userRepo       user_domain.UserRepository
-	msgRepo        message_domain.MessageRepository
-	chatRepo       chat_domain.ChatRepository
-	chatPolicy     *chat_domain.ChatPolicy
+	chatService    *chat_domain.ChatService
 	historyService *services.MessageHistoryService
 }
 
 func NewGetDirectMessageHistoryUsecase(
-	chatFactory *chat_domain.ChatFactory,
 	userRepo user_domain.UserRepository,
-	msgRepo message_domain.MessageRepository,
-	chatRepo chat_domain.ChatRepository,
-	chatPolicy *chat_domain.ChatPolicy,
 	historyService *services.MessageHistoryService,
+	chatService *chat_domain.ChatService,
+
 ) *GetDirectMessageHistoryUsecase {
 	return &GetDirectMessageHistoryUsecase{
-		chatFactory:    chatFactory,
-		msgRepo:        msgRepo,
-		chatPolicy:     chatPolicy,
-		chatRepo:       chatRepo,
 		userRepo:       userRepo,
 		historyService: historyService,
+		chatService:    chatService,
 	}
 }
 
@@ -47,21 +38,10 @@ func (uc *GetDirectMessageHistoryUsecase) Execute(
 		return nil, user_domain.ErrUserNotFound
 	}
 
-	chat, err := uc.chatRepo.GetDirectChat(userId, companion.ID)
+	chat, err := uc.chatService.GetDirectChat(userId, companion.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	if chat == nil {
-		chat, err = uc.chatFactory.CreateDirectChat(userId, companion.ID)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if err := uc.chatPolicy.ValidateUserAccess(userId, chat); err != nil {
-		return nil, err
-	}
-
-	return uc.historyService.GetMessageHistory(userId, chat.ID, cursorMessageId, count, direction, chat)
+	return uc.historyService.GetMessageHistory(userId, cursorMessageId, chat, count, direction)
 }

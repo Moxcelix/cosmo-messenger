@@ -1,0 +1,46 @@
+@startuml
+autonumber
+
+actor User
+participant "GetDirectMessageHistoryUsecase" as UC
+participant "UserRepository" as UserRepo
+participant "ChatService" as ChatSvc
+participant "MessageHistoryService" as HistorySvc
+participant "MessageHistoryQuery" as Query
+participant "ChatNamingService" as Naming
+participant "MessageHistoryMapper" as Mapper
+
+User -> UC: Execute(userId, targetUsername, cursorId, count, direction)
+
+UC -> UserRepo: GetUserByUsername(targetUsername)
+UserRepo --> UC: companion
+
+UC -> ChatSvc: GetDirectChat(userId, companion.ID)
+ChatSvc --> UC: chat
+
+UC -> HistorySvc: GetMessageHistory(userId, cursorId, chat, count, direction)
+
+group MessageHistoryService
+    alt Chat is persisted
+        HistorySvc -> HistorySvc: validateAndLimitCount(count)
+        HistorySvc -> Query: Query(chat.ID, cursorId, count, direction)
+        Query --> HistorySvc: historyReadmodel
+
+        HistorySvc -> Naming: ResolveChatName(chat, userId)
+        Naming --> HistorySvc: chatName
+
+        HistorySvc -> Mapper: MapToDTO(historyReadmodel, chatName)
+        Mapper --> HistorySvc: dto
+    else Chat is NOT persisted
+        HistorySvc -> Naming: ResolveChatName(chat, userId)
+        Naming --> HistorySvc: chatName
+
+        HistorySvc -> Mapper: MapToDTO(emptyHistory, chatName)
+        Mapper --> HistorySvc: dto
+    end
+end
+
+HistorySvc --> UC: dto
+UC --> User: dto
+
+@enduml

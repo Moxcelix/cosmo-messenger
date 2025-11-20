@@ -1,0 +1,45 @@
+@startuml
+autonumber
+
+actor User
+participant "SendMessageUsecase" as UC
+participant "ChatService" as ChatSvc
+participant "ChatMessageService" as MsgSvc
+participant "MessageDispatcher" as Dispatcher
+participant "MessageQuery" as Query
+participant "MessageMapper" as Mapper
+participant "MessagePublisher" as Publisher
+
+User -> UC: Execute(senderId, chatId, content)
+
+UC -> ChatSvc: GetChatForUser(chatId, senderId)
+alt Chat not found
+    ChatSvc --> UC: error (ChatNotFound)
+    UC --> User: error (ChatNotFound)
+else Chat exists but no access
+    ChatSvc --> UC: error (AccessDenied)
+    UC --> User: error (AccessDenied)
+else Access granted
+    ChatSvc --> UC: chat
+
+    UC -> MsgSvc: SendMessage(chat, senderId, content, now)
+    MsgSvc --> UC: msg
+
+    UC -> Dispatcher: DispatchMessage(chat, msg)
+
+    group Внутри MessageDispatcher
+        Dispatcher -> Query: Query(msg.ID)
+        Query --> Dispatcher: msgReadmodel
+
+        Dispatcher -> Mapper: MapToDTO(msgReadmodel)
+        Mapper --> Dispatcher: msgDto
+
+        Dispatcher -> Publisher: PublishToUsers(chat.GetMembersId(), msgDto)
+        Publisher --> Dispatcher: success/failure
+    end
+
+    Dispatcher --> UC: msgDto
+    UC --> User: msgDto
+end
+
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+autonumber
+
+actor User
+participant "DirectMessageUsecase" as UC
+participant "UserRepository" as UserRepo
+participant "ChatService" as ChatSvc
+participant "ChatMessageService" as MsgSvc
+participant "MessageDispatcher" as Dispatcher
+participant "MessageQuery" as Query
+participant "MessageMapper" as Mapper
+participant "MessagePublisher" as Publisher
+
+User -> UC: Execute(senderId, receiverUsername, content)
+
+UC -> UserRepo: GetUserByUsername(receiverUsername)
+UserRepo --> UC: receiver
+
+UC -> ChatSvc: GetDirectChat(senderId, receiver.ID)
+ChatSvc --> UC: chat
+
+UC -> MsgSvc: SendMessage(chat, senderId, content, now)
+MsgSvc --> UC: msg
+
+UC -> Dispatcher: DispatchMessage(chat, msg)
+
+group MessageDispatcher
+    Dispatcher -> Query: Query(message.ID)
+    Query --> Dispatcher: msgReadmodel
+
+    Dispatcher -> Mapper: MapToDTO(msgReadmodel)
+    Mapper --> Dispatcher: msgDto
+
+    Dispatcher -> Publisher: PublishToUsers(chat.GetMembersId(), msgDto)
+    Publisher --> Dispatcher: success/failure
+end
+
+Dispatcher --> UC: msgDto
+UC --> User: msgDto
+
+@enduml

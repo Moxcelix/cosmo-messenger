@@ -1,0 +1,9 @@
+{
+    // "plantuml.render": "local",
+    // "plantuml.java": "/usr/bin/java",
+    // "plantuml.jarPath": "${workspaceFolder}/plantuml.jar",
+    "files.associations": {
+        "*.puml": "plaintext",
+        "*.plantuml": "plaintext"
+    }
+}

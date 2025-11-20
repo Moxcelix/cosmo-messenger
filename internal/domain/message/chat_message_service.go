@@ -6,23 +6,30 @@ import (
 )
 
 type ChatMessageService struct {
-	chatRepo    chat_domain.ChatRepository
-	messageRepo MessageRepository
+	chatRepo      chat_domain.ChatRepository
+	messageRepo   MessageRepository
+	messagePolicy *MessagePolicy
 }
 
 func NewChatMessageService(
 	chatRepo chat_domain.ChatRepository,
 	messageRepo MessageRepository,
+	messagePolicy *MessagePolicy,
 ) *ChatMessageService {
 	return &ChatMessageService{
-		chatRepo:    chatRepo,
-		messageRepo: messageRepo,
+		chatRepo:      chatRepo,
+		messageRepo:   messageRepo,
+		messagePolicy: messagePolicy,
 	}
 }
 
 func (s *ChatMessageService) SendMessage(
 	chat *chat_domain.Chat, senderID, content string, sentAt time.Time,
 ) (*Message, error) {
+
+	if err := s.messagePolicy.ValidateMessageContent(content); err != nil {
+		return nil, err
+	}
 
 	if !chat.IsPersisted() {
 		if err := s.chatRepo.Create(chat); err != nil {

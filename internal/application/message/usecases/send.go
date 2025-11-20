@@ -4,37 +4,43 @@ import (
 	"main/internal/application/message/dto"
 	"main/internal/application/message/services"
 	chat_domain "main/internal/domain/chat"
+	message_domain "main/internal/domain/message"
+	"time"
 )
 
 type SendMessageUsecase struct {
-	chatRepo  chat_domain.ChatRepository
-	msgSender *services.MessageSender
+	chatService       *chat_domain.ChatService
+	messageDispatcher *services.MessageDispatcher
+	messageService    *message_domain.ChatMessageService
 }
 
 func NewSendMessageUsecase(
-	chatRepo chat_domain.ChatRepository,
-	msgSender *services.MessageSender,
+	chatService *chat_domain.ChatService,
+	messageDispatcher *services.MessageDispatcher,
+	messageService *message_domain.ChatMessageService,
 ) *SendMessageUsecase {
 	return &SendMessageUsecase{
-		chatRepo:  chatRepo,
-		msgSender: msgSender,
+		chatService:       chatService,
+		messageDispatcher: messageDispatcher,
+		messageService:    messageService,
 	}
 }
 
 func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) (*dto.ChatMessage, error) {
-	chat, err := uc.chatRepo.GetByID(chatId)
+	chat, err := uc.chatService.GetChatForUser(chatId, senderId)
 	if err != nil {
 		return nil, err
 	}
 
-	if chat == nil {
-		return nil, chat_domain.ErrChatNotFound
-	}
-
-	msg, err := uc.msgSender.SendMessageToChat(chat, senderId, content)
+	msg, err := uc.messageService.SendMessage(chat, senderId, content, time.Now())
 	if err != nil {
 		return nil, err
 	}
 
-	return msg, nil
+	msgDto, err := uc.messageDispatcher.DispatchMessage(chat, msg)
+	if err != nil {
+		return nil, err
+	}
+
+	return msgDto, nil
 }

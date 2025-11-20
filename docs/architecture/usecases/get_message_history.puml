@@ -1,0 +1,50 @@
+@startuml
+autonumber
+
+actor User
+participant "GetMessageHistoryUsecase" as UC
+participant "ChatService" as ChatSvc
+participant "MessageHistoryService" as HistorySvc
+participant "MessageHistoryQuery" as Query
+participant "ChatNamingService" as Naming
+participant "MessageHistoryMapper" as Mapper
+
+User -> UC: Execute(userId, chatId, cursorId, count, direction)
+
+UC -> ChatSvc: GetChatForUser(chatId, userId)
+alt Chat not found
+    ChatSvc --> UC: error (ChatNotFound)
+    UC --> User: error (ChatNotFound)
+else Chat exists but no access
+    ChatSvc --> UC: error (AccessDenied)
+    UC --> User: error (AccessDenied)
+else Access granted
+    ChatSvc --> UC: chat
+
+    UC -> HistorySvc: GetMessageHistory(userId, cursorId, chat, count, direction)
+
+    group MessageHistoryService
+        alt Chat is persisted
+            HistorySvc -> HistorySvc: validateAndLimitCount(count)
+            HistorySvc -> Query: Query(chat.ID, cursorId, count, direction)
+            Query --> HistorySvc: historyReadmodel
+
+            HistorySvc -> Naming: ResolveChatName(chat, userId)
+            Naming --> HistorySvc: chatName
+
+            HistorySvc -> Mapper: MapToDTO(historyReadmodel, chatName)
+            Mapper --> HistorySvc: dto
+        else Chat is NOT persisted
+            HistorySvc -> Naming: ResolveChatName(chat, userId)
+            Naming --> HistorySvc: chatName
+
+            HistorySvc -> Mapper: MapToDTO(emptyHistory, chatName)
+            Mapper --> HistorySvc: dto
+        end
+    end
+
+    HistorySvc --> UC: dto
+    UC --> User: dto
+end
+
+@enduml

@@ -6,23 +6,20 @@ import (
 	chat_domain "main/internal/domain/chat"
 )
 
-type ChatRegistryService struct {
-	chatRepo          chat_domain.ChatRepository
+type ChatDispatcher struct {
 	chatMapper        *mappers.ChatItemMapper
 	chatNamingService *chat_domain.ChatNamingService
 	chatPublisher     ChatPublisher
 	chatQuery         queries.ChatQuery
 }
 
-func NewChatRegistryService(
-	chatRepo chat_domain.ChatRepository,
+func NewChatDispatcher(
 	chatMapper *mappers.ChatItemMapper,
 	chatNamingService *chat_domain.ChatNamingService,
 	chatBroadcaster ChatPublisher,
 	chatQuery queries.ChatQuery,
-) *ChatRegistryService {
-	return &ChatRegistryService{
-		chatRepo:          chatRepo,
+) *ChatDispatcher {
+	return &ChatDispatcher{
 		chatPublisher:     chatBroadcaster,
 		chatNamingService: chatNamingService,
 		chatQuery:         chatQuery,
@@ -30,12 +27,10 @@ func NewChatRegistryService(
 	}
 }
 
-func (c *ChatRegistryService) Register(chat *chat_domain.Chat) error {
-	if err := c.chatRepo.Create(chat); err != nil {
-		return err
-	}
+func (c *ChatDispatcher) DispatchChat(chat *chat_domain.Chat) error {
 
 	chatMembersId := chat.GetMembersId()
+
 	for _, chatMemberId := range chatMembersId {
 
 		chatReadmodel, err := c.chatQuery.Query(chat.ID)

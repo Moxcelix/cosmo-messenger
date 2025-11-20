@@ -20,6 +20,6 @@ var Module = fx.Options(
 	fx.Provide(mappers.NewMessageMapper),
 	fx.Provide(mappers.NewMessageHistoryMapper),
 
-	fx.Provide(services.NewMessageSender),
+	fx.Provide(services.NewMessageDispatcher),
 	fx.Provide(services.NewMessageHistoryService),
 )

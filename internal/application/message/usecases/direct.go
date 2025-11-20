@@ -1,34 +1,32 @@
 package usecases
 
 import (
-	chat_application "main/internal/application/chat/services"
 	"main/internal/application/message/dto"
 	"main/internal/application/message/services"
 	chat_domain "main/internal/domain/chat"
+	message_domain "main/internal/domain/message"
 	user_domain "main/internal/domain/user"
+	"time"
 )
 
 type DirectMessageUsecase struct {
-	chatFactory         *chat_domain.ChatFactory
-	userRepo            user_domain.UserRepository
-	chatRepo            chat_domain.ChatRepository
-	messageSender       *services.MessageSender
-	chatRegistryService *chat_application.ChatRegistryService
+	userRepo          user_domain.UserRepository
+	messageDispatcher *services.MessageDispatcher
+	chatService       *chat_domain.ChatService
+	messageService    *message_domain.ChatMessageService
 }
 
 func NewDirectMessageUsecase(
-	chatFactory *chat_domain.ChatFactory,
 	userRepo user_domain.UserRepository,
-	chatRepo chat_domain.ChatRepository,
-	messageSender *services.MessageSender,
-	chatRegistryService *chat_application.ChatRegistryService,
+	messageDispatcher *services.MessageDispatcher,
+	chatService *chat_domain.ChatService,
+	messageService *message_domain.ChatMessageService,
 ) *DirectMessageUsecase {
 	return &DirectMessageUsecase{
-		chatFactory:         chatFactory,
-		userRepo:            userRepo,
-		chatRepo:            chatRepo,
-		messageSender:       messageSender,
-		chatRegistryService: chatRegistryService,
+		userRepo:          userRepo,
+		messageDispatcher: messageDispatcher,
+		chatService:       chatService,
+		messageService:    messageService,
 	}
 }
 
@@ -43,39 +41,20 @@ func (uc *DirectMessageUsecase) Execute(
 		return nil, user_domain.ErrUserNotFound
 	}
 
-	chat, err := uc.findOrCreateDirectChat(senderId, receiver.ID)
+	chat, err := uc.chatService.GetDirectChat(senderId, receiver.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	msg, err := uc.messageSender.SendMessageToChat(chat, senderId, content)
+	msg, err := uc.messageService.SendMessage(chat, senderId, content, time.Now())
 	if err != nil {
 		return nil, err
 	}
 
-	return msg, nil
-}
-
-func (uc *DirectMessageUsecase) findOrCreateDirectChat(
-	senderId, receiverId string) (*chat_domain.Chat, error) {
-
-	chat, err := uc.chatRepo.GetDirectChat(senderId, receiverId)
+	msgDto, err := uc.messageDispatcher.DispatchMessage(chat, msg)
 	if err != nil {
 		return nil, err
 	}
 
-	if chat != nil {
-		return chat, nil
-	}
-
-	chat, err = uc.chatFactory.CreateDirectChat(senderId, receiverId)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := uc.chatRegistryService.Register(chat); err != nil {
-		return nil, err
-	}
-
-	return chat, nil
+	return msgDto, nil
 }
