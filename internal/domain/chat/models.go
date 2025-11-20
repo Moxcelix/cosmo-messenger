@@ -33,6 +33,10 @@ type ChatMember struct {
 	JoinedAt time.Time      `json:"joined_at" bson:"joined_at"`
 }
 
+func (c *Chat) IsPersisted() bool {
+	return c.ID != ""
+}
+
 func (c *Chat) GetMembersId() []string {
 	memberIDs := make([]string, 0, len(c.Members))
 	for _, member := range c.Members {
