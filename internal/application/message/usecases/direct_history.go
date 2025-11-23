@@ -9,20 +9,21 @@ import (
 
 type GetDirectMessageHistoryUsecase struct {
 	userRepo       user_domain.UserRepository
-	chatService    *chat_domain.ChatService
+	chatRepo       chat_domain.ChatRepository
+	chatFactory    *chat_domain.ChatFactory
 	historyService *services.MessageHistoryService
 }
 
 func NewGetDirectMessageHistoryUsecase(
 	userRepo user_domain.UserRepository,
+	chatRepo chat_domain.ChatRepository,
 	historyService *services.MessageHistoryService,
-	chatService *chat_domain.ChatService,
 
 ) *GetDirectMessageHistoryUsecase {
 	return &GetDirectMessageHistoryUsecase{
 		userRepo:       userRepo,
+		chatRepo:       chatRepo,
 		historyService: historyService,
-		chatService:    chatService,
 	}
 }
 
@@ -38,9 +39,16 @@ func (uc *GetDirectMessageHistoryUsecase) Execute(
 		return nil, user_domain.ErrUserNotFound
 	}
 
-	chat, err := uc.chatService.GetDirectChat(userId, companion.ID)
+	chat, err := uc.chatRepo.GetDirectChat(userId, companion.ID)
 	if err != nil {
 		return nil, err
+	}
+
+	if chat == nil {
+		chat, err = uc.chatFactory.CreateDirectChat(userId, companion.ID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return uc.historyService.GetMessageHistory(userId, cursorMessageId, chat, count, direction)

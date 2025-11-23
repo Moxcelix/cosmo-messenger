@@ -9,27 +9,32 @@ import (
 )
 
 type DirectMessageUsecase struct {
+	userRepo    user_domain.UserRepository
+	chatRepo    chat_domain.ChatRepository
+	messageRepo message_domain.MessageRepository
+	chatFactory *chat_domain.ChatFactory
+
 	messageDispatcher *services.MessageDispatcher
-	userService       *user_domain.UserService
-	chatService       *chat_domain.ChatService
 	messagePolicy     *message_domain.MessagePolicy
-	messageService    *message_domain.MessageService
 	messageFactory    *message_domain.MessageFactory
 }
 
 func NewDirectMessageUsecase(
-	userService *user_domain.UserService,
+	userRepo user_domain.UserRepository,
+	chatRepo chat_domain.ChatRepository,
+	messageRepo message_domain.MessageRepository,
+	chatFactory *chat_domain.ChatFactory,
+
 	messageDispatcher *services.MessageDispatcher,
-	chatService *chat_domain.ChatService,
-	messageService *message_domain.MessageService,
 	messageFactory *message_domain.MessageFactory,
 	messagePolicy *message_domain.MessagePolicy,
 ) *DirectMessageUsecase {
 	return &DirectMessageUsecase{
-		userService:       userService,
+		userRepo:          userRepo,
+		chatRepo:          chatRepo,
+		messageRepo:       messageRepo,
+		chatFactory:       chatFactory,
 		messageDispatcher: messageDispatcher,
-		chatService:       chatService,
-		messageService:    messageService,
 		messageFactory:    messageFactory,
 		messagePolicy:     messagePolicy,
 	}
@@ -37,14 +42,25 @@ func NewDirectMessageUsecase(
 
 func (uc *DirectMessageUsecase) Execute(
 	senderId, receiverUsername, content string) (*dto.ChatMessage, error) {
-	receiver, err := uc.userService.GetUserByUsername(receiverUsername)
+	receiver, err := uc.userRepo.GetUserByUsername(receiverUsername)
 	if err != nil {
 		return nil, err
 	}
 
-	chat, err := uc.chatService.GetDirectChat(senderId, receiver.ID)
+	if receiver == nil {
+		return nil, user_domain.ErrUserNotFound
+	}
+
+	chat, err := uc.chatRepo.GetDirectChat(senderId, receiver.ID)
 	if err != nil {
 		return nil, err
+	}
+
+	if chat == nil {
+		chat, err = uc.chatFactory.CreateDirectChat(senderId, receiver.ID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if err := uc.messagePolicy.ValidateMessageContent(content); err != nil {
@@ -56,7 +72,17 @@ func (uc *DirectMessageUsecase) Execute(
 		return nil, err
 	}
 
-	if err := uc.messageService.SendMessage(chat, msg); err != nil {
+	if !chat.IsPersisted() {
+		if err := uc.chatRepo.Create(chat); err != nil {
+			return nil, err
+		}
+	}
+
+	if err := uc.messageRepo.CreateMessage(msg); err != nil {
+		return nil, err
+	}
+
+	if err := uc.chatRepo.MarkUpdated(chat.ID, msg.CreatedAt); err != nil {
 		return nil, err
 	}
 

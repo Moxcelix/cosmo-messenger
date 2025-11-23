@@ -10,7 +10,7 @@ import (
 
 type GetChatUsecase struct {
 	chatQuery     queries.ChatQuery
-	chatService   *chat_domain.ChatService
+	chatRepo      chat_domain.ChatRepository
 	chatPolicy    *chat_domain.ChatPolicy
 	namingService *services.ChatNamingService
 	mapper        *mappers.ChatItemMapper
@@ -18,14 +18,14 @@ type GetChatUsecase struct {
 
 func NewGetChatUsecase(
 	chatQuery queries.ChatQuery,
-	chatService *chat_domain.ChatService,
+	chatRepo chat_domain.ChatRepository,
 	chatPolicy *chat_domain.ChatPolicy,
 	mapper *mappers.ChatItemMapper,
 	namingService *services.ChatNamingService,
 ) *GetChatUsecase {
 	return &GetChatUsecase{
 		chatQuery:     chatQuery,
-		chatService:   chatService,
+		chatRepo:      chatRepo,
 		namingService: namingService,
 		mapper:        mapper,
 		chatPolicy:    chatPolicy,
@@ -33,9 +33,13 @@ func NewGetChatUsecase(
 }
 
 func (uc *GetChatUsecase) Execute(userId, chatId string) (*dto.ChatItem, error) {
-	chat, err := uc.chatService.GetChatById(chatId)
+	chat, err := uc.chatRepo.GetChatById(chatId)
 	if err != nil {
 		return nil, err
+	}
+
+	if chat == nil {
+		return nil, chat_domain.ErrChatNotFound
 	}
 
 	if err := uc.chatPolicy.ValidateUserAccess(userId, chat); err != nil {

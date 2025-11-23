@@ -106,7 +106,7 @@ func (r *ChatRepository) Create(chat *chat_domain.Chat) error {
 	})
 }
 
-func (r *ChatRepository) GetByID(id string) (*chat_domain.Chat, error) {
+func (r *ChatRepository) GetChatById(id string) (*chat_domain.Chat, error) {
 	chatQuery := `
 		SELECT id, type, name, description, created_by, created_at, updated_at
 		FROM chats 

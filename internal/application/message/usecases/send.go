@@ -8,36 +8,40 @@ import (
 )
 
 type SendMessageUsecase struct {
-	chatService       *chat_domain.ChatService
+	chatRepo          chat_domain.ChatRepository
+	messageRepo       message_domain.MessageRepository
 	chatPolicy        *chat_domain.ChatPolicy
 	messagePolicy     *message_domain.MessagePolicy
-	messageService    *message_domain.MessageService
 	messageFactory    *message_domain.MessageFactory
 	messageDispatcher *services.MessageDispatcher
 }
 
 func NewSendMessageUsecase(
-	chatService *chat_domain.ChatService,
+	chatRepo chat_domain.ChatRepository,
+	messageRepo message_domain.MessageRepository,
 	chatPolicy *chat_domain.ChatPolicy,
 	messagePolicy *message_domain.MessagePolicy,
-	messageService *message_domain.MessageService,
 	messageFactory *message_domain.MessageFactory,
 	messageDispatcher *services.MessageDispatcher,
 ) *SendMessageUsecase {
 	return &SendMessageUsecase{
-		chatService:       chatService,
+		chatRepo:          chatRepo,
+		messageRepo:       messageRepo,
 		chatPolicy:        chatPolicy,
 		messagePolicy:     messagePolicy,
-		messageService:    messageService,
 		messageFactory:    messageFactory,
 		messageDispatcher: messageDispatcher,
 	}
 }
 
 func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) (*dto.ChatMessage, error) {
-	chat, err := uc.chatService.GetChatById(chatId)
+	chat, err := uc.chatRepo.GetChatById(chatId)
 	if err != nil {
 		return nil, err
+	}
+
+	if chat == nil {
+		return nil, chat_domain.ErrChatNotFound
 	}
 
 	if err := uc.messagePolicy.ValidateMessageContent(content); err != nil {
@@ -53,7 +57,11 @@ func (uc *SendMessageUsecase) Execute(senderId, chatId, content string) (*dto.Ch
 		return nil, err
 	}
 
-	if err := uc.messageService.SendMessage(chat, msg); err != nil {
+	if err := uc.messageRepo.CreateMessage(msg); err != nil {
+		return nil, err
+	}
+
+	if err := uc.chatRepo.MarkUpdated(chat.ID, msg.CreatedAt); err != nil {
 		return nil, err
 	}
 

@@ -61,7 +61,7 @@ func (uc *GetUserChatsUsecase) getChatNames(
 ) (map[string]string, error) {
 	domainChats := make([]*chat_domain.Chat, len(chatReadModels))
 	for i, chat := range chatReadModels {
-		domainChat, err := uc.chatRepo.GetByID(chat.ID)
+		domainChat, err := uc.chatRepo.GetChatById(chat.ID)
 		if err != nil {
 			return nil, err
 		}

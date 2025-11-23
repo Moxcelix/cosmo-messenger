@@ -7,5 +7,4 @@ import (
 var Module = fx.Options(
 	fx.Provide(NewMessagePolicy),
 	fx.Provide(NewMessageFactory),
-	fx.Provide(NewMessageService),
 )

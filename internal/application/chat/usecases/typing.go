@@ -26,13 +26,9 @@ func NewTypingUsecase(
 }
 
 func (uc *TypingUsecase) Execute(userId, chatId string, isTyping bool) error {
-	chat, err := uc.chatRepo.GetByID(chatId)
+	chat, err := uc.chatRepo.GetChatById(chatId)
 	if err != nil {
 		return err
-	}
-
-	if chat == nil {
-		return chat_domain.ErrChatNotFound
 	}
 
 	user, err := uc.userRepo.GetUserById(userId)

@@ -7,19 +7,19 @@ import (
 )
 
 type GetMessageHistoryUsecase struct {
-	chatService    *chat_domain.ChatService
+	chatRepo       chat_domain.ChatRepository
 	chatPolicy     *chat_domain.ChatPolicy
 	historyService *services.MessageHistoryService
 }
 
 func NewGetMessageHistoryUsecase(
+	chatRepo chat_domain.ChatRepository,
 	chatPolicy *chat_domain.ChatPolicy,
-	chatService *chat_domain.ChatService,
 	historyService *services.MessageHistoryService,
 ) *GetMessageHistoryUsecase {
 	return &GetMessageHistoryUsecase{
 		chatPolicy:     chatPolicy,
-		chatService:    chatService,
+		chatRepo:       chatRepo,
 		historyService: historyService,
 	}
 }
@@ -27,9 +27,13 @@ func NewGetMessageHistoryUsecase(
 func (uc *GetMessageHistoryUsecase) Execute(
 	userId, chatId, cursorMessageId string, count int, direction string,
 ) (*dto.MessageHistory, error) {
-	chat, err := uc.chatService.GetChatById(chatId)
+	chat, err := uc.chatRepo.GetChatById(chatId)
 	if err != nil {
 		return nil, err
+	}
+
+	if chat == nil {
+		return nil, chat_domain.ErrChatNotFound
 	}
 
 	if err := uc.chatPolicy.ValidateUserAccess(userId, chat); err != nil {
