@@ -6,4 +6,6 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(NewPasswordHasher),
+	fx.Provide(NewUserService),
+	fx.Provide(NewUserPolicy),
 )

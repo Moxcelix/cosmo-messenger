@@ -1,20 +1,17 @@
 package chat_domain
 
 type ChatService struct {
-	factory    *ChatFactory
-	chatRepo   ChatRepository
-	chatPolicy *ChatPolicy
+	chatRepo ChatRepository
+	factory  *ChatFactory
 }
 
 func NewChatService(
-	factory *ChatFactory,
 	chatRepo ChatRepository,
-	chatPolicy *ChatPolicy,
+	factory *ChatFactory,
 ) *ChatService {
 	return &ChatService{
-		factory:    factory,
-		chatRepo:   chatRepo,
-		chatPolicy: chatPolicy,
+		factory:  factory,
+		chatRepo: chatRepo,
 	}
 }
 
@@ -34,7 +31,7 @@ func (s *ChatService) GetDirectChat(user1Id, user2Id string) (*Chat, error) {
 	return chat, err
 }
 
-func (s *ChatService) GetChatForUser(chatId, userId string) (*Chat, error) {
+func (s *ChatService) GetChatById(chatId string) (*Chat, error) {
 	chat, err := s.chatRepo.GetByID(chatId)
 	if err != nil {
 		return nil, err
@@ -42,10 +39,6 @@ func (s *ChatService) GetChatForUser(chatId, userId string) (*Chat, error) {
 
 	if chat == nil {
 		return nil, ErrChatNotFound
-	}
-
-	if err := s.chatPolicy.ValidateUserAccess(userId, chat); err != nil {
-		return nil, err
 	}
 
 	return chat, nil

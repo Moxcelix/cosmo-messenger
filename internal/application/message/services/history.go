@@ -1,6 +1,7 @@
 package services
 
 import (
+	"main/internal/application/chat/services"
 	"main/internal/application/message/dto"
 	"main/internal/application/message/mappers"
 	"main/internal/application/message/queries"
@@ -11,13 +12,13 @@ import (
 type MessageHistoryService struct {
 	historyQuery      queries.MessageHistoryQuery
 	historyMapper     *mappers.MessageHistoryMapper
-	chatNamingService *chat_domain.ChatNamingService
+	chatNamingService *services.ChatNamingService
 }
 
 func NewMessageHistoryService(
 	historyQuery queries.MessageHistoryQuery,
 	historyMapper *mappers.MessageHistoryMapper,
-	chatNamingService *chat_domain.ChatNamingService,
+	chatNamingService *services.ChatNamingService,
 ) *MessageHistoryService {
 	return &MessageHistoryService{
 		historyQuery:      historyQuery,

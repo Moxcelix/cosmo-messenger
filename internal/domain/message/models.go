@@ -23,3 +23,11 @@ type Message struct {
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
+
+func NewMessage(senderId, chatId, contnet string) *Message {
+	return &Message{
+		SenderID: senderId,
+		ChatID:   chatId,
+		Content:  contnet,
+	}
+}

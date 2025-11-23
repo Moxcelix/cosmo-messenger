@@ -5,6 +5,7 @@ import (
 	"main/internal/application/chat/mappers"
 	"main/internal/application/chat/queries"
 	"main/internal/application/chat/readmodels"
+	"main/internal/application/chat/services"
 	chat_domain "main/internal/domain/chat"
 )
 
@@ -16,14 +17,14 @@ const (
 type GetUserChatsUsecase struct {
 	chatListQuery queries.ChatListQuery
 	chatRepo      chat_domain.ChatRepository
-	namingService *chat_domain.ChatNamingService
+	namingService *services.ChatNamingService
 	mapper        *mappers.ChatCollectionMapper
 }
 
 func NewGetUserChatsUsecase(
 	chatListQuery queries.ChatListQuery,
 	chatRepo chat_domain.ChatRepository,
-	namingService *chat_domain.ChatNamingService,
+	namingService *services.ChatNamingService,
 	mapper *mappers.ChatCollectionMapper,
 ) *GetUserChatsUsecase {
 	return &GetUserChatsUsecase{

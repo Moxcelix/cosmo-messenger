@@ -6,39 +6,40 @@ import (
 	chat_domain "main/internal/domain/chat"
 	message_domain "main/internal/domain/message"
 	user_domain "main/internal/domain/user"
-	"time"
 )
 
 type DirectMessageUsecase struct {
-	userRepo          user_domain.UserRepository
 	messageDispatcher *services.MessageDispatcher
+	userService       *user_domain.UserService
 	chatService       *chat_domain.ChatService
-	messageService    *message_domain.ChatMessageService
+	messagePolicy     *message_domain.MessagePolicy
+	messageService    *message_domain.MessageService
+	messageFactory    *message_domain.MessageFactory
 }
 
 func NewDirectMessageUsecase(
-	userRepo user_domain.UserRepository,
+	userService *user_domain.UserService,
 	messageDispatcher *services.MessageDispatcher,
 	chatService *chat_domain.ChatService,
-	messageService *message_domain.ChatMessageService,
+	messageService *message_domain.MessageService,
+	messageFactory *message_domain.MessageFactory,
+	messagePolicy *message_domain.MessagePolicy,
 ) *DirectMessageUsecase {
 	return &DirectMessageUsecase{
-		userRepo:          userRepo,
+		userService:       userService,
 		messageDispatcher: messageDispatcher,
 		chatService:       chatService,
 		messageService:    messageService,
+		messageFactory:    messageFactory,
+		messagePolicy:     messagePolicy,
 	}
 }
 
 func (uc *DirectMessageUsecase) Execute(
 	senderId, receiverUsername, content string) (*dto.ChatMessage, error) {
-	receiver, err := uc.userRepo.GetUserByUsername(receiverUsername)
+	receiver, err := uc.userService.GetUserByUsername(receiverUsername)
 	if err != nil {
 		return nil, err
-	}
-
-	if receiver == nil {
-		return nil, user_domain.ErrUserNotFound
 	}
 
 	chat, err := uc.chatService.GetDirectChat(senderId, receiver.ID)
@@ -46,8 +47,16 @@ func (uc *DirectMessageUsecase) Execute(
 		return nil, err
 	}
 
-	msg, err := uc.messageService.SendMessage(chat, senderId, content, time.Now())
+	if err := uc.messagePolicy.ValidateMessageContent(content); err != nil {
+		return nil, err
+	}
+
+	msg, err := uc.messageFactory.CreateTextMessage(chat.ID, senderId, content)
 	if err != nil {
+		return nil, err
+	}
+
+	if err := uc.messageService.SendMessage(chat, msg); err != nil {
 		return nil, err
 	}
 

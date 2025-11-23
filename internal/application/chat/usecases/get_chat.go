@@ -4,27 +4,28 @@ import (
 	"main/internal/application/chat/dto"
 	"main/internal/application/chat/mappers"
 	"main/internal/application/chat/queries"
+	"main/internal/application/chat/services"
 	chat_domain "main/internal/domain/chat"
 )
 
 type GetChatUsecase struct {
 	chatQuery     queries.ChatQuery
-	chatRepo      chat_domain.ChatRepository
-	namingService *chat_domain.ChatNamingService
-	mapper        *mappers.ChatItemMapper
+	chatService   *chat_domain.ChatService
 	chatPolicy    *chat_domain.ChatPolicy
+	namingService *services.ChatNamingService
+	mapper        *mappers.ChatItemMapper
 }
 
 func NewGetChatUsecase(
 	chatQuery queries.ChatQuery,
-	chatRepo chat_domain.ChatRepository,
-	namingService *chat_domain.ChatNamingService,
-	mapper *mappers.ChatItemMapper,
+	chatService *chat_domain.ChatService,
 	chatPolicy *chat_domain.ChatPolicy,
+	mapper *mappers.ChatItemMapper,
+	namingService *services.ChatNamingService,
 ) *GetChatUsecase {
 	return &GetChatUsecase{
 		chatQuery:     chatQuery,
-		chatRepo:      chatRepo,
+		chatService:   chatService,
 		namingService: namingService,
 		mapper:        mapper,
 		chatPolicy:    chatPolicy,
@@ -32,13 +33,9 @@ func NewGetChatUsecase(
 }
 
 func (uc *GetChatUsecase) Execute(userId, chatId string) (*dto.ChatItem, error) {
-	chat, err := uc.chatRepo.GetByID(chatId)
+	chat, err := uc.chatService.GetChatById(chatId)
 	if err != nil {
 		return nil, err
-	}
-
-	if chat == nil {
-		return nil, chat_domain.ErrChatNotFound
 	}
 
 	if err := uc.chatPolicy.ValidateUserAccess(userId, chat); err != nil {

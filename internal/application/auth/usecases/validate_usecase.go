@@ -6,16 +6,17 @@ import (
 )
 
 type ValidateUsecase struct {
-	authservice   auth_domain.AuthService
-	userReposiory user_domain.UserRepository
+	authservice auth_domain.AuthService
+	userPolicy  *user_domain.UserPolicy
 }
 
 func NewValidateUsecase(
 	authservice auth_domain.AuthService,
-	userReposiory user_domain.UserRepository) *ValidateUsecase {
+	userPolicy *user_domain.UserPolicy,
+) *ValidateUsecase {
 	return &ValidateUsecase{
-		authservice:   authservice,
-		userReposiory: userReposiory,
+		authservice: authservice,
+		userPolicy:  userPolicy,
 	}
 }
 
@@ -25,13 +26,8 @@ func (uc *ValidateUsecase) Execute(accessToken string) (string, error) {
 		return "", err
 	}
 
-	exists, err := uc.userReposiory.UserExists(userId)
-	if err != nil {
+	if err := uc.userPolicy.ValidateExists(userId); err != nil {
 		return "", err
-	}
-
-	if !exists {
-		return "", user_domain.ErrUserNotFound
 	}
 
 	return userId, nil

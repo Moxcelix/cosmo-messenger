@@ -6,20 +6,23 @@ import (
 )
 
 type LoginUsecase struct {
-	authservice   auth_domain.AuthService
-	userReposiory user_domain.UserRepository
+	authservice auth_domain.AuthService
+	userPolicy  *user_domain.UserPolicy
 }
 
-func NewLoginUsecase(authservice auth_domain.AuthService, userReposiory user_domain.UserRepository) *LoginUsecase {
+func NewLoginUsecase(
+	authservice auth_domain.AuthService,
+	userPolicy *user_domain.UserPolicy,
+) *LoginUsecase {
 	return &LoginUsecase{
-		authservice:   authservice,
-		userReposiory: userReposiory,
+		authservice: authservice,
+		userPolicy:  userPolicy,
 	}
 }
 
 func (uc *LoginUsecase) Execute(username, password string) (string, string, error) {
-	if user, _ := uc.userReposiory.GetUserByUsername(username); user == nil {
-		return "", "", user_domain.ErrUserNotFound
+	if err := uc.userPolicy.ValidateExistsByUsername(username); err != nil {
+		return "", "", err
 	}
 
 	return uc.authservice.Login(username, password)

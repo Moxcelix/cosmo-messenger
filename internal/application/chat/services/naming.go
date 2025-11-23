@@ -1,6 +1,7 @@
-package chat_domain
+package services
 
 import (
+	chat_domain "main/internal/domain/chat"
 	user_domain "main/internal/domain/user"
 )
 
@@ -23,7 +24,7 @@ func (s *ChatNamingService) ResolveDirectName(companion *user_domain.User) (stri
 }
 
 func (s *ChatNamingService) ResolveChatName(
-	chat *Chat, currentUserID string) (string, error) {
+	chat *chat_domain.Chat, currentUserID string) (string, error) {
 
 	if chat.Type != "direct" {
 		return chat.Name, nil
@@ -38,7 +39,7 @@ func (s *ChatNamingService) ResolveChatName(
 	return s.ResolveDirectName(otherUser)
 }
 
-func getOtherUserID(members []*ChatMember, currentUserID string) string {
+func getOtherUserID(members []*chat_domain.ChatMember, currentUserID string) string {
 	for _, member := range members {
 		if member.UserID != currentUserID {
 			return member.UserID

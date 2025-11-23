@@ -8,14 +8,14 @@ import (
 
 type ChatDispatcher struct {
 	chatMapper        *mappers.ChatItemMapper
-	chatNamingService *chat_domain.ChatNamingService
+	chatNamingService *ChatNamingService
 	chatPublisher     ChatPublisher
 	chatQuery         queries.ChatQuery
 }
 
 func NewChatDispatcher(
 	chatMapper *mappers.ChatItemMapper,
-	chatNamingService *chat_domain.ChatNamingService,
+	chatNamingService *ChatNamingService,
 	chatBroadcaster ChatPublisher,
 	chatQuery queries.ChatQuery,
 ) *ChatDispatcher {
