@@ -1,6 +1,9 @@
 package message_domain
 
-import "time"
+import (
+	chat_domain "main/internal/domain/chat"
+	"time"
+)
 
 type Attachment struct {
 	ID        string    `json:"id" bson:"_id"`
@@ -24,10 +27,16 @@ type Message struct {
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
 
-func NewMessage(senderId, chatId, contnet string) *Message {
-	return &Message{
-		SenderID: senderId,
-		ChatID:   chatId,
-		Content:  contnet,
+func (m *Message) BindToChat(chat *chat_domain.Chat) error {
+	if m.ChatID != "" {
+		return ErrMessageAlreadyBound
 	}
+
+	if !chat.IsPersisted() {
+		return chat_domain.ErrChatNotFound
+	}
+
+	m.ChatID = chat.ID
+
+	return nil
 }

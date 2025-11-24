@@ -9,11 +9,9 @@ import (
 )
 
 type DirectMessageUsecase struct {
-	userRepo    user_domain.UserRepository
-	chatRepo    chat_domain.ChatRepository
-	messageRepo message_domain.MessageRepository
-	chatFactory *chat_domain.ChatFactory
-
+	userRepo          user_domain.UserRepository
+	directService     *chat_domain.DirectChatService
+	sendService       *message_domain.SendMessageService
 	messageDispatcher *services.MessageDispatcher
 	messagePolicy     *message_domain.MessagePolicy
 	messageFactory    *message_domain.MessageFactory
@@ -21,19 +19,16 @@ type DirectMessageUsecase struct {
 
 func NewDirectMessageUsecase(
 	userRepo user_domain.UserRepository,
-	chatRepo chat_domain.ChatRepository,
-	messageRepo message_domain.MessageRepository,
-	chatFactory *chat_domain.ChatFactory,
-
+	directService *chat_domain.DirectChatService,
+	sendService *message_domain.SendMessageService,
 	messageDispatcher *services.MessageDispatcher,
-	messageFactory *message_domain.MessageFactory,
 	messagePolicy *message_domain.MessagePolicy,
+	messageFactory *message_domain.MessageFactory,
 ) *DirectMessageUsecase {
 	return &DirectMessageUsecase{
 		userRepo:          userRepo,
-		chatRepo:          chatRepo,
-		messageRepo:       messageRepo,
-		chatFactory:       chatFactory,
+		directService:     directService,
+		sendService:       sendService,
 		messageDispatcher: messageDispatcher,
 		messageFactory:    messageFactory,
 		messagePolicy:     messagePolicy,
@@ -51,38 +46,21 @@ func (uc *DirectMessageUsecase) Execute(
 		return nil, user_domain.ErrUserNotFound
 	}
 
-	chat, err := uc.chatRepo.GetDirectChat(senderId, receiver.ID)
+	chat, err := uc.directService.GetDirectChat(senderId, receiver.ID)
 	if err != nil {
 		return nil, err
-	}
-
-	if chat == nil {
-		chat, err = uc.chatFactory.CreateDirectChat(senderId, receiver.ID)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	if err := uc.messagePolicy.ValidateMessageContent(content); err != nil {
 		return nil, err
 	}
 
-	msg, err := uc.messageFactory.CreateTextMessage(chat.ID, senderId, content)
+	msg, err := uc.messageFactory.CreateTextMessage(senderId, content)
 	if err != nil {
 		return nil, err
 	}
 
-	if !chat.IsPersisted() {
-		if err := uc.chatRepo.Create(chat); err != nil {
-			return nil, err
-		}
-	}
-
-	if err := uc.messageRepo.CreateMessage(msg); err != nil {
-		return nil, err
-	}
-
-	if err := uc.chatRepo.MarkUpdated(chat.ID, msg.CreatedAt); err != nil {
+	if err := uc.sendService.SendMessage(chat, msg); err != nil {
 		return nil, err
 	}
 
