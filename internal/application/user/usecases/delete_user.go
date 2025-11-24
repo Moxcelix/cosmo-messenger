@@ -16,7 +16,7 @@ func NewDeleteUserUsecase(
 }
 
 func (uc *DeleteUserUsecase) Execute(userId string) error {
-	exists, err := uc.repository.UserExists(userId)
+	exists, err := uc.repository.UserExistsById(userId)
 	if err != nil {
 		return err
 	}

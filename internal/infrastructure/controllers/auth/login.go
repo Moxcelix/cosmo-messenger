@@ -23,11 +23,6 @@ type loginRequest struct {
 	Password string `json:"password"`
 }
 
-type loginResponse struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
 // Login godoc
 // @Summary User login
 // @Description Authenticates user and returns JWT tokens
@@ -35,7 +30,7 @@ type loginResponse struct {
 // @Accept json
 // @Produce json
 // @Param input body loginRequest true "User credentials"
-// @Success 200 {object} loginResponse
+// @Success 200 {object} dto.LoginData
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /api/v1/auth/login [post]
@@ -47,14 +42,11 @@ func (c *LoginController) Login(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, refreshToken, err := c.usecase.Execute(req.Username, req.Password)
+	loginData, err := c.usecase.Execute(req.Username, req.Password)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, loginResponse{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	})
+	ctx.JSON(http.StatusOK, loginData)
 }

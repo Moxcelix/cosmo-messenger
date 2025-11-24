@@ -257,11 +257,23 @@ func (r *UserRepository) GetUsersByRange(offset, limit int) (*user_domain.UsersL
 	}, nil
 }
 
-func (r *UserRepository) UserExists(userId string) (bool, error) {
+func (r *UserRepository) UserExistsById(userId string) (bool, error) {
 	query := `SELECT EXISTS(SELECT 1 FROM users WHERE id = $1)`
 
 	var exists bool
 	err := r.db.QueryRow(query, userId).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func (r *UserRepository) UserExistsByUsername(username string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE username = $1)`
+
+	var exists bool
+	err := r.db.QueryRow(query, username).Scan(&exists)
 	if err != nil {
 		return false, err
 	}

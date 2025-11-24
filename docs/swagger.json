@@ -34,7 +34,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.loginResponse"
+                            "$ref": "#/definitions/dto.LoginData"
                         }
                     },
                     "400": {
@@ -86,7 +86,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.refreshResponse"
+                            "$ref": "#/definitions/dto.RefreshData"
                         }
                     },
                     "400": {
@@ -138,7 +138,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.validateResponse"
+                            "$ref": "#/definitions/dto.ValidateData"
                         }
                     },
                     "400": {
@@ -1051,17 +1051,6 @@
                 }
             }
         },
-        "controllers.loginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
         "controllers.msgRequest": {
             "type": "object",
             "required": [
@@ -1101,14 +1090,6 @@
             "type": "object",
             "properties": {
                 "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "controllers.refreshResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
                     "type": "string"
                 }
             }
@@ -1217,14 +1198,6 @@
                 }
             }
         },
-        "controllers.validateResponse": {
-            "type": "object",
-            "properties": {
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.ChatCollection": {
             "type": "object",
             "properties": {
@@ -1302,6 +1275,25 @@
                 }
             }
         },
+        "dto.LoginData": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RefreshData": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.Reply": {
             "type": "object",
             "properties": {
@@ -1323,6 +1315,14 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ValidateData": {
+            "type": "object",
+            "properties": {
+                "user_id": {
                     "type": "string"
                 }
             }

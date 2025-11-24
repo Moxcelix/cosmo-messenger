@@ -22,13 +22,6 @@ definitions:
       username:
         type: string
     type: object
-  controllers.loginResponse:
-    properties:
-      access_token:
-        type: string
-      refresh_token:
-        type: string
-    type: object
   controllers.msgRequest:
     properties:
       content:
@@ -55,11 +48,6 @@ definitions:
   controllers.refreshRequest:
     properties:
       refresh_token:
-        type: string
-    type: object
-  controllers.refreshResponse:
-    properties:
-      access_token:
         type: string
     type: object
   controllers.registerRequest:
@@ -129,11 +117,6 @@ definitions:
       access_token:
         type: string
     type: object
-  controllers.validateResponse:
-    properties:
-      username:
-        type: string
-    type: object
   dto.ChatCollection:
     properties:
       chats:
@@ -184,6 +167,18 @@ definitions:
       timestamp:
         type: string
     type: object
+  dto.LoginData:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  dto.RefreshData:
+    properties:
+      access_token:
+        type: string
+    type: object
   dto.Reply:
     properties:
       content:
@@ -198,6 +193,11 @@ definitions:
       id:
         type: string
       name:
+        type: string
+    type: object
+  dto.ValidateData:
+    properties:
+      user_id:
         type: string
     type: object
   main_internal_application_chat_dto.ScrollingMeta:
@@ -234,7 +234,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.loginResponse'
+            $ref: '#/definitions/dto.LoginData'
         "400":
           description: Bad Request
           schema:
@@ -268,7 +268,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.refreshResponse'
+            $ref: '#/definitions/dto.RefreshData'
         "400":
           description: Bad Request
           schema:
@@ -302,7 +302,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.validateResponse'
+            $ref: '#/definitions/dto.ValidateData'
         "400":
           description: Bad Request
           schema:

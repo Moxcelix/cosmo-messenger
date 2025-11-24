@@ -17,12 +17,6 @@ type InternalAuthService struct {
 	passwordHasher *user_domain.PasswordHasher
 }
 
-type User struct {
-	ID       string
-	Username string
-	Password string
-}
-
 func NewInternalAuthService(
 	jwt *pkg.Jwt,
 	env config.Env,
@@ -37,12 +31,7 @@ func NewInternalAuthService(
 	}
 }
 
-func (a *InternalAuthService) Login(username, password string) (string, string, error) {
-	user, err := a.userRepo.GetUserByUsername(username)
-	if err != nil {
-		return "", "", errors.New("user not found")
-	}
-
+func (a *InternalAuthService) Login(user *user_domain.User, password string) (string, string, error) {
 	if err := a.passwordHasher.ValidatePassword(password, user); err != nil {
 		return "", "", errors.New("invalid credentials")
 	}

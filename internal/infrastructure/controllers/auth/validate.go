@@ -21,10 +21,6 @@ type validateRequest struct {
 	AccessToken string `json:"access_token"`
 }
 
-type validateResponse struct {
-	Username string `json:"username"`
-}
-
 // Validate godoc
 // @Summary Validates users access token
 // @Description Returns userID if access token is valid
@@ -32,7 +28,7 @@ type validateResponse struct {
 // @Accept json
 // @Produce json
 // @Param input body validateRequest true "Access credentials"
-// @Success 200 {object} validateResponse
+// @Success 200 {object} dto.ValidateData
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /api/v1/auth/validate [post]
@@ -44,13 +40,11 @@ func (c *ValidateController) Validate(ctx *gin.Context) {
 		return
 	}
 
-	username, err := c.usecase.Execute(req.AccessToken)
+	validateData, err := c.usecase.Execute(req.AccessToken)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, validateResponse{
-		Username: username,
-	})
+	ctx.JSON(http.StatusOK, validateData)
 }

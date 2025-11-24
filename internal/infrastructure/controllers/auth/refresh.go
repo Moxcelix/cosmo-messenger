@@ -22,10 +22,6 @@ type refreshRequest struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-type refreshResponse struct {
-	AccessToken string `json:"access_token"`
-}
-
 // Refresh godoc
 // @Summary User refresh token
 // @Description Returns new access token by refresh token
@@ -33,7 +29,7 @@ type refreshResponse struct {
 // @Accept json
 // @Produce json
 // @Param input body refreshRequest true "Refresh credentials"
-// @Success 200 {object} refreshResponse
+// @Success 200 {object} dto.RefreshData
 // @Failure 400 {object} map[string]string
 // @Failure 401 {object} map[string]string
 // @Router /api/v1/auth/refresh [post]
@@ -45,13 +41,11 @@ func (c *RefreshController) Refresh(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := c.usecase.Execute(req.RefreshToken)
+	refreshData, err := c.usecase.Execute(req.RefreshToken)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, refreshResponse{
-		AccessToken: accessToken,
-	})
+	ctx.JSON(http.StatusOK, refreshData)
 }

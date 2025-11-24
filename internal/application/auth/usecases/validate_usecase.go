@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"main/internal/application/auth/dto"
 	auth_domain "main/internal/domain/auth"
 	user_domain "main/internal/domain/user"
 )
@@ -20,19 +21,21 @@ func NewValidateUsecase(
 	}
 }
 
-func (uc *ValidateUsecase) Execute(accessToken string) (string, error) {
+func (uc *ValidateUsecase) Execute(accessToken string) (*dto.ValidateData, error) {
 	userId, err := uc.authservice.ValidateAccessToken(accessToken)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	user, err := uc.userRepo.GetUserById(userId)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if user == nil {
-		return "", user_domain.ErrUserNotFound
+		return nil, user_domain.ErrUserNotFound
 	}
 
-	return userId, nil
+	return &dto.ValidateData{
+		UserID: userId,
+	}, nil
 }

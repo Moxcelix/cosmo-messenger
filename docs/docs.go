@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.loginResponse"
+                            "$ref": "#/definitions/dto.LoginData"
                         }
                     },
                     "400": {
@@ -95,7 +95,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.refreshResponse"
+                            "$ref": "#/definitions/dto.RefreshData"
                         }
                     },
                     "400": {
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.validateResponse"
+                            "$ref": "#/definitions/dto.ValidateData"
                         }
                     },
                     "400": {
@@ -1060,17 +1060,6 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.loginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
-                },
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
         "controllers.msgRequest": {
             "type": "object",
             "required": [
@@ -1110,14 +1099,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "controllers.refreshResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
                     "type": "string"
                 }
             }
@@ -1226,14 +1207,6 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.validateResponse": {
-            "type": "object",
-            "properties": {
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.ChatCollection": {
             "type": "object",
             "properties": {
@@ -1311,6 +1284,25 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.LoginData": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RefreshData": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.Reply": {
             "type": "object",
             "properties": {
@@ -1332,6 +1324,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ValidateData": {
+            "type": "object",
+            "properties": {
+                "user_id": {
                     "type": "string"
                 }
             }

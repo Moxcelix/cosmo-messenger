@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"main/internal/application/auth/dto"
 	auth "main/internal/domain/auth"
 )
 
@@ -14,6 +15,13 @@ func NewRefreshUsecase(authservice auth.AuthService) *RefreshUsecase {
 	}
 }
 
-func (uc *RefreshUsecase) Execute(refreshToken string) (string, error) {
-	return uc.authservice.Refresh(refreshToken)
+func (uc *RefreshUsecase) Execute(refreshToken string) (*dto.RefreshData, error) {
+	accessToken, err := uc.authservice.Refresh(refreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.RefreshData{
+		AccessToken: accessToken,
+	}, nil
 }

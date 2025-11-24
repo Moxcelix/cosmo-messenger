@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"main/internal/application/auth/dto"
 	auth_domain "main/internal/domain/auth"
 	user_domain "main/internal/domain/user"
 )
@@ -20,14 +21,23 @@ func NewLoginUsecase(
 	}
 }
 
-func (uc *LoginUsecase) Execute(username, password string) (string, string, error) {
+func (uc *LoginUsecase) Execute(username, password string) (*dto.LoginData, error) {
 	user, err := uc.userRepo.GetUserByUsername(username)
 	if err != nil {
-		return "", "", err
-	}
-	if user == nil {
-		return "", "", user_domain.ErrUserNotFound
+		return nil, err
 	}
 
-	return uc.authservice.Login(username, password)
+	if user == nil {
+		return nil, user_domain.ErrUserNotFound
+	}
+
+	accessToken, refreshToken, err := uc.authservice.Login(user, password)
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.LoginData{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }
