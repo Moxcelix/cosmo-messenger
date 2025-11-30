@@ -31,12 +31,12 @@ func (c *ChatDispatcher) DispatchChat(chat *chat_domain.Chat) error {
 
 	chatMembersId := chat.GetMembersId()
 
-	for _, chatMemberId := range chatMembersId {
+	chatReadmodel, err := c.chatQuery.Query(chat.ID)
+	if err != nil {
+		return err
+	}
 
-		chatReadmodel, err := c.chatQuery.Query(chat.ID)
-		if err != nil {
-			return err
-		}
+	for _, chatMemberId := range chatMembersId {
 
 		chatName, err := c.chatNamingService.ResolveChatName(chat, chatMemberId)
 		if err != nil {

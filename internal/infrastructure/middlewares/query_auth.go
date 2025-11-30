@@ -28,7 +28,7 @@ func (m *QueryAuthMiddleware) Handler() gin.HandlerFunc {
 			return
 		}
 
-		userId, err := m.validateUsecase.Execute(token)
+		validateData, err := m.validateUsecase.Execute(token)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": err.Error(),
@@ -36,7 +36,7 @@ func (m *QueryAuthMiddleware) Handler() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("UserID", userId)
+		ctx.Set("UserID", validateData.UserID)
 		ctx.Next()
 	}
 }

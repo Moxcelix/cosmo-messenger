@@ -2,10 +2,10 @@ package chat_domain
 
 type DirectChatService struct {
 	chatRepo    ChatRepository
-	chatFactory ChatFactory
+	chatFactory *ChatFactory
 }
 
-func NewDirectChatService(chatRepo ChatRepository, chatFactory ChatFactory) *DirectChatService {
+func NewDirectChatService(chatRepo ChatRepository, chatFactory *ChatFactory) *DirectChatService {
 	return &DirectChatService{
 		chatRepo:    chatRepo,
 		chatFactory: chatFactory,
