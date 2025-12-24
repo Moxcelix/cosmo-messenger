@@ -8,4 +8,5 @@ import (
 
 var Module = fx.Options(
 	fx.Provide(services.NewChatHeaderService),
+	fx.Provide(services.NewMessageDemoService),
 )

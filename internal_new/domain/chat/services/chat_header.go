@@ -13,7 +13,11 @@ func NewChatHeaderService() *ChatHeaderService {
 	return &ChatHeaderService{}
 }
 
-func ProjectChat(chat *models.Chat, users map[string]*auth_models.User, requestingUserId string) *projections.ChatHeader {
+func (s *ChatHeaderService) ProjectChat(
+	chat *models.Chat,
+	users map[string]*auth_models.User,
+	requestingUserId string,
+) *projections.ChatHeader {
 	chatName := chat.Name
 
 	if chat.Type == models.ChatTypeDirect {
@@ -27,4 +31,19 @@ func ProjectChat(chat *models.Chat, users map[string]*auth_models.User, requesti
 		Name: chatName,
 		Type: string(chat.Type),
 	}
+}
+
+func (s *ChatHeaderService) ProjectChats(
+	chats map[string]*models.Chat,
+	users map[string]*auth_models.User,
+	requestingUserId string,
+) map[string]*projections.ChatHeader {
+	chatHeaders := make(map[string]*projections.ChatHeader)
+
+	for chatId, chat := range chats {
+		chatHeader := s.ProjectChat(chat, users, requestingUserId)
+		chatHeaders[chatId] = chatHeader
+	}
+
+	return chatHeaders
 }
