@@ -24,7 +24,7 @@ func (s *MessageDefaultService) ProjectMessage(msg *models.Message) *projections
 	}
 }
 
-func (s *MessageDefaultService) ProjectMessagesMap(messages map[string]*models.Message) map[string]*projections.MessageDefault {
+func (s *MessageDefaultService) ProjectMessages(messages map[string]*models.Message) map[string]*projections.MessageDefault {
 	if len(messages) == 0 {
 		return make(map[string]*projections.MessageDefault)
 	}
