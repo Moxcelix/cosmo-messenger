@@ -37,6 +37,7 @@ func (uc *LoginUsecase) Execute(username, password string) (*models.Login, error
 		return nil, err
 	}
 
+	// TODO: transport to service
 	return &models.Login{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,

@@ -20,7 +20,7 @@ func (uc *RefreshUsecase) Execute(refreshToken string) (*models.Refresh, error) 
 	if err != nil {
 		return nil, err
 	}
-
+	// TODO: transport to service
 	return &models.Refresh{
 		AccessToken: accessToken,
 	}, nil

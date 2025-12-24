@@ -35,7 +35,7 @@ func (uc *ValidateUsecase) Execute(accessToken string) (*models.Validate, error)
 	if user == nil {
 		return nil, user_domain.ErrUserNotFound
 	}
-
+	// TODO: transport to service
 	return &models.Validate{
 		UserID: userId,
 	}, nil

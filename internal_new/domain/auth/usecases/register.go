@@ -36,7 +36,7 @@ func (r *RegisterUseCase) Execute(name string, username string, password string,
 	if err != nil {
 		return err
 	}
-
+	// TODO: transport to service
 	now := time.Now()
 	user := &models.User{
 		Name:         name,
