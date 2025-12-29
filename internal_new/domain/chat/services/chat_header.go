@@ -18,13 +18,27 @@ func (s *ChatHeaderService) ProjectChat(
 	users map[string]*auth_models.User,
 	requestingUserId string,
 ) *projections.ChatHeader {
-	chatName := chat.Name
-
 	if chat.Type == models.ChatTypeDirect {
 		companionId := chat.GetMemberIdsExcluding(requestingUserId)[0]
 		companion := users[companionId]
-		chatName = companion.Name
+		requester := users[requestingUserId]
+
+		return s.ProjectDirect(chat, requester, companion)
 	}
+
+	return &projections.ChatHeader{
+		ID:   chat.ID,
+		Name: chat.Name,
+		Type: string(chat.Type),
+	}
+}
+
+func (s *ChatHeaderService) ProjectDirect(
+	chat *models.Chat,
+	requester *auth_models.User,
+	companion *auth_models.User,
+) *projections.ChatHeader {
+	chatName := companion.Name
 
 	return &projections.ChatHeader{
 		ID:   chat.ID,

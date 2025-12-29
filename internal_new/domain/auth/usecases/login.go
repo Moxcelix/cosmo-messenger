@@ -1,7 +1,7 @@
 package usecases
 
 import (
-	errors "main/internal_new/domain/auth/erorrs"
+	errors "main/internal_new/domain/auth/errors"
 	"main/internal_new/domain/auth/models"
 	"main/internal_new/domain/auth/repositories"
 	"main/internal_new/domain/auth/services"

@@ -6,5 +6,5 @@ import (
 )
 
 type MessageQuery interface {
-	Query(msgId string) (messages map[string]*models.Message, users map[string]*auth_models.User)
+	Query(msgId string) (messages map[string]*models.Message, users map[string]*auth_models.User, err error)
 }

@@ -2,6 +2,14 @@ package models
 
 import "time"
 
+type UserState string
+
+const (
+	UserStateActive  UserState = "active"
+	UserStateDeleted UserState = "deleted"
+	UserStateBanned  UserState = "banned"
+)
+
 type User struct {
 	ID           string    `json:"id" bson:"_id"`
 	Name         string    `json:"name" bson:"name"`
@@ -10,4 +18,5 @@ type User struct {
 	Bio          string    `json:"bio" bson:"bio"`
 	CreatedAt    time.Time `json:"created_at" bson:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at" bson:"updated_at"`
+	UserState    UserState `json:"state" bson:"state"`
 }

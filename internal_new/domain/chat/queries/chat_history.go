@@ -12,7 +12,6 @@ type ChatHistoryQuery interface {
 		count int,
 		direction string,
 	) (
-		chat *models.Chat,
 		messages map[string]*models.Message,
 		replies map[string]*models.Message,
 		users map[string]*auth_models.User,
