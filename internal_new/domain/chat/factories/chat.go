@@ -1,4 +1,4 @@
-package factory
+package factories
 
 import (
 	"main/internal_new/domain/chat/errors"

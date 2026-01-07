@@ -5,8 +5,7 @@ import (
 	"main/internal_new/domain/chat/models"
 )
 
-type ChatCollection struct {
-	Chats    map[string]*models.Chat      `bson:"chats" json:"chats"`
+type MessageCollection struct {
 	Messages map[string]*models.Message   `bson:"messages" json:"messages"`
 	Replies  map[string]*models.Message   `bson:"replies" json:"replies"`
 	Users    map[string]*auth_models.User `bson:"users" json:"users"`
@@ -15,14 +14,14 @@ type ChatCollection struct {
 	HasPrev bool `bson:"has_prev" json:"has_prev"`
 }
 
-type ChatCollectionQuery interface {
+type MessageCollectionQuery interface {
 	Query(
-		userID string,
-		cursorChatID string,
+		chatId string,
+		cursorMessageId string,
 		count int,
 		direction string,
 	) (
-		collection *ChatCollection,
+		collection *MessageCollection,
 		err error,
 	)
 }

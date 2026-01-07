@@ -7,4 +7,7 @@ var (
 	ErrChatNotFound             = errors.New("chat not found")
 	ErrCannotCreateChatWithSelf = errors.New("cannot create chat with self")
 	ErrChatAccessDenied         = errors.New("chat access denied")
+	ErrShortChatName            = errors.New("chat name is to short")
+	ErrLongChatName             = errors.New("chat name is to long")
+	ErrManyChatMembers          = errors.New("too many members in chat")
 )

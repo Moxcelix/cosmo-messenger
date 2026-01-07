@@ -7,36 +7,28 @@ import (
 	"main/internal_new/domain/chat/services"
 )
 
-type DirectHistoryUsecase struct {
+type ChatHistoryUsecase struct {
+	userChatService             *services.UserChatService
 	messageCollectionQuery      queries.MessageCollectionQuery
-	companionService            *services.CompanionService
-	directService               *services.DirectChatService
 	collectionProjectionFactory *factories.CollectionProjectionFactory
 }
 
-func NewDirectHistoryUsecase(
+func NewChatHistoryUsecase(
+	userChatService *services.UserChatService,
 	messageCollectionQuery queries.MessageCollectionQuery,
-	companionService *services.CompanionService,
-	directService *services.DirectChatService,
 	collectionProjectionFactory *factories.CollectionProjectionFactory,
-) *DirectHistoryUsecase {
-	return &DirectHistoryUsecase{
+) *ChatHistoryUsecase {
+	return &ChatHistoryUsecase{
+		userChatService:             userChatService,
 		messageCollectionQuery:      messageCollectionQuery,
-		companionService:            companionService,
-		directService:               directService,
 		collectionProjectionFactory: collectionProjectionFactory,
 	}
 }
 
-func (uc *DirectHistoryUsecase) Execute(
-	userId, targetUsername, cursorMessageId string, count int, direction string) (*projections.CollectionProjection, error) {
+func (uc *ChatHistoryUsecase) Execute(
+	userId, chatId, cursorMessageId string, count int, direction string) (*projections.CollectionProjection, error) {
 
-	companion, err := uc.companionService.GetCompanion(userId, targetUsername)
-	if err != nil {
-		return nil, err
-	}
-
-	chat, err := uc.directService.GetDirectChat(userId, companion.ID)
+	chat, err := uc.userChatService.GetChatForUser(chatId, userId)
 	if err != nil {
 		return nil, err
 	}
