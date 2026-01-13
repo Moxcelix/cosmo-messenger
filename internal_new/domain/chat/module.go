@@ -14,9 +14,13 @@ var Module = fx.Options(
 	fx.Provide(factories.NewUserProjectionFactory),
 	fx.Provide(factories.NewCollectionProjectionFactory),
 	fx.Provide(factories.NewChatFactory),
+	fx.Provide(factories.NewMessageFactory),
 
-	fx.Provide(services.NewDirectChatService),
 	fx.Provide(services.NewCompanionService),
+	fx.Provide(services.NewDirectChatService),
+	fx.Provide(services.NewMessageEnricher),
+	fx.Provide(services.NewRealTimeService),
+	fx.Provide(services.NewSendMessageService),
 	fx.Provide(services.NewUserChatService),
 
 	fx.Provide(usecases.NewChatCollectionUsecase),

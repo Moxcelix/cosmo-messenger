@@ -32,14 +32,10 @@ func (uc *LoginUsecase) Execute(username, password string) (*models.Login, error
 		return nil, errors.ErrUserNotFound
 	}
 
-	accessToken, refreshToken, err := uc.authservice.Login(user, password)
+	login, err := uc.authservice.Login(user, password)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: transport to service
-	return &models.Login{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
+	return login, nil
 }

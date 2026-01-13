@@ -16,12 +16,10 @@ func NewRefreshUsecase(authservice services.AuthService) *RefreshUsecase {
 }
 
 func (uc *RefreshUsecase) Execute(refreshToken string) (*models.Refresh, error) {
-	accessToken, err := uc.authservice.Refresh(refreshToken)
+	refresh, err := uc.authservice.Refresh(refreshToken)
 	if err != nil {
 		return nil, err
 	}
-	// TODO: transport to service
-	return &models.Refresh{
-		AccessToken: accessToken,
-	}, nil
+
+	return refresh, nil
 }
