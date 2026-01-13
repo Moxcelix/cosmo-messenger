@@ -46,9 +46,7 @@ func (uc *DirectHistoryUsecase) Execute(
 		return nil, err
 	}
 
-	history, err := uc.collectionProjectionFactory.ProjectCollectionWithSingleChat(
-		userId, chat, collection.Messages, collection.Replies,
-		collection.Users, collection.HasNext, collection.HasPrev)
+	history, err := uc.collectionProjectionFactory.ProjectCollection(userId, collection)
 	if err != nil {
 		return nil, err
 	}

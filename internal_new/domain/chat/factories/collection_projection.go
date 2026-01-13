@@ -1,7 +1,6 @@
 package factories
 
 import (
-	auth_models "main/internal_new/domain/auth/models"
 	"main/internal_new/domain/chat/models"
 	"main/internal_new/domain/chat/projections"
 )
@@ -24,43 +23,13 @@ func NewCollectionProjectionFactory(
 	}
 }
 
-func (s *CollectionProjectionFactory) ProjectCollectionWithSingleChat(
-	userId string,
-	chat *models.Chat,
-	messages map[string]*models.Message,
-	replies map[string]*models.Message,
-	users map[string]*auth_models.User,
-	hasNext, hasPrev bool,
-) (*projections.CollectionProjection, error) {
-
-	chatsMap := make(map[string]*models.Chat)
-	if chat != nil {
-		chatsMap[chat.ID] = chat
-	}
-
-	return s.ProjectCollection(
-		userId,
-		chatsMap,
-		messages,
-		replies,
-		users,
-		hasNext,
-		hasPrev,
-	)
-}
-
 func (s *CollectionProjectionFactory) ProjectCollection(
-	userId string,
-	chats map[string]*models.Chat,
-	messages map[string]*models.Message,
-	replies map[string]*models.Message,
-	users map[string]*auth_models.User,
-	hasNext, hasPrev bool,
-) (*projections.CollectionProjection, error) {
-	messagesProjections := s.messageProjectionFactory.ProjectMessages(messages, DefaultMessage)
-	repliesProjections := s.messageProjectionFactory.ProjectMessages(replies, ReplyOnly)
-	chatsProjections := s.chatProjectionFactory.ProjectChats(chats, users, userId)
-	usersProjections := s.userProjectionFactory.ProjectUsers(users)
+	userId string, collection *models.Collection) (*projections.CollectionProjection, error) {
+
+	messagesProjections := s.messageProjectionFactory.ProjectMessages(collection.Messages, DefaultMessage)
+	repliesProjections := s.messageProjectionFactory.ProjectMessages(collection.Replies, ReplyOnly)
+	chatsProjections := s.chatProjectionFactory.ProjectChats(collection.Chats, collection.Users, userId)
+	usersProjections := s.userProjectionFactory.ProjectUsers(collection.Users)
 
 	for id, reply := range repliesProjections {
 		if _, exists := messagesProjections[id]; exists {
@@ -74,7 +43,7 @@ func (s *CollectionProjectionFactory) ProjectCollection(
 		Messages: messagesProjections,
 		Users:    usersProjections,
 
-		HasNext: hasNext,
-		HasPrev: hasPrev,
+		HasNext: collection.HasNext,
+		HasPrev: collection.HasPrev,
 	}, nil
 }

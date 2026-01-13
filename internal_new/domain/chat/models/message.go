@@ -29,3 +29,7 @@ func (m *Message) BindToChat(chat *Chat) error {
 
 	return nil
 }
+
+func (m *Message) HasReply() bool {
+	return m.ReplyToId != ""
+}

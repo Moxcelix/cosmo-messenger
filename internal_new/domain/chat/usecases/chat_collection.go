@@ -41,9 +41,7 @@ func (uc *ChatCollectionUsecase) Execute(
 		return nil, err
 	}
 
-	chatsCollection, err := uc.collectionProjectionFactory.ProjectCollection(
-		userID, collection.Chats, collection.Messages, collection.Replies,
-		collection.Users, collection.HasNext, collection.HasPrev)
+	chatsCollection, err := uc.collectionProjectionFactory.ProjectCollection(userID, collection)
 	if err != nil {
 		return nil, err
 	}

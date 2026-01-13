@@ -1,19 +1,8 @@
 package queries
 
 import (
-	auth_models "main/internal_new/domain/auth/models"
 	"main/internal_new/domain/chat/models"
 )
-
-type ChatCollection struct {
-	Chats    map[string]*models.Chat      `bson:"chats" json:"chats"`
-	Messages map[string]*models.Message   `bson:"messages" json:"messages"`
-	Replies  map[string]*models.Message   `bson:"replies" json:"replies"`
-	Users    map[string]*auth_models.User `bson:"users" json:"users"`
-
-	HasNext bool `bson:"has_next" json:"has_next"`
-	HasPrev bool `bson:"has_prev" json:"has_prev"`
-}
 
 type ChatCollectionQuery interface {
 	Query(
@@ -22,7 +11,7 @@ type ChatCollectionQuery interface {
 		count int,
 		direction string,
 	) (
-		collection *ChatCollection,
+		collection *models.Collection,
 		err error,
 	)
 }
